@@ -1,0 +1,56 @@
+% Ignoring of lines that start with '//'
+% Precedens
+
+START   ::= <board> <exprs> | <exprs> <board>
+<board> ::= ..... ';'
+<exprs> ::= <expr> ';' expr> ';' | <expr> ';' | λ
+<expr>  ::= <addExpr> |	<subExpr> | <divExpr> | <instantiation> | 
+
+<addExpr> ::= NUMBER ADDITION NUMBER
+<subExpr> ::= NUMBER SUBTRACTION NUMBER
+<divExpr> ::= NUMBER DIVISION NUMBER
+
+<instantiation> ::= <type> <identifier> ASSIGN 'new' <type> '(' {<argument>} ')'
+<type>			::= 'Board' | 'Team' |    %Add more, could also be a terminal
+<identifier> 	::= LETTER { DIGIT | LETTER}
+<argument>		::= <identifier> | <argument> ',' <argument>
+
+
+Team red = new team(“red”, 11, RED);
+
+
+%https://github.com/antlr/grammars-v4/tree/master/java
+% https://tomassetti.me/ebnf/
+%https://tomassetti.me/antlr-mega-tutorial/#lexers-and-parser
+%https://books.google.dk/books?id=gA9QDwAAQBAJ
+
+Team sdads = new Team( sddsds , sdds );
+
+Board(somesshing);
+
+Team team = new Team(adomsd);
+Player player = new Player();
+
+int i = 5;
+
+5 + 5;
+i + 5;
+
+start   : exprs ;
+exprs   : expr ENDSTNT | exprs exprs
+        | exprs exprNEs | exprNEs exprs | exprNEs; //Handle statements without ;
+expr    : addExpr | subExpr | divExpr | mulExpr
+        | instantiation | identifier
+        | boardDcl | intDcl | boolDcl ;
+exprNEs : condStmt | exprNEs exprNEs; //expr that does not need to be ended with ';'
+
+
+bool a = true;
+
+if ( true == true) { 5 + 2; }
+if ( true) { 5 + 2; }
+if ( bool b = true ) { 3 + 3;}
+if ( a ) { 3 + 3;}
+if ( a ) { 3 + 3;}
+if ( true ) { 2 + 2; } else { 3 + 3; }
+
