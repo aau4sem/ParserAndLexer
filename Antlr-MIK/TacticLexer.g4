@@ -20,6 +20,7 @@ FLASE       :       'false';
 FOR         :       'for' ;
 WHILE       :       'while';
 DOT         :       '.';
+STRING_MARK :       '"';
 
 
 // Literals

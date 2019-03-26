@@ -10,15 +10,16 @@ expr    : arithExpr
         | boardDcl | intDcl | boolDcl ;
 exprNEs : exprNEs exprNEs | condStmt | loopStmt ; //expr that does not need to be ended with ';'
 
-integer         : NUMBER | DIGIT;
-word            : WORD | LETTER;
+integer         : NUMBER | DIGIT ;
+word            : WORD | LETTER ;
+string          : STRING_MARK word STRING_MARK ;
 identifier      : word ;
 value           : identifier | integer | bool ;
 
 dotStmt     : (buildInClass | BOARD) DOT LPAREN arguments* RPAREN;
 
 //Declaration
-boardDcl    : BOARD LPAREN word RPAREN ;
+boardDcl    : BOARD LPAREN string RPAREN ; // This current says that the board only takes a string. Early type checking ok?
 intDcl      : INTEGER identifier ASSIGN integer ;
 boolDcl     : BOOL identifier ASSIGN bool ;
 //Arithmetic operations
@@ -29,13 +30,12 @@ divExpr : (identifier | integer) DIVISION (identifier | integer) ;
 mulExpr : (identifier | integer) MULTIPLY (identifier | integer) ;
 
 
-
 buildInClass    : TEAM | PLAYER ;
 
 instantiation   : type identifier ASSIGN NEW type LPAREN arguments* RPAREN ;
 type            : buildInClass ;
 
-arguments       : identifier | arguments SEPERATOR arguments ;
+arguments       : identifier | arguments SEPERATOR arguments | string | value ;
 
 //Control structures
 condStmt        : ifStmt | ifStmt elseifStmt* elseStmt? ;
