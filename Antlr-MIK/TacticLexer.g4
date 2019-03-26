@@ -30,7 +30,7 @@ NUMBER          : DIGIT+;
 ASSIGN          : '='  ;
 ADDITION        : '+'  ;
 SUBTRACTION     : '-'  ;
-DIVISION        : '/'  ;
+DIVISION        : ' / '  ; // This currently has to have spaces on both sides. Ask Mikkel why..
 MULTIPLY        : '*'  ;
 ENDSTNT         : ';'  ;
 BOOL_EQUAL      : '==' ;
@@ -44,10 +44,7 @@ BOOL_GREATER_OR_EQUAL   : '>=' ;
 INCREMENT               : '++' ;
 
 // Whitespace and comments
-WS          : [\n\t]+      -> skip; // skip newlines and tabs
-//LC          : '//' ~[\r\n]    -> channel(HIDDEN); //skip line comments
-//LC          : '//' .*? '//'    -> channel(HIDDEN); //skip line comments
-//LC          : '//' .*? '\n'    -> channel(HIDDEN); //skip line comments
-//LC          : '//' ~('\n'|'\r')*    -> channel(HIDDEN); //skip line comments
-//LC          : '//' ~('\n')    -> channel(HIDDEN); //skip line comments
-//LC            : '//' ~[\n] -> channel(HIDDEN);
+WS              : [ \t\r\n]+    -> channel(HIDDEN);
+COMMENT         : '/*' .*? '*/' -> skip;
+LINE_COMMENT    : '//' ~[\r\n]* -> skip;
+
