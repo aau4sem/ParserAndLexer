@@ -32,7 +32,8 @@ ASSIGN          : '='  ;
 ADDITION        : '+'  ;
 SUBTRACTION     : '-'  ;
 DIVISION        : ' / '  ; // This currently has to have spaces on both sides. Ask Mikkel why..
-MULTIPLY        : '*'  ;
+MULTIPLY        : '*' ;
+MODULO          : '%' ;
 ENDSTNT         : ';'  ;
 BOOL_EQUAL      : '==' ;
 BOOL_N_EQUAL    : '!=' ;

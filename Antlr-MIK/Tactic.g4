@@ -23,11 +23,12 @@ boardDcl    : BOARD LPAREN string RPAREN ; // This current says that the board o
 intDcl      : INTEGER identifier ASSIGN integer ;
 boolDcl     : BOOL identifier ASSIGN bool ;
 //Arithmetic operations
-arithExpr : ( addExpr | subExpr | divExpr | mulExpr);
+arithExpr : ( addExpr | subExpr | divExpr | mulExpr | modExpr);
 addExpr : (identifier | integer) ADDITION (identifier | integer) ;
 subExpr : (identifier | integer) SUBTRACTION (identifier | integer) ;
 divExpr : (identifier | integer) DIVISION (identifier | integer) ;
 mulExpr : (identifier | integer) MULTIPLY (identifier | integer) ;
+modExpr : (identifier | integer) MODULO (identifier | integer) ;
 
 
 buildInClass    : TEAM | PLAYER ;
