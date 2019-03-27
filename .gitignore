@@ -124,3 +124,4 @@ Thumbs.db
 !/ios-moe/xcode/*.xcodeproj/project.pbxproj
 /ios-moe/xcode/native/
 Game/gradle/wrapper/gradle-wrapper.jar
+Antlr-MIK/.idea/workspace.xml
