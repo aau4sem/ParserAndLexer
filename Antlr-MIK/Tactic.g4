@@ -20,10 +20,10 @@ dotStmt     : (buildInClass | BOARD) DOT LPAREN arguments* RPAREN;
 
 //Declaration
 boardDcl    : BOARD LPAREN string RPAREN ; // This current says that the board only takes a string. Early type checking ok?
-intDcl      : INTEGER identifier ASSIGN integer ;
-boolDcl     : BOOL identifier ASSIGN bool ;
+intDcl      : INTEGER identifier ASSIGN (integer | arithExpr | identifier) | INTEGER identifier;
+boolDcl     : BOOL identifier ASSIGN boolStmt | BOOL identifier;
 //Arithmetic operations
-arithExpr : ( addExpr | subExpr | divExpr | mulExpr | modExpr);
+arithExpr : ( addExpr | subExpr | divExpr | mulExpr | modExpr) ((ADDITION | SUBTRACTION | DIVISION | MULTIPLY | MODULO) (identifier|integer))*;
 addExpr : (identifier | integer) ADDITION (identifier | integer) ;
 subExpr : (identifier | integer) SUBTRACTION (identifier | integer) ;
 divExpr : (identifier | integer) DIVISION (identifier | integer) ;
