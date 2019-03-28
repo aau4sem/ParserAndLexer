@@ -7,8 +7,8 @@ exprs   : expr ENDSTNT | exprs exprs | exprNEs ;
         //| exprs exprNEs | exprNEs exprs | exprNEs; //Handle statements without ;
 expr    : arithExpr
         | bicAssignment | identifier | dotStmt
-        | boardDcl | intDcl | boolDcl | arrayDcl | arrayAssign ;
-dcl     : boardDcl | intDcl | boolDcl | arrayDcl ;
+        | boardDcl | intDcl | boolDcl | arrayDcl | arrayAssign | stringDcl;
+dcl     : boardDcl | intDcl | boolDcl | arrayDcl | stringDcl ;
 exprNEs : exprNEs exprNEs | condStmt | loopStmt ; //expr that does not need to be ended with ';'
 
 integer         : NUMBER | DIGIT ;
@@ -23,10 +23,14 @@ dotStmt     : (buildInClass | BOARD) DOT LPAREN arguments* RPAREN;
 boardDcl    : BOARD LPAREN string RPAREN ; // This current says that the board only takes a string. Early type checking ok?
 intDcl      : INTEGER identifier ASSIGN (integer | arithExpr | identifier) | INTEGER identifier;
 boolDcl     : BOOL identifier ASSIGN boolStmt | BOOL identifier;
-arrayExpr   : boolStmt | arithExpr | bicInstantiation | identifier | dotStmt | arrayDcl | value ;
+stringDcl   : STRING identifier ASSIGN (string | identifier);
 arrayDcl    : (INTEGER | buildInClass | BOOL) LBRACKET integer? RBRACKET identifier (ASSIGN LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY)?;
+
+
+//Datastructure operations
+arrayExpr   : boolStmt | arithExpr | bicInstantiation | identifier | dotStmt | arrayDcl | value ;
 arrayAssign : identifier (((LBRACKET integer RBRACKET)+ ASSIGN arrayExpr) | (LBRACKET RBRACKET ASSIGN LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY));
-//MATHIAS DU ARBEJDER PÅ ARRAYDCL LIGE NU!
+
 
 //Arithmetic operations
 arithExpr : ( addExpr | subExpr | divExpr | mulExpr | modExpr) ((ADDITION | SUBTRACTION | DIVISION | MULTIPLY | MODULO) (identifier|integer))*;

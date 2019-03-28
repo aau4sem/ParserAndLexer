@@ -23,6 +23,7 @@ FOR         :       'for' ;
 WHILE       :       'while';
 DOT         :       '.';
 STRING_MARK :       '"';
+STRING      :       'string';
 
 
 // Literals
