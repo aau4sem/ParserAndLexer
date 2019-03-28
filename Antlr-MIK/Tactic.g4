@@ -6,15 +6,16 @@ start   : exprs ;
 exprs   : expr ENDSTNT | exprs exprs | exprNEs ;
         //| exprs exprNEs | exprNEs exprs | exprNEs; //Handle statements without ;
 expr    : arithExpr
-        | instantiation | identifier | dotStmt
-        | boardDcl | intDcl | boolDcl ;
+        | bicAssignment | identifier | dotStmt
+        | boardDcl | intDcl | boolDcl | arrayDcl | arrayAssign ;
+dcl     : boardDcl | intDcl | boolDcl | arrayDcl ;
 exprNEs : exprNEs exprNEs | condStmt | loopStmt ; //expr that does not need to be ended with ';'
 
 integer         : NUMBER | DIGIT ;
 word            : WORD | LETTER ;
 string          : STRING_MARK word STRING_MARK ;
 identifier      : word ;
-value           : identifier | integer | bool ;
+value           : identifier | integer | bool | string;
 
 dotStmt     : (buildInClass | BOARD) DOT LPAREN arguments* RPAREN;
 
@@ -22,6 +23,11 @@ dotStmt     : (buildInClass | BOARD) DOT LPAREN arguments* RPAREN;
 boardDcl    : BOARD LPAREN string RPAREN ; // This current says that the board only takes a string. Early type checking ok?
 intDcl      : INTEGER identifier ASSIGN (integer | arithExpr | identifier) | INTEGER identifier;
 boolDcl     : BOOL identifier ASSIGN boolStmt | BOOL identifier;
+arrayExpr   : boolStmt | arithExpr | bicInstantiation | identifier | dotStmt | arrayDcl | value ;
+arrayDcl    : (INTEGER | buildInClass | BOOL) LBRACKET integer? RBRACKET identifier (ASSIGN LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY)?;
+arrayAssign : identifier (((LBRACKET integer RBRACKET)+ ASSIGN arrayExpr) | (LBRACKET RBRACKET ASSIGN LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY));
+//MATHIAS DU ARBEJDER PÅ ARRAYDCL LIGE NU!
+
 //Arithmetic operations
 arithExpr : ( addExpr | subExpr | divExpr | mulExpr | modExpr) ((ADDITION | SUBTRACTION | DIVISION | MULTIPLY | MODULO) (identifier|integer))*;
 addExpr : (identifier | integer) ADDITION (identifier | integer) ;
@@ -33,7 +39,9 @@ modExpr : (identifier | integer) MODULO (identifier | integer) ;
 
 buildInClass    : TEAM | PLAYER ;
 
-instantiation   : type identifier ASSIGN NEW type LPAREN arguments* RPAREN ;
+bicAssignment   : bicDcl ASSIGN bicInstantiation | identifier ASSIGN bicInstantiation;
+bicDcl          : buildInClass identifier;
+bicInstantiation: NEW buildInClass LPAREN arguments* RPAREN ;
 type            : buildInClass ;
 
 arguments       : identifier | arguments SEPERATOR arguments | string | value ;
