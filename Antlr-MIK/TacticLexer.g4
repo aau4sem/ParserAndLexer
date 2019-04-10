@@ -1,17 +1,16 @@
 lexer grammar TacticLexer;
 
 //Keywords
-NEW         :       'new';
 LPAREN      :       '(';
 RPAREN      :       ')';
 LCURLY      :       '{';
 RCURLY      :       '}';
 LBRACKET    :       '[';
 RBRACKET    :       ']';
-TEAM        :       'Team';
-PLAYER      :       'Player';
+GAMEPIECE   :       'GamePiece';
 BOARD       :       'Board';
 INTEGER     :       'int';
+FLOAT       :       'float';
 BOOL        :       'bool';
 SEPERATOR   :       ',';
 IF          :       'if';
@@ -24,6 +23,7 @@ WHILE       :       'while';
 DOT         :       '.';
 STRING_MARK :       '"';
 STRING      :       'string';
+VOID        :       'void';
 
 
 // Literals

@@ -5,48 +5,47 @@ options { tokenVocab = TacticLexer; }
 start   : exprs ;
 exprs   : expr ENDSTNT | exprs exprs | exprNEs ;
         //| exprs exprNEs | exprNEs exprs | exprNEs; //Handle statements without ;
-expr    : arithExpr
-        | bicAssignment | identifier | dotStmt
-        | boardDcl | intDcl | boolDcl | arrayDcl | arrayAssign | stringDcl;
-dcl     : boardDcl | intDcl | boolDcl | arrayDcl | stringDcl ;
+expr    : arithExpr | identifier | dotStmt | dotAssignment | dcl | arrayAssign | function;
+dcl     : boardDcl | intDcl | boolDcl | arrayDcl | stringDcl | gpDcl | floatDcl;
 exprNEs : exprNEs exprNEs | condStmt | loopStmt ; //expr that does not need to be ended with ';'
 
 integer         : NUMBER | DIGIT ;
+float           : (NUMBER | DIGIT) DOT (NUMBER | DIGIT);
+number          : integer | float ;
 word            : WORD | LETTER ;
 string          : STRING_MARK word STRING_MARK ;
-identifier      : word ;
-value           : identifier | integer | bool | string;
+identifier      : word DIGIT* NUMBER*;
+value           : identifier | number | bool | string ;
+vec             : LPAREN number SEPERATOR number (SEPERATOR number)? RPAREN;
 
-dotStmt     : (buildInClass | BOARD) DOT LPAREN arguments* RPAREN;
+function        : identifier LPAREN arguments RPAREN;
+
+dotStmt         : (identifier | BOARD) ((DOT identifier(LBRACKET number? RBRACKET)*) | DOT function )*;
+dotAssignment   : dotStmt ASSIGN (value | vec);
 
 //Declaration
 boardDcl    : BOARD LPAREN string RPAREN ; // This current says that the board only takes a string. Early type checking ok?
-intDcl      : INTEGER identifier ASSIGN (integer | arithExpr | identifier) | INTEGER identifier;
+intDcl      : INTEGER identifier ASSIGN (number | arithExpr | identifier) | INTEGER identifier;
+floatDcl    : FLOAT identifier (ASSIGN (number | identifier | arithExpr))?;
 boolDcl     : BOOL identifier ASSIGN boolStmt | BOOL identifier;
 stringDcl   : STRING identifier ASSIGN (string | identifier);
-arrayDcl    : (INTEGER | buildInClass | BOOL) LBRACKET integer? RBRACKET identifier (ASSIGN LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY)?;
+gpDcl       : GAMEPIECE identifier;
+arrayDcl    : (INTEGER | GAMEPIECE | BOOL) LBRACKET RBRACKET identifier (ASSIGN LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY)?;
 
 
 //Datastructure operations
-arrayExpr   : boolStmt | arithExpr | bicInstantiation | identifier | dotStmt | arrayDcl | value ;
-arrayAssign : identifier (((LBRACKET integer RBRACKET)+ ASSIGN arrayExpr) | (LBRACKET RBRACKET ASSIGN LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY));
+arrayExpr   : boolStmt | arithExpr | gpDcl | identifier | dotStmt | arrayDcl | value ;
+arrayAssign : identifier (((LBRACKET number RBRACKET)+ ASSIGN arrayExpr) | (LBRACKET RBRACKET ASSIGN LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY));
 
 
 //Arithmetic operations
-arithExpr : ( addExpr | subExpr | divExpr | mulExpr | modExpr) ((ADDITION | SUBTRACTION | DIVISION | MULTIPLY | MODULO) (identifier|integer))*;
-addExpr : (identifier | integer) ADDITION (identifier | integer) ;
-subExpr : (identifier | integer) SUBTRACTION (identifier | integer) ;
-divExpr : (identifier | integer) DIVISION (identifier | integer) ;
-mulExpr : (identifier | integer) MULTIPLY (identifier | integer) ;
-modExpr : (identifier | integer) MODULO (identifier | integer) ;
+arithExpr : ( addExpr | subExpr | divExpr | mulExpr | modExpr) ((ADDITION | SUBTRACTION | DIVISION | MULTIPLY | MODULO) (identifier | number))*;
+addExpr : (identifier | number) ADDITION (identifier | number) ;
+subExpr : (identifier | number) SUBTRACTION (identifier | number) ;
+divExpr : (identifier | number) DIVISION (identifier | number) ;
+mulExpr : (identifier | number) MULTIPLY (identifier | number) ;
+modExpr : (identifier | number) MODULO (identifier | number) ;
 
-
-buildInClass    : TEAM | PLAYER ;
-
-bicAssignment   : bicDcl ASSIGN bicInstantiation | identifier ASSIGN bicInstantiation;
-bicDcl          : buildInClass identifier;
-bicInstantiation: NEW buildInClass LPAREN arguments* RPAREN ;
-type            : buildInClass ;
 
 arguments       : identifier | arguments SEPERATOR arguments | string | value ;
 
@@ -58,7 +57,7 @@ elseifStmt      : ELSEIF LPAREN (boolStmt) RPAREN  block ;
 elseStmt        : ELSE block ;
 
 loopStmt        : forStmt | whileStmt ;
-forStmt         : FOR LPAREN (identifier | intDcl)? ENDSTNT boolStmt ENDSTNT (identifier INCREMENT)? RPAREN block ;
+forStmt         : FOR LPAREN (identifier | intDcl)? ENDSTNT boolStmt ENDSTNT ((identifier INCREMENT)| (identifier ASSIGN arithExpr))? RPAREN block ;
 whileStmt       : WHILE LPAREN boolStmt RPAREN BLOCK ;
 
 //Conditional
