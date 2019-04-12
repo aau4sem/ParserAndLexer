@@ -5,8 +5,8 @@ options { tokenVocab = TacticLexer; }
 start   : exprs ;
 exprs   : expr ENDSTNT | exprs exprs | exprNEs ;
         //| exprs exprNEs | exprNEs exprs | exprNEs; //Handle statements without ;
-expr    : arithExpr | identifier | dotStmt | dotAssignment | dcl | arrayAssign | function;
-dcl     : boardDcl | intDcl | boolDcl | arrayDcl | stringDcl | gpDcl | floatDcl;
+expr    : arithExpr | identifier | dotStmt | dotAssignment | dcl | arrayAssign | function | functionDef;
+dcl     : boardDcl | intDcl | boolDcl | arrayDcl | stringDcl | gpDcl | floatDcl | vecDcl;
 exprNEs : exprNEs exprNEs | condStmt | loopStmt ; //expr that does not need to be ended with ';'
 
 integer         : NUMBER | DIGIT ;
@@ -19,6 +19,8 @@ value           : identifier | number | bool | string ;
 vec             : LPAREN number SEPERATOR number (SEPERATOR number)? RPAREN;
 
 function        : identifier LPAREN arguments RPAREN;
+functionDef     : (type | VOID) identifier LPAREN ((type | VOID) identifier (SEPERATOR (type | VOID) identifier)*)? RPAREN functionBlock;
+functionBlock   : LCURLY exprs (RETURN (value | identifier | vec) ENDSTNT)? RCURLY | LCURLY (RETURN (value | identifier | vec) ENDSTNT)? RCURLY ;
 
 dotStmt         : (identifier | BOARD) ((DOT identifier(LBRACKET number? RBRACKET)*) | DOT function )*;
 dotAssignment   : dotStmt ASSIGN (value | vec);
@@ -27,10 +29,14 @@ dotAssignment   : dotStmt ASSIGN (value | vec);
 boardDcl    : BOARD LPAREN string RPAREN ; // This current says that the board only takes a string. Early type checking ok?
 intDcl      : INTEGER identifier ASSIGN (number | arithExpr | identifier) | INTEGER identifier;
 floatDcl    : FLOAT identifier (ASSIGN (number | identifier | arithExpr))?;
+vecDcl      : VEC identifier (ASSIGN vec)?;
 boolDcl     : BOOL identifier ASSIGN boolStmt | BOOL identifier;
 stringDcl   : STRING identifier ASSIGN (string | identifier);
 gpDcl       : GAMEPIECE identifier;
 arrayDcl    : (INTEGER | GAMEPIECE | BOOL) LBRACKET RBRACKET identifier (ASSIGN LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY)?;
+
+
+type        : BOARD | INTEGER | FLOAT | VEC | BOOL | STRING | GAMEPIECE ;
 
 
 //Datastructure operations
@@ -45,7 +51,6 @@ subExpr : (identifier | number) SUBTRACTION (identifier | number) ;
 divExpr : (identifier | number) DIVISION (identifier | number) ;
 mulExpr : (identifier | number) MULTIPLY (identifier | number) ;
 modExpr : (identifier | number) MODULO (identifier | number) ;
-
 
 arguments       : identifier | arguments SEPERATOR arguments | string | value ;
 

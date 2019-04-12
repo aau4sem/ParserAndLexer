@@ -11,6 +11,7 @@ GAMEPIECE   :       'GamePiece';
 BOARD       :       'Board';
 INTEGER     :       'int';
 FLOAT       :       'float';
+VEC         :       'vec';
 BOOL        :       'bool';
 SEPERATOR   :       ',';
 IF          :       'if';
@@ -24,6 +25,7 @@ DOT         :       '.';
 STRING_MARK :       '"';
 STRING      :       'string';
 VOID        :       'void';
+RETURN      :       'return';
 
 
 // Literals
@@ -34,7 +36,7 @@ NUMBER          : DIGIT+;
 ASSIGN          : '='  ;
 ADDITION        : '+'  ;
 SUBTRACTION     : '-'  ;
-DIVISION        : ' / '  ; // This currently has to have spaces on both sides. Ask Mikkel why..
+DIVISION        : '/'  ; // This currently has to have spaces on both sides. Ask Mikkel why..
 MULTIPLY        : '*' ;
 MODULO          : '%' ;
 ENDSTNT         : ';'  ;
@@ -51,5 +53,5 @@ INCREMENT               : '++' ;
 // Whitespace and comments
 WS              : [ \t\r\n]+    -> channel(HIDDEN);
 COMMENT         : '/*' .*? '*/' -> skip;
-LINE_COMMENT    : '//' ~[\r\n]* -> skip;
+LINE_COMMENT    : DIVISION'/' ~[\r\n]* -> skip;
 
