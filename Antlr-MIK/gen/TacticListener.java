@@ -1,4 +1,4 @@
-// Generated from /Users/mathiashindsgaul/Documents/4.Semester/ParserAndLexer/Antlr-MIK/Tactic.g4 by ANTLR 4.7.2
+// Generated from E:/SourceTree/ParserAndLexer/Antlr-MIK\Tactic.g4 by ANTLR 4.7.2
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -37,6 +37,16 @@ public interface TacticListener extends ParseTreeListener {
 	 */
 	void exitExpr(Tactic.ExprContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link Tactic#dcl}.
+	 * @param ctx the parse tree
+	 */
+	void enterDcl(Tactic.DclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Tactic#dcl}.
+	 * @param ctx the parse tree
+	 */
+	void exitDcl(Tactic.DclContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link Tactic#exprNEs}.
 	 * @param ctx the parse tree
 	 */
@@ -56,6 +66,26 @@ public interface TacticListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitInteger(Tactic.IntegerContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Tactic#floatVal}.
+	 * @param ctx the parse tree
+	 */
+	void enterFloatVal(Tactic.FloatValContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Tactic#floatVal}.
+	 * @param ctx the parse tree
+	 */
+	void exitFloatVal(Tactic.FloatValContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Tactic#number}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumber(Tactic.NumberContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Tactic#number}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumber(Tactic.NumberContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link Tactic#word}.
 	 * @param ctx the parse tree
@@ -97,6 +127,46 @@ public interface TacticListener extends ParseTreeListener {
 	 */
 	void exitValue(Tactic.ValueContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link Tactic#vec}.
+	 * @param ctx the parse tree
+	 */
+	void enterVec(Tactic.VecContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Tactic#vec}.
+	 * @param ctx the parse tree
+	 */
+	void exitVec(Tactic.VecContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Tactic#function}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunction(Tactic.FunctionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Tactic#function}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunction(Tactic.FunctionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Tactic#functionDef}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionDef(Tactic.FunctionDefContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Tactic#functionDef}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionDef(Tactic.FunctionDefContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Tactic#functionBlock}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionBlock(Tactic.FunctionBlockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Tactic#functionBlock}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionBlock(Tactic.FunctionBlockContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link Tactic#dotStmt}.
 	 * @param ctx the parse tree
 	 */
@@ -106,6 +176,16 @@ public interface TacticListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDotStmt(Tactic.DotStmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Tactic#dotAssignment}.
+	 * @param ctx the parse tree
+	 */
+	void enterDotAssignment(Tactic.DotAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Tactic#dotAssignment}.
+	 * @param ctx the parse tree
+	 */
+	void exitDotAssignment(Tactic.DotAssignmentContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link Tactic#boardDcl}.
 	 * @param ctx the parse tree
@@ -127,6 +207,26 @@ public interface TacticListener extends ParseTreeListener {
 	 */
 	void exitIntDcl(Tactic.IntDclContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link Tactic#floatDcl}.
+	 * @param ctx the parse tree
+	 */
+	void enterFloatDcl(Tactic.FloatDclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Tactic#floatDcl}.
+	 * @param ctx the parse tree
+	 */
+	void exitFloatDcl(Tactic.FloatDclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Tactic#vecDcl}.
+	 * @param ctx the parse tree
+	 */
+	void enterVecDcl(Tactic.VecDclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Tactic#vecDcl}.
+	 * @param ctx the parse tree
+	 */
+	void exitVecDcl(Tactic.VecDclContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link Tactic#boolDcl}.
 	 * @param ctx the parse tree
 	 */
@@ -136,6 +236,66 @@ public interface TacticListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBoolDcl(Tactic.BoolDclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Tactic#stringDcl}.
+	 * @param ctx the parse tree
+	 */
+	void enterStringDcl(Tactic.StringDclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Tactic#stringDcl}.
+	 * @param ctx the parse tree
+	 */
+	void exitStringDcl(Tactic.StringDclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Tactic#gpDcl}.
+	 * @param ctx the parse tree
+	 */
+	void enterGpDcl(Tactic.GpDclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Tactic#gpDcl}.
+	 * @param ctx the parse tree
+	 */
+	void exitGpDcl(Tactic.GpDclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Tactic#arrayDcl}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayDcl(Tactic.ArrayDclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Tactic#arrayDcl}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayDcl(Tactic.ArrayDclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Tactic#type}.
+	 * @param ctx the parse tree
+	 */
+	void enterType(Tactic.TypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Tactic#type}.
+	 * @param ctx the parse tree
+	 */
+	void exitType(Tactic.TypeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Tactic#arrayExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayExpr(Tactic.ArrayExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Tactic#arrayExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayExpr(Tactic.ArrayExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Tactic#arrayAssign}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayAssign(Tactic.ArrayAssignContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Tactic#arrayAssign}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayAssign(Tactic.ArrayAssignContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link Tactic#arithExpr}.
 	 * @param ctx the parse tree
@@ -196,36 +356,6 @@ public interface TacticListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitModExpr(Tactic.ModExprContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link Tactic#buildInClass}.
-	 * @param ctx the parse tree
-	 */
-	void enterBuildInClass(Tactic.BuildInClassContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link Tactic#buildInClass}.
-	 * @param ctx the parse tree
-	 */
-	void exitBuildInClass(Tactic.BuildInClassContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link Tactic#instantiation}.
-	 * @param ctx the parse tree
-	 */
-	void enterInstantiation(Tactic.InstantiationContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link Tactic#instantiation}.
-	 * @param ctx the parse tree
-	 */
-	void exitInstantiation(Tactic.InstantiationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link Tactic#type}.
-	 * @param ctx the parse tree
-	 */
-	void enterType(Tactic.TypeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link Tactic#type}.
-	 * @param ctx the parse tree
-	 */
-	void exitType(Tactic.TypeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link Tactic#arguments}.
 	 * @param ctx the parse tree

@@ -1,4 +1,4 @@
-// Generated from /Users/mathiashindsgaul/Documents/4.Semester/ParserAndLexer/Antlr-MIK/Tactic.g4 by ANTLR 4.7.2
+// Generated from E:/SourceTree/ParserAndLexer/Antlr-MIK\Tactic.g4 by ANTLR 4.7.2
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -28,6 +28,12 @@ public interface TacticVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpr(Tactic.ExprContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link Tactic#dcl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDcl(Tactic.DclContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link Tactic#exprNEs}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -39,6 +45,18 @@ public interface TacticVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitInteger(Tactic.IntegerContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Tactic#floatVal}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFloatVal(Tactic.FloatValContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Tactic#number}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNumber(Tactic.NumberContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link Tactic#word}.
 	 * @param ctx the parse tree
@@ -64,11 +82,41 @@ public interface TacticVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitValue(Tactic.ValueContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link Tactic#vec}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVec(Tactic.VecContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Tactic#function}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunction(Tactic.FunctionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Tactic#functionDef}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionDef(Tactic.FunctionDefContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Tactic#functionBlock}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionBlock(Tactic.FunctionBlockContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link Tactic#dotStmt}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitDotStmt(Tactic.DotStmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Tactic#dotAssignment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDotAssignment(Tactic.DotAssignmentContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link Tactic#boardDcl}.
 	 * @param ctx the parse tree
@@ -82,11 +130,59 @@ public interface TacticVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIntDcl(Tactic.IntDclContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link Tactic#floatDcl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFloatDcl(Tactic.FloatDclContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Tactic#vecDcl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVecDcl(Tactic.VecDclContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link Tactic#boolDcl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitBoolDcl(Tactic.BoolDclContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Tactic#stringDcl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStringDcl(Tactic.StringDclContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Tactic#gpDcl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGpDcl(Tactic.GpDclContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Tactic#arrayDcl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayDcl(Tactic.ArrayDclContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Tactic#type}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitType(Tactic.TypeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Tactic#arrayExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayExpr(Tactic.ArrayExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Tactic#arrayAssign}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayAssign(Tactic.ArrayAssignContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link Tactic#arithExpr}.
 	 * @param ctx the parse tree
@@ -123,24 +219,6 @@ public interface TacticVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitModExpr(Tactic.ModExprContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link Tactic#buildInClass}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBuildInClass(Tactic.BuildInClassContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link Tactic#instantiation}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInstantiation(Tactic.InstantiationContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link Tactic#type}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitType(Tactic.TypeContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link Tactic#arguments}.
 	 * @param ctx the parse tree
