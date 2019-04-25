@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
 
+package gen;
+
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class TacParser extends Parser {
 	static { RuntimeMetaData.checkVersion("4.7.2", RuntimeMetaData.VERSION); }

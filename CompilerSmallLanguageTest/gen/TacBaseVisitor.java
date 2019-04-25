@@ -1,6 +1,8 @@
 // Generated from E:/SourceTree/ParserAndLexer/CompilerSmallLanguageTest\Tac.g4 by ANTLR 4.7.2
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
+package gen;
+
 /**
  * This class provides an empty implementation of {@link TacVisitor},
  * which can be extended to create a visitor which only needs to handle a subset

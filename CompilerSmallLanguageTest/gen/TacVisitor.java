@@ -1,6 +1,8 @@
 // Generated from E:/SourceTree/ParserAndLexer/CompilerSmallLanguageTest\Tac.g4 by ANTLR 4.7.2
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
+package gen;
+
 /**
  * This interface defines a complete generic visitor for a parse tree produced
  * by {@link TacParser}.
