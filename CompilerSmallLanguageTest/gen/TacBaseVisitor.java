@@ -1,7 +1,7 @@
 // Generated from E:/SourceTree/ParserAndLexer/CompilerSmallLanguageTest\Tac.g4 by ANTLR 4.7.2
-import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
-
 package gen;
+
+import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
  * This class provides an empty implementation of {@link TacVisitor},
