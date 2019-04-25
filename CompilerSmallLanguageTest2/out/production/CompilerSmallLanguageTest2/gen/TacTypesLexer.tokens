@@ -1,0 +1,13 @@
+ASSIGN=1
+DIGIT=2
+LETTER=3
+ENDSTNT=4
+PRINT=5
+INT=6
+FLOAT=7
+WS=8
+'='=1
+';'=4
+'print'=5
+'int'=6
+'float'=7
