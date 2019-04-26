@@ -30,7 +30,7 @@ RETURN      :       'return';
 
 // Literals
 DIGIT           : ('0'..'9') ;
-LETTER          : [a-z] | [A-Z] ;
+LETTER          : [a-z] | [A-Z] | [_] ;
 WORD            : LETTER LETTER* ;
 NUMBER          : DIGIT+;
 ASSIGN          : '='  ;
