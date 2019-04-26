@@ -15,7 +15,6 @@ public class BasicParsingTests {
         Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
     }
 
-    @Test
     public void testTest(){
 
         //CharStream input = new ANTLRFileStream("FILENAME");
@@ -34,8 +33,13 @@ public class BasicParsingTests {
     }
 
     @Test
-    public void testTest2(){
+    public void testTest1(){
         lexer = new TacticLexer(new ANTLRInputStream("int i = 5;"));
+    }
+
+    @Test
+    public void testTest2(){
+        lexer = new TacticLexer(new ANTLRInputStream(""));
     }
 
     //Board -----------------------------------------------------------------------------------------------------------------
@@ -372,22 +376,22 @@ public class BasicParsingTests {
     // Conditionals -----------------------------------------------------------------------------------------------------------------
     @Test
     public void conditionals_if01() {
-        lexer = new TacticLexer(new ANTLRInputStream("if(){}"));
+        lexer = new TacticLexer(new ANTLRInputStream("if(true){}"));
     }
 
     @Test
     public void conditionals_if02() {
-        lexer = new TacticLexer(new ANTLRInputStream("if(){}else if(){}else{}"));
+        lexer = new TacticLexer(new ANTLRInputStream("if(true){}else if(true){}else{}"));
     }
 
     @Test
     public void conditionals_if03() {
-        lexer = new TacticLexer(new ANTLRInputStream("if(){}else{}"));
+        lexer = new TacticLexer(new ANTLRInputStream("if(true){}else{}"));
     }
 
     @Test
     public void conditionals_if04() {
-        lexer = new TacticLexer(new ANTLRInputStream("if(){}else if(){}else if(){}else if(){}else if(){}else if(){}else{}"));
+        lexer = new TacticLexer(new ANTLRInputStream("if(false){}else if(true){}else if(false){}else if(true){}else if(true){}else if(false){}else{}"));
     }
 
     @Test
