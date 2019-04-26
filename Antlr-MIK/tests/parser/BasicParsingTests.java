@@ -79,6 +79,11 @@ public class BasicParsingTests {
     //Build-in types -----------------------------------------------------------------------------------------------------------------
 
     @Test
+    public void buildInType_int00() {
+        lexer = new TacticLexer(new ANTLRInputStream("intTest1 = 2;"));
+    }
+
+    @Test
     public void buildInType_int01() {
         lexer = new TacticLexer(new ANTLRInputStream("int intTest1 = 2;"));
     }
@@ -126,6 +131,11 @@ public class BasicParsingTests {
     @Test
     public void buildInType_int10() {
         lexer = new TacticLexer(new ANTLRInputStream("temp_bool = 1 == 1;"));
+    }
+
+    @Test
+    public void buildInType_float00() {
+        lexer = new TacticLexer(new ANTLRInputStream("float_test1 = 2.4;"));
     }
 
     @Test
@@ -179,6 +189,11 @@ public class BasicParsingTests {
     }
 
     @Test
+    public void buildInType_bool00() {
+        lexer = new TacticLexer(new ANTLRInputStream("bool_test1 = true;"));
+    }
+
+    @Test
     public void buildInType_bool01() {
         lexer = new TacticLexer(new ANTLRInputStream("bool bool_test1 = true;"));
     }
@@ -209,6 +224,11 @@ public class BasicParsingTests {
     }
 
     @Test
+    public void buildInType_string00() {
+        lexer = new TacticLexer(new ANTLRInputStream("string_test1 = \"\";"));
+    }
+
+    @Test
     public void buildInType_string01() {
         lexer = new TacticLexer(new ANTLRInputStream("string string_test1 = \"\";"));
     }
@@ -221,6 +241,11 @@ public class BasicParsingTests {
     @Test
     public void buildInType_string03() {
         lexer = new TacticLexer(new ANTLRInputStream("bool_temp = \"qwerty\" == \"qwerty\";"));
+    }
+
+    @Test
+    public void buildInType_vector00() {
+        lexer = new TacticLexer(new ANTLRInputStream("vector_test1 = (1, 2);"));
     }
 
     @Test
@@ -358,6 +383,11 @@ public class BasicParsingTests {
     @Test
     public void conditionals_if03() {
         lexer = new TacticLexer(new ANTLRInputStream("if(){}else{}"));
+    }
+
+    @Test
+    public void conditionals_if04() {
+        lexer = new TacticLexer(new ANTLRInputStream("if(){}else if(){}else if(){}else if(){}else if(){}else if(){}else{}"));
     }
 
     @Test
