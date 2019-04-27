@@ -17,7 +17,7 @@
 
     <!-- Modules(Aggregation) -->
     <modules>
-        <module></module>
+        <module>../antlr4-master</module>
     </modules>
 
     <!-- Dependencies -->
