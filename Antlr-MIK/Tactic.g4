@@ -18,7 +18,7 @@ identifier      : word DIGIT* NUMBER*;
 value           : identifier | number | bool | string ;
 vec             : LPAREN number SEPERATOR number (SEPERATOR number)? RPAREN;
 
-function        : identifier LPAREN arguments RPAREN;
+function        : identifier LPAREN arguments? RPAREN;
 functionDef     : (type | VOID) identifier LPAREN ((type | VOID) identifier (SEPERATOR (type | VOID) identifier)*)? RPAREN functionBlock;
 functionBlock   : LCURLY exprs (RETURN (value | identifier | vec) ENDSTNT)? RCURLY | LCURLY (RETURN (value | identifier | vec) ENDSTNT)? RCURLY ;
 
