@@ -33,16 +33,27 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
         </plugins>
+
+
     </build>
 
     <!-- Modules(Aggregation) -->
     <modules>
-        <module>../antlr4-master</module>
         <module>../antlr4-master/runtime/Java</module>
+        <!--<module>../antlr4-master</module>-->
+        <!--<module>../javac-master</module> -->
     </modules>
 
-    <!-- Dependencies -->
+<!-- Dependencies -->
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -59,7 +70,6 @@
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
             <version>4.7.3-SNAPSHOT</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
@@ -95,3 +105,4 @@
 
 
 </project>
+
