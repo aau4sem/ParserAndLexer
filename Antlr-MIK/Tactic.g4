@@ -52,7 +52,7 @@ divExpr : (identifier | number) DIVISION (identifier | number) ;
 mulExpr : (identifier | number) MULTIPLY (identifier | number) ;
 modExpr : (identifier | number) MODULO (identifier | number) ;
 
-arguments       : identifier | arguments SEPERATOR arguments | string | value ;
+arguments       : identifier | arguments SEPERATOR arguments | string | value | vec ;
 
 //Control structures
 condStmt        : ifStmt | ifStmt elseifStmt* elseStmt? ;
