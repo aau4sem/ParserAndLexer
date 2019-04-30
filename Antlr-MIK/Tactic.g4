@@ -10,7 +10,7 @@ dcl     : boardDcl | intDcl | boolDcl | arrayDcl | stringDcl | gpDcl | floatDcl 
 exprNEs : exprNEs exprNEs | condStmt | loopStmt ; //expr that does not need to be ended with ';'
 
 integer         : NUMBER | DIGIT ;
-floatVal           : (NUMBER | DIGIT) DOT (NUMBER | DIGIT);
+floatVal        : (NUMBER | DIGIT) DOT (NUMBER | DIGIT);
 number          : integer | floatVal ;
 word            : WORD | LETTER ;
 string          : STRING_MARK word STRING_MARK ;
