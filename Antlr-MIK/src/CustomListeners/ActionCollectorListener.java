@@ -5,11 +5,13 @@ import gen.TacticBaseListener;
 import model.Utils.Argument;
 import model.Utils.ArgumentGatherer;
 import model.Utils.TypeCheckerHelper;
+import model.Utils.buildInFunction.BuildInFuctionMove;
 import model.Utils.buildInFunction.BuildInFunction;
 import model.Utils.buildInFunction.BuildInFunctionChange;
 import model.Utils.buildInFunction.BuildInFunctionWait;
 import model.dataTypes.GamePiece;
 import model.dataTypes.Number;
+import model.dataTypes.Vector;
 import model.variables.VariableContainer2;
 
 import java.util.ArrayList;
@@ -45,28 +47,16 @@ public class ActionCollectorListener extends TacticBaseListener {
 
             //INITIAL TYPE CHECKING --------------------------------------------
             //TODO Can the user declare a GP in the function call?
-            if(arguments.get(0).getType() != Argument.ArguemntType.IDENTIFIER){
-                System.out.println("The first argument of the Change-action call is not of type identifier.");
-                throw new IllegalArgumentException();
-            }
+            typeCheckArgument(arguments.get(0), 1, "Change", Argument.ArguemntType.IDENTIFIER);
 
             //TODO When grammar is changed: Then this will be a unique category
-            if(arguments.get(1).getType() != Argument.ArguemntType.STRING){
-                System.out.println("The second argument of the Change-action call is not of type string.");
-                throw new IllegalArgumentException();
-            }
+            typeCheckArgument(arguments.get(1), 2, "Change", Argument.ArguemntType.STRING);
 
             //TODO When grammar is changed: Then this will be a unique category
-            if(arguments.get(2).getType() != Argument.ArguemntType.STRING){
-                System.out.println("The third argument of the Change-action call is not of type string.");
-                throw new IllegalArgumentException();
-            }
+            typeCheckArgument(arguments.get(2), 3, "Change", Argument.ArguemntType.STRING);
 
-            if(arguments.get(3).getType() != Argument.ArguemntType.IDENTIFIER &&
-                    arguments.get(3).getType() != Argument.ArguemntType.NUMBER){
-                System.out.println("The fourth argument of the Change-action call is not of type identifier or number.");
-                throw new IllegalArgumentException();
-            }
+            typeCheckArgument(arguments.get(3), 4, "Change",
+                    Argument.ArguemntType.IDENTIFIER, Argument.ArguemntType.NUMBER);
 
             //VALUE EVALUATION --------------------------------------------
             //FIRST ARGUMENT
@@ -83,21 +73,7 @@ public class ActionCollectorListener extends TacticBaseListener {
             String thirdArg = arguments.get(2).getValue();
 
             //FOURTH ARGUMENT
-            Number variableFourthArgNum = null;
-
-            if(arguments.get(3).getType() == Argument.ArguemntType.IDENTIFIER){
-
-                //Get value from identifier and try to parse
-                VariableContainer2 variableConFourthArg = variableCollectorListener.getValueFromIdentifier(arguments.get(3).getValue());
-                variableFourthArgNum = TypeCheckerHelper.parseNumber(variableConFourthArg.getValue());
-
-            }else { //It is of type NUMBER
-                variableFourthArgNum = TypeCheckerHelper.parseNumber(arguments.get(3).getValue());
-            }
-
-            //Did it parse?
-            if(variableFourthArgNum == null)
-                throw new IllegalArgumentException(); //Value was not an integer or float
+            Number variableFourthArgNum = evalIdentifierOrNumberArgument(arguments.get(1));
 
             //Collect the function
             actionFunctions.add(new BuildInFunctionChange(variableFirstArg, secondArg, thirdArg, variableFourthArgNum));
@@ -111,24 +87,30 @@ public class ActionCollectorListener extends TacticBaseListener {
             }
 
             //TODO Can the user declare a GP in the function call?
-            if(arguments.get(0).getType() != Argument.ArguemntType.IDENTIFIER){
-                System.out.println("The first argument of the Move-action call is not of type identifier.");
-                throw new IllegalArgumentException();
-            }
+            typeCheckArgument(arguments.get(0), 1, "Move", Argument.ArguemntType.IDENTIFIER);
 
-            if(arguments.get(1).getType() != Argument.ArguemntType.VECTOR){
-                System.out.println("The second argument of the Move-action call is not of type vector.");
-                throw new IllegalArgumentException();
-            }
+            typeCheckArgument(arguments.get(1), 2, "Move", Argument.ArguemntType.VECTOR);
 
-            if(arguments.get(2).getType() != Argument.ArguemntType.IDENTIFIER &&
-                    arguments.get(2).getType() != Argument.ArguemntType.NUMBER){
-                System.out.println("The third argument of the Move-action call is not of type identifier or number.");
-                throw new IllegalArgumentException();
-            }
+            typeCheckArgument(arguments.get(2), 3, "Move",
+                    Argument.ArguemntType.IDENTIFIER, Argument.ArguemntType.NUMBER);
 
             //TODO: Futher type checking
-            //TODO: Collect
+            //VALUE EVALUATION --------------------------------------------
+            //FIRST ARGUMENT
+            VariableContainer2 variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
+            GamePiece variableFirstArg = TypeCheckerHelper.parseGamePiece(variableConFirstArg.getValue());
+
+            if(variableFirstArg == null)
+                throw new IllegalArgumentException(); //The parsed variable was not a GP
+
+            //SECOND ARGUMENT
+            Vector variableSecondArgVec = TypeCheckerHelper.parseVector(arguments.get(1).getValue());
+
+            //THIRD ARGUMENT
+            Number variableThirdArgNum = evalIdentifierOrNumberArgument(arguments.get(2));
+
+            //Collect the function
+            actionFunctions.add(new BuildInFuctionMove(variableFirstArg, variableSecondArgVec, variableThirdArgNum));
 
         }else if(identifier.compareTo("Wait") == 0){
 
@@ -141,16 +123,10 @@ public class ActionCollectorListener extends TacticBaseListener {
 
             //INITIAL TYPE CHECKING --------------------------------------------
             //TODO Can the user declare a GP in the function call?
-            if(arguments.get(0).getType() != Argument.ArguemntType.IDENTIFIER){
-                System.out.println("The first argument of the Wait-action call is not of type identifier.");
-                throw new IllegalArgumentException();
-            }
+            typeCheckArgument(arguments.get(0), 1, "Wait", Argument.ArguemntType.IDENTIFIER);
 
-            if(arguments.get(1).getType() != Argument.ArguemntType.IDENTIFIER &&
-                    arguments.get(1).getType() != Argument.ArguemntType.NUMBER){
-                System.out.println("The second argument of the Wait-action call is not of type identifier or number.");
-                throw new IllegalArgumentException();
-            }
+            typeCheckArgument(arguments.get(1), 2, "Wait",
+                    Argument.ArguemntType.IDENTIFIER, Argument.ArguemntType.NUMBER);
 
             //VALUE EVALUATION --------------------------------------------
             //FIRST ARGUMENT
@@ -161,28 +137,69 @@ public class ActionCollectorListener extends TacticBaseListener {
                 throw new IllegalArgumentException(); //The parsed variable was not a GP
 
             //SECOND ARGUMENT
-            Number variableSecondArgNum = null;
-
-            if(arguments.get(1).getType() == Argument.ArguemntType.IDENTIFIER){
-
-                //Get value from identifier and try to parse
-                VariableContainer2 variableConSecondArg = variableCollectorListener.getValueFromIdentifier(arguments.get(1).getValue());
-                variableSecondArgNum = TypeCheckerHelper.parseNumber(variableConSecondArg.getValue());
-
-            }else { //It is of type NUMBER
-                variableSecondArgNum = TypeCheckerHelper.parseNumber(arguments.get(1).getValue());
-            }
-
-            //Did it parse?
-            if(variableSecondArgNum == null)
-                throw new IllegalArgumentException(); //Value was not an integer or float
+            Number variableSecondArgNum = evalIdentifierOrNumberArgument(arguments.get(1));
 
             //Collect the function
             actionFunctions.add(new BuildInFunctionWait(variableFirstArg, variableSecondArgNum));
-
         }
     }
 
+    /** This method is used to check if an argument is of the right type.
+     * Will throw an exception if this is not the case.
+     * @param arg the Argument to be checked.
+     * @param argumentNumber which number the argument is, in the function call.
+     * @param functionName the name of the function which argument is being checked.
+     * @param allowedType a given amount of ArgumentTypes which the given Argument has to be ONE of. */
+    private void typeCheckArgument(Argument arg, int argumentNumber, String functionName, Argument.ArguemntType ... allowedType){
+
+        boolean isArgumentRequestedType = false;
+
+        for( Argument.ArguemntType type : allowedType)
+            if(type == arg.getType())
+                isArgumentRequestedType = true;
+
+        if(!isArgumentRequestedType){
+
+            //Generate error message
+            StringBuilder sb = new StringBuilder();
+            sb.append("The ").append(argumentNumber).append(" argument of the ")
+                    .append(functionName).append("-action call is not of the type ");
+
+            if(allowedType.length == 1)
+                sb.append(allowedType[0].toString());
+            else{
+                for(int i = 0; i < allowedType.length -1; i++)
+                    sb.append(allowedType[i].toString()).append(" or ");
+
+                sb.append(allowedType[allowedType.length-1]).append(".");
+            }
+
+            System.out.println(sb.toString());
+            throw new IllegalArgumentException();
+        }
+    }
+
+    /** This method is used if an Argument can be either an IDENTIFIER or NUMBER.
+     * @return a Number containing the parsed value. */
+    private Number evalIdentifierOrNumberArgument(Argument arg){
+        Number num = null;
+
+        if(arg.getType() == Argument.ArguemntType.IDENTIFIER){
+
+            //Get value from identifier and try to parse
+            VariableContainer2 varCon = variableCollectorListener.getValueFromIdentifier(arg.getValue());
+            num = TypeCheckerHelper.parseNumber(varCon.getValue());
+
+        }else { //It is of type NUMBER
+            num = TypeCheckerHelper.parseNumber(arg.getValue());
+        }
+
+        //Did it parse?
+        if(num == null)
+            throw new IllegalArgumentException(); //Value was not an integer or float
+
+        return num;
+    }
 
     /** //TODO: Improvement: This method could be moved to a more general parserListener.
      * This method is used to combine all arguments in a function call.
