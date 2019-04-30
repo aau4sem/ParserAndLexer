@@ -7,8 +7,8 @@ import model.dataTypes.Vector;
 public class BuildInFunctionChange implements BuildInFunction {
 
     private GamePiece gp;
-    private String secondArgument; //TODO rename
-    private String thridArguemnt; //TODO rename
+    private String secondArgument; //TODO rename //TODO Handle when implemented in the grammar
+    private String thridArguemnt; //TODO rename //TODO Handle when implemented in the grammar
     private Number time;
 
     public BuildInFunctionChange(GamePiece gp, String secondArgument, String thridArguemnt, Number time) {
