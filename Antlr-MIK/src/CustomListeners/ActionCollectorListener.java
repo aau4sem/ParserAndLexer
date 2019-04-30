@@ -18,8 +18,6 @@ import java.util.ArrayList;
  * This call will also perform type checking for the parameters of the action function calls.*/
 public class ActionCollectorListener extends TacticBaseListener {
 
-    //public enum GamePieceProppertiesEnum { POSITION, SIZE, COLOR} //TODO This will properly be handled differently in the future.
-
     private ArrayList<BuildInFunction> actionFunctions = new ArrayList<>();
 
     private VariableCollectorListener variableCollectorListener;
