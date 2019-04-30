@@ -7,6 +7,7 @@ import model.Utils.ArgumentGatherer;
 import model.Utils.TypeCheckerHelper;
 import model.Utils.buildInFunction.BuildInFunction;
 import model.Utils.buildInFunction.BuildInFunctionChange;
+import model.Utils.buildInFunction.BuildInFunctionWait;
 import model.dataTypes.GamePiece;
 import model.dataTypes.Number;
 import model.variables.VariableContainer2;
@@ -138,21 +139,46 @@ public class ActionCollectorListener extends TacticBaseListener {
                 throw new IllegalArgumentException();
             }
 
-            //Type checking-------
-
+            //INITIAL TYPE CHECKING --------------------------------------------
             //TODO Can the user declare a GP in the function call?
             if(arguments.get(0).getType() != Argument.ArguemntType.IDENTIFIER){
                 System.out.println("The first argument of the Wait-action call is not of type identifier.");
                 throw new IllegalArgumentException();
             }
 
-            if(arguments.get(1).getType() != Argument.ArguemntType.NUMBER){
-                System.out.println("The second argument of the Wait-action call is not of type number.");
+            if(arguments.get(1).getType() != Argument.ArguemntType.IDENTIFIER &&
+                    arguments.get(1).getType() != Argument.ArguemntType.NUMBER){
+                System.out.println("The second argument of the Wait-action call is not of type identifier or number.");
                 throw new IllegalArgumentException();
             }
 
-            //TODO: Futher type checking
-            //TODO: Collect
+            //VALUE EVALUATION --------------------------------------------
+            //FIRST ARGUMENT
+            VariableContainer2 variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
+            GamePiece variableFirstArg = TypeCheckerHelper.parseGamePiece(variableConFirstArg.getValue());
+
+            if(variableFirstArg == null)
+                throw new IllegalArgumentException(); //The parsed variable was not a GP
+
+            //SECOND ARGUMENT
+            Number variableSecondArgNum = null;
+
+            if(arguments.get(1).getType() == Argument.ArguemntType.IDENTIFIER){
+
+                //Get value from identifier and try to parse
+                VariableContainer2 variableConSecondArg = variableCollectorListener.getValueFromIdentifier(arguments.get(1).getValue());
+                variableSecondArgNum = TypeCheckerHelper.parseNumber(variableConSecondArg.getValue());
+
+            }else { //It is of type NUMBER
+                variableSecondArgNum = TypeCheckerHelper.parseNumber(arguments.get(1).getValue());
+            }
+
+            //Did it parse?
+            if(variableSecondArgNum == null)
+                throw new IllegalArgumentException(); //Value was not an integer or float
+
+            //Collect the function
+            actionFunctions.add(new BuildInFunctionWait(variableFirstArg, variableSecondArgNum));
 
         }
     }
