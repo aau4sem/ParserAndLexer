@@ -1,5 +1,10 @@
 lexer grammar TacticLexer;
 
+//Used for when generating:
+@lexer::header {
+    package gen;
+}
+
 //Keywords
 LPAREN      :       '(';
 RPAREN      :       ')';
