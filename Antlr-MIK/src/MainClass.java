@@ -23,6 +23,7 @@ public class MainClass {
             */
 
             //Main example with multiple listeners/parses:
+            /*
             CharStream input = new ANTLRFileStream("compilerInput.tac"); //Load an input to compile
             TacticLexer lexer = new TacticLexer(input);  //Create the lexer
             Tactic parser = new Tactic(new CommonTokenStream(lexer)); //Create the parser
@@ -35,10 +36,9 @@ public class MainClass {
             parser.reset();
             TestListener listener2 = new TestListener();
             parser.addParseListener(listener2);
-            parser.prog();
+            parser.prog();*/
 
             //Example using new VariableCollectorListener
-            /*
             CharStream input = new ANTLRFileStream("compilerInput.tac"); //Load an input to compile
             TacticLexer lexer = new TacticLexer(input);  //Create the lexer
             Tactic parser = new Tactic(new CommonTokenStream(lexer)); //Create the parser
