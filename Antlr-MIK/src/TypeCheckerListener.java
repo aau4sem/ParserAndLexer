@@ -1,3 +1,4 @@
+import gen.*;
 import model.Utils.Argument;
 import model.Utils.TypeCheckerHelper;
 import model.Utils.buildInFunction.BuildInFuctionMove;
@@ -96,6 +97,7 @@ public class TypeCheckerListener extends TacticBaseListener {
         this.currentScope = VariableScopeData.Scope.MAIN_SCOPE;
     }
 
+    /*
     @Override
     public void exitFunction(Tactic.FunctionContext ctx) {
 
@@ -173,12 +175,12 @@ public class TypeCheckerListener extends TacticBaseListener {
             System.out.println("function arguements: " + arguments.size());
         }
 
-    }
+    }*/
 
     /** Used to get a list of all arguments given the top most argument. (Used when handling function calls)
      * @param ctx the top most argument of a function call.
      * @return a complete list of arguments from the given node. */
-    private ArrayList<Argument> getArguments(Tactic.FunctionContext ctx){
+    /*private ArrayList<Argument> getArguments(Tactic.FunctionContext ctx){
 
         if(ctx.arguments() == null) //Is there any arguments?
             return new ArrayList<>();
@@ -190,7 +192,7 @@ public class TypeCheckerListener extends TacticBaseListener {
             arguments.add(new Argument())
 
             return arguments;
-        }*/
+        } //COMMENT SLUT
 
 
         //List<ParseTree> tree = ctx.children;
@@ -200,10 +202,10 @@ public class TypeCheckerListener extends TacticBaseListener {
         System.out.println("THIS: " + ctx.arguments().arguments().size());
 
         return getArgumentsHelper(ctx.arguments().arguments(), new ArrayList<>());
-    }
+    }*/
 
     /** See description of method that calls this.*/
-    private ArrayList<Argument> getArgumentsHelper(List<Tactic.ArgumentsContext> ctx, ArrayList<Argument> collectedArguments){
+    /*private ArrayList<Argument> getArgumentsHelper(List<Tactic.ArgumentsContext> ctx, ArrayList<Argument> collectedArguments){
 
         //if(ctx.isEmpty()){
          //   return collectedArguments;
@@ -255,7 +257,7 @@ public class TypeCheckerListener extends TacticBaseListener {
         }
 
         return collectedArguments;
-    }
+    }*/
 
 
 }
