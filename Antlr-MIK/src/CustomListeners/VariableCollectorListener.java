@@ -1,5 +1,7 @@
 package CustomListeners;
 
+import model.Utils.ArithmeticResultHolder;
+import model.Utils.TypeCheckerHelper;
 import model.variables.VariableContainer2;
 import model.variables.VariableScopeData2;
 
@@ -61,13 +63,32 @@ public class VariableCollectorListener extends TacticBaseListener {
         }
     }
 
+    /** Used to get variables from the current scope.
+     * @param identifier the identifier of the requested variable.
+     * @return the value of the variable. */
+    private VariableContainer2 getValueFromScope(String identifier){
+
+        VariableContainer2 varCon = null;
+
+        //Get VariableContainer from the current scope
+        if(currentScope == VariableScopeData2.ScopeType.MAIN_SCOPE)
+            varCon = mainScope.getVariable(identifier);
+        else
+            varCon = functionScope.getVariable(identifier);
+
+        return varCon;
+    }
+
+    private String getValueFromArithmeticExpr(String todoTemp){
+        return null;
+    }
 
     // PUBLIC METHODS ------------------------------------------------
 
     /** Used to get a value from an identifier. */
-    /*public T getValueFromIdentifier(){
-        //TODO
-    }*/
+    public String getValueFromIdentifier(String identifier){
+        return null; //TODO
+    }
 
     /** Used to get a type from an identifier. */
     public VariableType getTypeFromIdentifier(){
@@ -97,21 +118,48 @@ public class VariableCollectorListener extends TacticBaseListener {
     // Declarations:
     @Override
     public void exitIntDcl(Tactic.IntDclContext ctx) {
-        String identifier = ctx.identifier().toString();
-        //number | arithExpr | identifier
 
+        String identifier = ctx.children.get(1).getText();
         String value;
 
         //Is there an assign?
         if(ctx.ASSIGN() != null){ //format: INTEGER identifier ASSIGN (number | arithExpr | identifier)
-            if(ctx.number() != null)
+            if(ctx.number() != null){ //format: INTEGER identifier ASSIGN number
                 value = ctx.number().getText();
-            else if(ctx.identifier().get(1) != null)
-                value = ctx.identifier().get(1).getText();
-            //else if(ctx.arithExpr().) //TODO
-            else
-                throw new IllegalArgumentException();
 
+                Integer parsedValue = TypeCheckerHelper.parseInt(value);
+
+                if(parsedValue == null){
+                    System.out.println("The value being assigned is not of type integer.");
+                    throw new IllegalArgumentException();
+                }
+            }
+            else if(ctx.identifier().get(1) != null){ //format: INTEGER identifier ASSIGN identifier
+                String otherIdentifier = ctx.identifier().get(1).getText(); //Get the second identifier from the statement
+                VariableContainer2 varCon = getValueFromScope(otherIdentifier);
+
+                //value = getValueFromScope(otherIdentifier); //Get the value from
+
+                if(varCon == null){
+                    System.out.println("The requested variable has not been declared.");
+                    throw new IllegalArgumentException();
+                }
+
+                if(varCon.getValue() == null){
+                    System.out.println("The requested variable has been declared but not assigned.");
+                    throw new IllegalArgumentException();
+                }
+
+                if(varCon.getType() != VariableType.INT){
+                    System.out.println("The requested variable does exist, is assigned, but is not an integer."); //TODO This should never happen: we check the value before assigning it.
+                    throw new IllegalArgumentException();
+                }
+
+                value = TypeCheckerHelper.parseInt(varCon.getValue()).toString();
+            } else if(ctx.arithExpr() != null) //format: INTEGER identifier ASSIGN arithExpr
+                value = getValueFromArithmeticExpr(""); //TODO TEMP
+            else
+                throw new IllegalArgumentException(); //If this is thrown, the grammar has been changed.
 
         }else{ //format: INTEGER identifier
             value = null;
@@ -148,5 +196,12 @@ public class VariableCollectorListener extends TacticBaseListener {
     @Override
     public void exitArrayDcl(Tactic.ArrayDclContext ctx) {
         super.exitArrayDcl(ctx);
+    }
+
+    // Arithmetic expression evaluation
+
+    @Override
+    public void exitArithExpr(Tactic.ArithExprContext ctx) {
+        ctx.addChild(new ArithmeticResultHolder());
     }
 }
