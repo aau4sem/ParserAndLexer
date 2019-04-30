@@ -94,7 +94,6 @@ public class ActionCollectorListener extends TacticBaseListener {
             typeCheckArgument(arguments.get(2), 3, "Move",
                     Argument.ArguemntType.IDENTIFIER, Argument.ArguemntType.NUMBER);
 
-            //TODO: Futher type checking
             //VALUE EVALUATION --------------------------------------------
             //FIRST ARGUMENT
             VariableContainer2 variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
