@@ -1,10 +1,13 @@
 import CustomListeners.ActionCollectorListener;
+import CustomListeners.BoardListener;
 import CustomListeners.VariableCollectorListener;
+import model.Utils.buildInFunction.BuildInFunction;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,10 +48,18 @@ public class MainClass {
             Tactic parser = new Tactic(new CommonTokenStream(lexer)); //Create the parser
             VariableCollectorListener variableListener = new VariableCollectorListener();
             ActionCollectorListener actionCollectorListener = new ActionCollectorListener(variableListener);
+            BoardListener boardListener = new BoardListener();
             parser.addParseListener(variableListener); //Attach listener. This is done to run code on steps of the tree walk
             parser.addParseListener(actionCollectorListener);
+            parser.addParseListener(boardListener);
             parser.prog(); // Run the parser*/
 
+            //Get list of collected action-calls
+            ArrayList<BuildInFunction> actionCalls = new ArrayList<>(actionCollectorListener.getActionFunctions());
+            String[] boardPaths = boardListener.getBoardPaths();
+            System.out.println("TEST");
+            //TODO Get other needed data.
+            //TODO Create and run CodeGeneration.
 
 
             //https://stackoverflow.com/questions/15050137/once-grammar-is-complete-whats-the-best-way-to-walk-an-antlr-v4-tree
