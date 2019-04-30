@@ -2,6 +2,7 @@ package model.Utils.buildInFunction;
 
 import model.dataTypes.GamePiece;
 import model.dataTypes.Vector;
+import model.dataTypes.Number;
 
 public class BuildInFuctionMove implements BuildInFunction {
 
