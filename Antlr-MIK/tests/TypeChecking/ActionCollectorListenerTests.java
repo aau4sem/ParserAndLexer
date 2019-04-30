@@ -1,7 +1,7 @@
 package TypeChecking;
 
-import CustomListeners.ActionCollectorListener;
-import CustomListeners.VariableCollectorListener;
+import customListeners.ActionCollectorListener;
+import customListeners.VariableCollectorListener;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.*;

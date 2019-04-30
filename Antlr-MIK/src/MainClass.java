@@ -1,7 +1,7 @@
-import CustomListeners.ActionCollectorListener;
-import CustomListeners.BoardListener;
-import CustomListeners.VariableCollectorListener;
-import model.Utils.buildInFunction.BuildInFunction;
+import customListeners.ActionCollectorListener;
+import customListeners.BoardListener;
+import customListeners.VariableCollectorListener;
+import model.utils.buildInFunction.BuildInFunction;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;

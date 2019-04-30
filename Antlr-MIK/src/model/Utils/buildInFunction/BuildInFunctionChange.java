@@ -1,8 +1,7 @@
-package model.Utils.buildInFunction;
+package model.utils.buildInFunction;
 
 import model.dataTypes.GamePiece;
 import model.dataTypes.Number;
-import model.dataTypes.Vector;
 
 public class BuildInFunctionChange implements BuildInFunction {
 

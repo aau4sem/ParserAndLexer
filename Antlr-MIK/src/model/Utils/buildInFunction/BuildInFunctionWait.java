@@ -1,4 +1,4 @@
-package model.Utils.buildInFunction;
+package model.utils.buildInFunction;
 
 import model.dataTypes.GamePiece;
 import model.dataTypes.Number;

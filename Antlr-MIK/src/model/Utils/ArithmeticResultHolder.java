@@ -1,4 +1,4 @@
-package model.Utils;
+package model.utils;
 
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RuleContext;

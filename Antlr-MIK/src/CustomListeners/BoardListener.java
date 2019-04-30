@@ -1,8 +1,8 @@
-package CustomListeners;
+package customListeners;
 
 import gen.Tactic;
 import gen.TacticBaseListener;
-import model.Utils.TypeCheckerHelper;
+import model.utils.TypeCheckerHelper;
 
 /** This class has the responsibility of keeping all data regarding the board. */
 public class BoardListener extends TacticBaseListener {

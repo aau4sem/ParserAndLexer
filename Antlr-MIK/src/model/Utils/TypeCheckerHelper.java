@@ -1,4 +1,4 @@
-package model.Utils;
+package model.utils;
 
 import model.dataTypes.GamePiece;
 import model.dataTypes.Vector;

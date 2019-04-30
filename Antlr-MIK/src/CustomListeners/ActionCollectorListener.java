@@ -1,14 +1,14 @@
-package CustomListeners;
+package customListeners;
 
 import gen.Tactic;
 import gen.TacticBaseListener;
-import model.Utils.Argument;
-import model.Utils.ArgumentGatherer;
-import model.Utils.TypeCheckerHelper;
-import model.Utils.buildInFunction.BuildInFuctionMove;
-import model.Utils.buildInFunction.BuildInFunction;
-import model.Utils.buildInFunction.BuildInFunctionChange;
-import model.Utils.buildInFunction.BuildInFunctionWait;
+import model.utils.Argument;
+import model.utils.ArgumentGatherer;
+import model.utils.TypeCheckerHelper;
+import model.utils.buildInFunction.BuildInFuctionMove;
+import model.utils.buildInFunction.BuildInFunction;
+import model.utils.buildInFunction.BuildInFunctionChange;
+import model.utils.buildInFunction.BuildInFunctionWait;
 import model.dataTypes.GamePiece;
 import model.dataTypes.Number;
 import model.dataTypes.Vector;

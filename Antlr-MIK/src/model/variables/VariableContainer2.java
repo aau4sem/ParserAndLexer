@@ -1,6 +1,6 @@
 package model.variables;
 
-import CustomListeners.VariableCollectorListener.VariableType;
+import customListeners.VariableCollectorListener.VariableType;
 
 /** This class is used to store variables. */
 public class VariableContainer2 {

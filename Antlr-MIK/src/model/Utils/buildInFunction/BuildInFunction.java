@@ -1,4 +1,4 @@
-package model.Utils.buildInFunction;
+package model.utils.buildInFunction;
 
 public interface BuildInFunction {
 }

@@ -1,7 +1,7 @@
-package CustomListeners;
+package customListeners;
 
-import model.Utils.ArithmeticResultHolder;
-import model.Utils.TypeCheckerHelper;
+import model.utils.ArithmeticResultHolder;
+import model.utils.TypeCheckerHelper;
 import model.variables.VariableContainer2;
 import model.variables.VariableScopeData2;
 

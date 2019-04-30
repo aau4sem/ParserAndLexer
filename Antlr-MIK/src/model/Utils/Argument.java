@@ -1,4 +1,4 @@
-package model.Utils;
+package model.utils;
 
 public class Argument {
 

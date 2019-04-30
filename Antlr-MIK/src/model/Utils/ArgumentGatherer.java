@@ -1,4 +1,4 @@
-package model.Utils;
+package model.utils;
 
 import gen.Tactic;
 import org.antlr.v4.runtime.Parser;
