@@ -2,7 +2,7 @@ package model.Utils;
 
 public class Argument {
 
-    public enum ArguemntType { IDENTIFIER, STRING, VALUE, VECTOR}
+    public enum ArguemntType { IDENTIFIER, NUMBER, BOOL, STRING, VECTOR}
 
     private String value;
     private ArguemntType type;

@@ -2,10 +2,25 @@ package model.Utils;
 
 import model.dataTypes.GamePiece;
 import model.dataTypes.Vector;
+import model.dataTypes.Number;
 
 public class TypeCheckerHelper {
 
-    /** Returns an Integer if the given string is an integer, else null. */
+    /** @return a Number if the given string is an integer, else null. */
+    public static Number parseNumber(String val){
+
+        Integer intVal = parseInt(val);
+        Float floatVal = parseFloat(val);
+
+        if(intVal != null)
+            return new Number(intVal);
+        else if(floatVal != null)
+            return new Number(floatVal);
+        else
+            return null;
+    }
+
+    /** @return an Integer if the given string is an integer, else null. */
     public static Integer parseInt(String val){
 
         try {
@@ -15,12 +30,21 @@ public class TypeCheckerHelper {
         }
     }
 
+    /** @return a Float if the given string is a float, else null. */
+    public static Float parseFloat(String val){
+        try {
+            return Float.parseFloat(val);
+        }catch (NumberFormatException e){
+            return null;
+        }
+    }
+
     /** Returns a GamePiece if the given string is an string, else null. */
     public static GamePiece parseGamePiece(String val){
 
-        //TODO
+        //TODO, Handle GP. The value in VariableContainer2 should reflect a GP.
 
-        return null;
+        return new GamePiece();
     }
 
     /** Returns a Vector if the given string is an vector, else null. */

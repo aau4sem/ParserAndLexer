@@ -1,3 +1,4 @@
+import CustomListeners.ActionCollectorListener;
 import CustomListeners.VariableCollectorListener;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CharStream;
@@ -42,9 +43,10 @@ public class MainClass {
             CharStream input = new ANTLRFileStream("compilerInput.tac"); //Load an input to compile
             TacticLexer lexer = new TacticLexer(input);  //Create the lexer
             Tactic parser = new Tactic(new CommonTokenStream(lexer)); //Create the parser
-            //Listener 1
             VariableCollectorListener variableListener = new VariableCollectorListener();
+            ActionCollectorListener actionCollectorListener = new ActionCollectorListener(variableListener);
             parser.addParseListener(variableListener); //Attach listener. This is done to run code on steps of the tree walk
+            parser.addParseListener(actionCollectorListener);
             parser.prog(); // Run the parser*/
 
 

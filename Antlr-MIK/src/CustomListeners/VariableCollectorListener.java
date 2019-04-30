@@ -86,8 +86,8 @@ public class VariableCollectorListener extends TacticBaseListener {
     // PUBLIC METHODS ------------------------------------------------
 
     /** Used to get a value from an identifier. */
-    public String getValueFromIdentifier(String identifier){
-        return null; //TODO
+    public VariableContainer2 getValueFromIdentifier(String identifier){
+        return getValueFromScope(identifier);
     }
 
     /** Used to get a type from an identifier. */
@@ -188,9 +188,11 @@ public class VariableCollectorListener extends TacticBaseListener {
         super.exitStringDcl(ctx);
     }
 
+    /** The GP declaration can only have one format: GamePiece identifier.*/
     @Override
     public void exitGpDcl(Tactic.GpDclContext ctx) {
-        super.exitGpDcl(ctx);
+        String identifier = ctx.identifier().getText();
+        addVariableToScope(VariableType.GAMEPIECE, new VariableContainer2(identifier, null, VariableType.GAMEPIECE));
     }
 
     @Override

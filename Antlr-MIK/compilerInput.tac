@@ -1,3 +1,4 @@
-int i = 5;
+GamePiece x;
+int y = 5;
 
-int x = i + 5;
+Change(x, "", "testTwo", y);

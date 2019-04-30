@@ -1,16 +1,17 @@
 package model.Utils.buildInFunction;
 
 import model.dataTypes.GamePiece;
+import model.dataTypes.Number;
 import model.dataTypes.Vector;
 
-public class BuildInFunctionChange {
+public class BuildInFunctionChange implements BuildInFunction {
 
     private GamePiece gp;
     private String secondArgument; //TODO rename
     private String thridArguemnt; //TODO rename
-    private String time; //TODO How to handle??
+    private Number time; //TODO How to handle??
 
-    public BuildInFunctionChange(GamePiece gp, String secondArgument, String thridArguemnt, String time) {
+    public BuildInFunctionChange(GamePiece gp, String secondArgument, String thridArguemnt, Number time) {
         this.gp = gp;
         this.secondArgument = secondArgument;
         this.thridArguemnt = thridArguemnt;
@@ -29,7 +30,7 @@ public class BuildInFunctionChange {
         return thridArguemnt;
     }
 
-    public String getTime() {
+    public Number getTime() {
         return time;
     }
 }
