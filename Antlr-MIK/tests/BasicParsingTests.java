@@ -10,7 +10,7 @@ public class BasicParsingTests {
     @After
     public void afterEveryTest(){
         parser = new Tactic(new CommonTokenStream(lexer));
-        parser.start();
+        parser.prog();
         Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
     }
 
@@ -23,7 +23,7 @@ public class BasicParsingTests {
         TacticLexer lexer = new TacticLexer(new ANTLRInputStream("int i = 5;"));
         Tactic parser = new Tactic(new CommonTokenStream(lexer));
         //parser.addParseListener(); //Not needed for syntax checking
-        parser.start();
+        parser.prog();
 
         Assert.assertEquals(0, parser.getNumberOfSyntaxErrors()); //Better solution exists: https://stackoverflow.com/questions/21661899/get-all-antlr-parsing-errors-as-list-of-string
 
@@ -208,12 +208,12 @@ public class BasicParsingTests {
 
     @Test
     public void buildInType_bool03() {
-        lexer = new TacticLexer(new ANTLRInputStream("bool bool_or_test = true + false;"));
+        lexer = new TacticLexer(new ANTLRInputStream("bool bool_or_test = true || false;"));
     }
 
     @Test
     public void buildInType_bool04() {
-        lexer = new TacticLexer(new ANTLRInputStream("bool bool_and_test = false * false;"));
+        lexer = new TacticLexer(new ANTLRInputStream("bool bool_and_test = false && false;"));
     }
 
     @Test
@@ -282,11 +282,6 @@ public class BasicParsingTests {
     }
 
     @Test
-    public void buildInType_vector07() {
-        lexer = new TacticLexer(new ANTLRInputStream("vector vector_mul_test = (4, 3, 5) * (4, 3, 5);"));
-    }
-
-    @Test
     public void buildInType_GamePieces01() {
         lexer = new TacticLexer(new ANTLRInputStream("gp_test1.postion = (1,2);"));
     }
@@ -318,7 +313,7 @@ public class BasicParsingTests {
 
     @Test
     public void buildInType_List01() {
-        lexer = new TacticLexer(new ANTLRInputStream("List[int] list_int_test;"));
+        lexer = new TacticLexer(new ANTLRInputStream("int[5] list_int_test;"));
     }
 
     @Test
@@ -375,48 +370,48 @@ public class BasicParsingTests {
     // Conditionals -----------------------------------------------------------------------------------------------------------------
     @Test
     public void conditionals_if01() {
-        lexer = new TacticLexer(new ANTLRInputStream("if(true){}"));
+        lexer = new TacticLexer(new ANTLRInputStream("if(true){};"));
     }
 
     @Test
     public void conditionals_if02() {
-        lexer = new TacticLexer(new ANTLRInputStream("if(true){}else if(true){}else{}"));
+        lexer = new TacticLexer(new ANTLRInputStream("if(true){}elseif(true){}else{};"));
     }
 
     @Test
     public void conditionals_if03() {
-        lexer = new TacticLexer(new ANTLRInputStream("if(true){}else{}"));
+        lexer = new TacticLexer(new ANTLRInputStream("if(true){}else{};"));
     }
 
     @Test
     public void conditionals_if04() {
-        lexer = new TacticLexer(new ANTLRInputStream("if(false){}else if(true){}else if(false){}else if(true){}else if(true){}else if(false){}else{}"));
+        lexer = new TacticLexer(new ANTLRInputStream("if(false){}elseif(true){}elseif(false){}elseif(true){}elseif(true){}elseif(false){}else{};"));
     }
 
     @Test
     public void conditionals_while01() {
-        lexer = new TacticLexer(new ANTLRInputStream("while(true){}"));
+        lexer = new TacticLexer(new ANTLRInputStream("while(true){};"));
     }
 
     // Functions -----------------------------------------------------------------------------------------------------------------
     @Test
     public void function_declaration01() {
-        lexer = new TacticLexer(new ANTLRInputStream("void function_test1(){}"));
+        lexer = new TacticLexer(new ANTLRInputStream("void function_test1(){};"));
     }
 
     @Test
     public void function_declaration02() {
-        lexer = new TacticLexer(new ANTLRInputStream("int function_test1(){ return 2;}"));
+        lexer = new TacticLexer(new ANTLRInputStream("int function_test1(){ return 2;};"));
     }
 
     @Test
     public void function_declaration03() {
-        lexer = new TacticLexer(new ANTLRInputStream("float function_test1(){ return 2.0;}"));
+        lexer = new TacticLexer(new ANTLRInputStream("float function_test1(){ return 2.0;};"));
     }
 
     @Test
     public void function_declaration04() {
-        lexer = new TacticLexer(new ANTLRInputStream("bool function_test1(){ return true;}"));
+        lexer = new TacticLexer(new ANTLRInputStream("bool function_test1(){ return true;};"));
     }
 
     @Test

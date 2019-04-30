@@ -23,29 +23,29 @@ public class MainClass {
             */
 
             //Main example with multiple listeners/parses:
-            /*
             CharStream input = new ANTLRFileStream("compilerInput.tac"); //Load an input to compile
             TacticLexer lexer = new TacticLexer(input);  //Create the lexer
             Tactic parser = new Tactic(new CommonTokenStream(lexer)); //Create the parser
             //Listener 1
             TypeCheckerListener listener1 = new TypeCheckerListener();
             parser.addParseListener(listener1); //Attach listener. This is done to run code on steps of the tree walk
-            parser.start(); // Run the parser
+            parser.prog(); // Run the parser
             parser.removeParseListener(listener1);
             //Listener 2
             parser.reset();
             TestListener listener2 = new TestListener();
             parser.addParseListener(listener2);
-            parser.start();*/
+            parser.prog();
 
             //Example using new VariableCollectorListener
+            /*
             CharStream input = new ANTLRFileStream("compilerInput.tac"); //Load an input to compile
             TacticLexer lexer = new TacticLexer(input);  //Create the lexer
             Tactic parser = new Tactic(new CommonTokenStream(lexer)); //Create the parser
             //Listener 1
             VariableCollectorListener variableListener = new VariableCollectorListener();
             parser.addParseListener(variableListener); //Attach listener. This is done to run code on steps of the tree walk
-            parser.start(); // Run the parser
+            parser.prog(); // Run the parser*/
 
 
 
