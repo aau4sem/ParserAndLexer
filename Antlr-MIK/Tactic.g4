@@ -2,45 +2,40 @@ parser grammar Tactic;
 
 options { tokenVocab = TacticLexer; }
 
-start   : exprs ;
-exprs   : expr ENDSTNT | exprs exprs | exprNEs ;
-        //| exprs exprNEs | exprNEs exprs | exprNEs; //Handle statements without ;
-expr    : arithExpr | identifier | dotStmt | dotAssignment | dcl | arrayAssign | function | functionDef;
-dcl     : boardDcl | intDcl | boolDcl | arrayDcl | stringDcl | gpDcl | floatDcl | vecDcl;
-exprNEs : exprNEs exprNEs | condStmt | loopStmt ; //expr that does not need to be ended with ';'
+prog    : ((stmt | functionDef) ENDSTNT)* ;
+stmt    : arithExpr | identifier | dotStmt | dotAssignment | dcl | arrayAssign | functionCall | condStmt | whileStmt | assignment;
+dcl     : intDcl | boolDcl | arrayDcl | stringDcl | gpDcl | floatDcl | vecDcl;
 
 integer         : NUMBER | DIGIT ;
 floatVal        : (NUMBER | DIGIT) DOT (NUMBER | DIGIT);
 number          : integer | floatVal ;
 word            : WORD | LETTER ;
-string          : STRING_MARK word STRING_MARK ;
+string          : STRING_MARK word? STRING_MARK ;
 identifier      : word DIGIT* NUMBER*;
-value           : identifier | number | bool | string ;
+value           : identifier | number | bool | string | vec;
 vec             : LPAREN number SEPERATOR number (SEPERATOR number)? RPAREN;
+type            : INTEGER | FLOAT | VEC | BOOL | STRING | GAMEPIECE ;
 
-function        : identifier LPAREN arguments? RPAREN;
+functionCall    : identifier LPAREN arguments? RPAREN;
 functionDef     : (type | VOID) identifier LPAREN ((type | VOID) identifier (SEPERATOR (type | VOID) identifier)*)? RPAREN functionBlock;
-functionBlock   : LCURLY exprs (RETURN (value | identifier | vec) ENDSTNT)? RCURLY | LCURLY (RETURN (value | identifier | vec) ENDSTNT)? RCURLY ;
+functionBlock   : LCURLY stmt* (RETURN (value | identifier | vec) ENDSTNT)? RCURLY | LCURLY (RETURN (value | identifier | vec) ENDSTNT)? RCURLY;
 
-dotStmt         : (identifier | BOARD) ((DOT identifier(LBRACKET number? RBRACKET)*) | DOT function )*;
-dotAssignment   : dotStmt ASSIGN (value | vec);
+dotStmt         : identifier ((DOT identifier(LBRACKET number? RBRACKET)*))+ ;
+dotAssignment   : dotStmt ASSIGN value;
 
 //Declaration
-boardDcl    : BOARD LPAREN string RPAREN ; // This current says that the board only takes a string. Early type checking ok?
 intDcl      : INTEGER identifier ASSIGN (number | arithExpr | identifier) | INTEGER identifier;
 floatDcl    : FLOAT identifier (ASSIGN (number | identifier | arithExpr))?;
 vecDcl      : VEC identifier (ASSIGN vec)?;
 boolDcl     : BOOL identifier ASSIGN boolStmt | BOOL identifier;
-stringDcl   : STRING identifier ASSIGN (string | identifier);
+stringDcl   : STRING identifier (ASSIGN (string | identifier))?;
 gpDcl       : GAMEPIECE identifier;
-arrayDcl    : (INTEGER | GAMEPIECE | BOOL) LBRACKET RBRACKET identifier (ASSIGN LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY)?;
+arrayDcl    : type LBRACKET integer RBRACKET identifier (ASSIGN LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY)?;
 
-
-type        : BOARD | INTEGER | FLOAT | VEC | BOOL | STRING | GAMEPIECE ;
-
+assignment  : identifier (LBRACKET integer RBRACKET)? ASSIGN (value | arithExpr | functionCall | identifier | boolStmt);
 
 //Datastructure operations
-arrayExpr   : boolStmt | arithExpr | gpDcl | identifier | dotStmt | arrayDcl | value ;
+arrayExpr   : boolStmt | arithExpr | gpDcl | identifier | dotStmt | arrayDcl | value | vec ;
 arrayAssign : identifier (((LBRACKET number RBRACKET)+ ASSIGN arrayExpr) | (LBRACKET RBRACKET ASSIGN LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY));
 
 
@@ -52,18 +47,16 @@ divExpr : (identifier | number) DIVISION (identifier | number) ;
 mulExpr : (identifier | number) MULTIPLY (identifier | number) ;
 modExpr : (identifier | number) MODULO (identifier | number) ;
 
-arguments       : identifier | arguments SEPERATOR arguments | string | value | vec ;
+arguments       : value | arguments SEPERATOR arguments ;
 
 //Control structures
 condStmt        : ifStmt | ifStmt elseifStmt* elseStmt? ;
-block           : LCURLY exprs RCURLY | LCURLY RCURLY ;
+block           : LCURLY stmt* RCURLY | LCURLY RCURLY ;
 ifStmt          : IF LPAREN (boolStmt) RPAREN  block ;
 elseifStmt      : ELSEIF LPAREN (boolStmt) RPAREN  block ;
 elseStmt        : ELSE block ;
 
-loopStmt        : forStmt | whileStmt ;
-forStmt         : FOR LPAREN (identifier | intDcl)? ENDSTNT boolStmt ENDSTNT ((identifier INCREMENT)| (identifier ASSIGN arithExpr))? RPAREN block ;
-whileStmt       : WHILE LPAREN boolStmt RPAREN BLOCK ;
+whileStmt       : WHILE LPAREN boolStmt RPAREN block ;
 
 //Conditional
 boolStmt        : (value boolOperaters value | bool | identifier);

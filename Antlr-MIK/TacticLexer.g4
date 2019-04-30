@@ -8,10 +8,9 @@ RCURLY      :       '}';
 LBRACKET    :       '[';
 RBRACKET    :       ']';
 GAMEPIECE   :       'GamePiece';
-BOARD       :       'Board';
 INTEGER     :       'int';
 FLOAT       :       'float';
-VEC         :       'vec';
+VEC         :       'vector';
 BOOL        :       'bool';
 SEPERATOR   :       ',';
 IF          :       'if';
@@ -19,7 +18,6 @@ ELSEIF      :       'elseif';
 ELSE        :       'else';
 TRUE        :       'true';
 FALSE       :       'false';
-FOR         :       'for' ;
 WHILE       :       'while';
 DOT         :       '.';
 STRING_MARK :       '"';
@@ -48,7 +46,6 @@ BOOL_LESS       : '<' ;
 BOOL_GREATER            : '>' ;
 BOOL_LESS_OR_EQUAL      : '<=' ;
 BOOL_GREATER_OR_EQUAL   : '>=' ;
-INCREMENT               : '++' ;
 
 // Whitespace and comments
 WS              : [ \t\r\n]+    -> channel(HIDDEN);
