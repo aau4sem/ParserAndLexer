@@ -15,7 +15,6 @@ public class TypeCheckerListener extends TacticBaseListener {
 
     /** Collection for variables (Should contain information of scope (function or not), collection for functions. */
 
-
     private VariableScopeData mainScope = new VariableScopeData(VariableScopeData.Scope.MAIN_SCOPE);
     private ArrayList<VariableScopeData> functionScopes = new ArrayList<>(); //Contains all scopes for declared functions
     private ArrayList<BuildInFunction> buildInFunctionCalls = new ArrayList<>();
