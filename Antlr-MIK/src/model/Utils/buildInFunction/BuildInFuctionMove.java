@@ -7,12 +7,12 @@ public class BuildInFuctionMove implements BuildInFunction {
 
     private GamePiece gp;
     private Vector vector;
-    private Integer integer;
+    private Number time;
 
-    public BuildInFuctionMove(GamePiece gp, Vector vector, Integer integer) {
+    public BuildInFuctionMove(GamePiece gp, Vector vector, Number time) {
         this.gp = gp;
         this.vector = vector;
-        this.integer = integer;
+        this.time = time;
     }
 
     public GamePiece getGp() {
@@ -23,7 +23,7 @@ public class BuildInFuctionMove implements BuildInFunction {
         return vector;
     }
 
-    public Integer getInteger() {
-        return integer;
+    public Number getTime() {
+        return time;
     }
 }

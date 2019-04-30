@@ -9,7 +9,7 @@ public class BuildInFunctionChange implements BuildInFunction {
     private GamePiece gp;
     private String secondArgument; //TODO rename
     private String thridArguemnt; //TODO rename
-    private Number time; //TODO How to handle??
+    private Number time;
 
     public BuildInFunctionChange(GamePiece gp, String secondArgument, String thridArguemnt, Number time) {
         this.gp = gp;
