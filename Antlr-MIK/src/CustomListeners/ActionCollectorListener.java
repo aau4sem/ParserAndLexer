@@ -234,4 +234,8 @@ public class ActionCollectorListener extends TacticBaseListener {
             ctx.addChild(mergedAg);
         }
     }
+
+    public ArrayList<BuildInFunction> getActionFunctions() {
+        return actionFunctions;
+    }
 }
