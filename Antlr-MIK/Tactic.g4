@@ -18,7 +18,7 @@ identifier      : word DIGIT* NUMBER*;
 value           : identifier | number | bool | string ;
 vec             : LPAREN number SEPERATOR number (SEPERATOR number)? RPAREN;
 
-function        : identifier LPAREN arguments RPAREN;
+function        : identifier LPAREN arguments? RPAREN;
 functionDef     : (type | VOID) identifier LPAREN ((type | VOID) identifier (SEPERATOR (type | VOID) identifier)*)? RPAREN functionBlock;
 functionBlock   : LCURLY exprs (RETURN (value | identifier | vec) ENDSTNT)? RCURLY | LCURLY (RETURN (value | identifier | vec) ENDSTNT)? RCURLY ;
 
@@ -52,7 +52,7 @@ divExpr : (identifier | number) DIVISION (identifier | number) ;
 mulExpr : (identifier | number) MULTIPLY (identifier | number) ;
 modExpr : (identifier | number) MODULO (identifier | number) ;
 
-arguments       : identifier | arguments SEPERATOR arguments | string | value ;
+arguments       : identifier | arguments SEPERATOR arguments | string | value | vec ;
 
 //Control structures
 condStmt        : ifStmt | ifStmt elseifStmt* elseStmt? ;
