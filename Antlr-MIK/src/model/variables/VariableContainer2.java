@@ -6,7 +6,7 @@ import CustomListeners.VariableCollectorListener.VariableType;
 public class VariableContainer2 {
 
     private String identifier;
-    private String value; //TODO Can it be saved like this?
+    private String value;
     private VariableType type;
 
     public VariableContainer2(String identifier, String value, VariableType type) {

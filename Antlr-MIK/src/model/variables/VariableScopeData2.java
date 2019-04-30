@@ -27,9 +27,10 @@ public class VariableScopeData2 {
         variables.put(varCon.getIdentifier(), varCon);
     }
 
-    /** Used to get a variable from this scope. */
+    /** Used to get a variable from this scope. Returns null
+     * if the quested variable does not exist.  */
     public VariableContainer2 getVariable(String identifier){
-        return variables.get(identifier); //TODO Does this return null if it is not found?
+        return variables.get(identifier);
     }
 
     public ScopeType getType() {
