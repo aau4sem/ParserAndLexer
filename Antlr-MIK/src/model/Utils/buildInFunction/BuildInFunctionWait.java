@@ -1,6 +1,7 @@
 package model.Utils.buildInFunction;
 
 import model.dataTypes.GamePiece;
+import model.dataTypes.Number;
 
 public class BuildInFunctionWait implements BuildInFunction {
 
