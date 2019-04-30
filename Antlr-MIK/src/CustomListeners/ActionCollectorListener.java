@@ -73,7 +73,7 @@ public class ActionCollectorListener extends TacticBaseListener {
             String thirdArg = arguments.get(2).getValue();
 
             //FOURTH ARGUMENT
-            Number variableFourthArgNum = evalIdentifierOrNumberArgument(arguments.get(1));
+            Number variableFourthArgNum = evalIdentifierOrNumberArgument(arguments.get(3));
 
             //Collect the function
             actionFunctions.add(new BuildInFunctionChange(variableFirstArg, secondArg, thirdArg, variableFourthArgNum));
