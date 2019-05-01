@@ -318,27 +318,27 @@ public class BasicParsingTests {
 
     @Test
     public void buildInType_List02() {
-        lexer = new TacticLexer(new ANTLRInputStream("List[float] list_float_test;"));
+        lexer = new TacticLexer(new ANTLRInputStream("float[1] array_float_test;"));
     }
 
     @Test
     public void buildInType_List03() {
-        lexer = new TacticLexer(new ANTLRInputStream("List[bool] list_bool_test;"));
+        lexer = new TacticLexer(new ANTLRInputStream("bool[2] array_bool_test;"));
     }
 
     @Test
     public void buildInType_List04() {
-        lexer = new TacticLexer(new ANTLRInputStream("List[vector] list_vector_test;"));
+        lexer = new TacticLexer(new ANTLRInputStream("vector[3] array_vector_test;"));
     }
 
     @Test
     public void buildInType_List05() {
-        lexer = new TacticLexer(new ANTLRInputStream("List[GamePiece] list_gp_test;"));
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece[4] array_gp_test;"));
     }
 
     @Test
     public void buildInType_List06() {
-        lexer = new TacticLexer(new ANTLRInputStream("List[List[int]];"));
+        lexer = new TacticLexer(new ANTLRInputStream("int[4][4] array_2d_test;"));
     }
 
     @Test
