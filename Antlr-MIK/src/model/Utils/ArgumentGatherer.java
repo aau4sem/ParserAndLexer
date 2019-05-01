@@ -11,6 +11,8 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
 
+/** Used when collecting arguments of a function call.
+ * See uses for a more detailed explanation.*/
 public class ArgumentGatherer implements TerminalNode {
 
     private ArrayList<Tactic.ValueContext> arguments = new ArrayList<>();
@@ -31,23 +33,24 @@ public class ArgumentGatherer implements TerminalNode {
         return arguments.size();
     }
 
-    /** @return a list of Argument. This list is a lot easier to use and much more clean.*/
+    /** @return converts the ValueContext list to a list of Argument.
+     * The Argument list is much cleaner and easier to use. */
     public ArrayList<Argument> getConvertedArgumentsList(){
 
         ArrayList<Argument> convertedArguments = new ArrayList<>();
 
         for( Tactic.ValueContext vc : arguments){
-
             Argument arg = null;
 
-            if(vc.number() != null){
+            //Find the type of the argument
+            if(vc.number() != null){ //The argument is a number
                 arg = new Argument(vc.number().getText(), Argument.ArguemntType.NUMBER);
-            }else if(vc.identifier() != null){
+            }else if(vc.identifier() != null){ //The argument is an identifier
                 arg = new Argument(vc.identifier().getText(), Argument.ArguemntType.IDENTIFIER);
-            }else if(vc.string() != null){
+            }else if(vc.string() != null){ //The argument is a string
                 //The substring is taken to avoid saving the "" around the string
                 arg = new Argument(vc.string().getText().substring(1, vc.string().getText().length()-1), Argument.ArguemntType.STRING);
-            }else if(vc.vec() != null){
+            }else if(vc.vec() != null){ //The argument is a vector
                 arg = new Argument(vc.vec().getText(), Argument.ArguemntType.VECTOR);
             }else{
                 throw new IllegalArgumentException();
