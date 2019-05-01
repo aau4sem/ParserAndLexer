@@ -48,7 +48,7 @@ public class MainClass {
             String[] boardPaths = boardListener.getBoardPaths();
             //TODO Get other needed data.
             //TODO Create and run CodeGeneration.
-            CodeGenerator cg = new CodeGenerator(); //TODO Not final! Very much empty!
+            //CodeGenerator cg = new CodeGenerator(); //TODO Not final! Very much empty!
 
         } catch (IOException ex){
             Logger.getLogger(MainClass.class.getName()).log(Level.SEVERE, null, ex); //Reports if no file was found.
