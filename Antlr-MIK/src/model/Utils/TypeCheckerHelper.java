@@ -6,6 +6,20 @@ import model.dataTypes.Number;
 
 public class TypeCheckerHelper {
 
+    /** @return true if the given string is "true" and
+     * false if the given string is "false". Else returns null. */
+    public static Boolean parseBool(String val){
+
+        Boolean returnVal = null;
+
+        if(val.compareTo("true") == 0)
+            returnVal = true;
+        else if(val.compareTo("false") == 0)
+            returnVal = false;
+
+        return returnVal;
+    }
+
     /** @return a Number if the given string is an integer, else null. */
     public static Number parseNumber(String val){
 
