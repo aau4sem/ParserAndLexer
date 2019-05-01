@@ -1,4 +1,4 @@
-package TypeChecking;
+package typeChecking.listeners;
 
 import customListeners.ActionCollectorListener;
 import customListeners.VariableCollectorListener;

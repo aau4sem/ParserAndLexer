@@ -1,6 +1,5 @@
-package TypeChecking;
+package typeChecking.listeners;
 
-import customListeners.ActionCollectorListener;
 import customListeners.VariableCollectorListener;
 import model.dataTypes.GamePiece;
 import model.dataTypes.Vector;

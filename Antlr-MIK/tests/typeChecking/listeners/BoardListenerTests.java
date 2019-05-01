@@ -1,4 +1,4 @@
-package TypeChecking;
+package typeChecking.listeners;
 
 import customListeners.BoardListener;
 import org.antlr.v4.runtime.ANTLRInputStream;
