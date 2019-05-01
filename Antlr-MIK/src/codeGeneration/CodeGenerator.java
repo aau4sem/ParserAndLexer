@@ -2,6 +2,7 @@ package codeGeneration;
 
 import model.dataTypes.GamePiece;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class CodeGenerator {
@@ -11,6 +12,52 @@ public class CodeGenerator {
      * - Levels of the board
      * - Animations????*/
 
+    private ArrayList<GamePiece> gamePieces;
+    private ArrayList<String> gamePieceNames;
+    private ArrayList<String> boardPaths;
+
+    public CodeGenerator(ArrayList<GamePiece> gamePieces, ArrayList<String> boardPaths) {
+        this.gamePieces = gamePieces;
+        this.gamePieceNames = getAllGamePieceNames(gamePieces);
+        this.boardPaths = boardPaths;
+    }
+
+    public void generateAll(){
+
+        //index.html
+        generateLinesForIndexSelector(gamePieceNames);
+        generateLinesForIndexObjects(gamePieces);
+        generateLinesForIndexButtons(boardPaths.size());
+
+        //stylesheet.css
+        generateStringForStylesheetBoard(boardPaths.get(0));
+        generateStringsForStylesheetGamePieces(gamePieces);
+
+        //animations.js
+        generateStringForAnimationsAnimationList(gamePieces);
+        generateStringsForAnimationFunctions(gamePieces);
+
+
+    }
+
+    public void generateCompleteFolder(){
+
+        //index.html
+
+
+    }
+
+    //private Stream
+
+    /** @return all names of the given gamePieces. */
+    private ArrayList<String> getAllGamePieceNames(ArrayList<GamePiece> gamePieces){
+        ArrayList<String> gamePieceNames = new ArrayList<>();
+
+        for(GamePiece gp : gamePieces)
+            gamePieceNames.add(gp.getIdentifierName());
+
+        return gamePieceNames;
+    }
 
     //index.html generators ----------------------------------------
 
@@ -99,6 +146,55 @@ public class CodeGenerator {
             sb.append(".").append(gp.getIdentifierName()).append("{\n");
             //TODO more?
             sb.append("}\n");
+
+            generatedStrings.add(sb.toString());
+        }
+
+        return generatedStrings;
+    }
+
+    //animations.js generators ---------------------------------
+    /** @return a string for the animationsList of the animations.js file.
+     * @param gamePieces a list of all GamePieces. */
+    private String generateStringForAnimationsAnimationList(ArrayList<GamePiece> gamePieces){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("const animationsList = {\n");
+
+        for(int i = 0; i < gamePieces.size(); i++){
+            sb.append(gamePieces.get(i).getIdentifierName()).append(": ").append(gamePieces.get(i).getIdentifierName()).append("()");
+
+            if(i != gamePieces.size() -1)
+                sb.append(",\n");
+            else
+                sb.append("\n");
+        }
+
+        sb.append("}\n");
+
+        return sb.toString();
+    }
+
+    /** @return a string for the function part of the animations.js file.
+     * @param gamePieces a list of all GamePieces. */
+    private ArrayList<String> generateStringsForAnimationFunctions(ArrayList<GamePiece> gamePieces){
+
+        ArrayList<String> generatedStrings = new ArrayList<>();
+
+        for(GamePiece gp : gamePieces){
+            StringBuilder sb = new StringBuilder();
+
+            sb.append("function ").append(gp.getIdentifierName()).append("() {\n");
+            sb.append("return anime({\n");
+            sb.append("targets: ").append("'.").append(gp.getIdentifierName()).append("',\n"); //TODO Has to be changed?
+            sb.append("keyframes: [\n");
+            //TODO keyframes! Format: {left: 20, top: 500, duration: 1000},
+            sb.append("],\n");
+            sb.append("loop: false,\n");
+            sb.append("easing: 'linear',\n");
+            sb.append("autoplay: false\n");
+            sb.append("});\n");
+            sb.append("}");
 
             generatedStrings.add(sb.toString());
         }
