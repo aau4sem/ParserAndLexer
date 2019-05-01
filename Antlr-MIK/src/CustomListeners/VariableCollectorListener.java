@@ -191,8 +191,8 @@ public class VariableCollectorListener extends TacticBaseListener {
     /** The GP declaration can only have one format: GamePiece identifier.*/
     @Override
     public void exitGpDcl(Tactic.GpDclContext ctx) {
-        String identifier = ctx.identifier().getText();
-        addVariableToScope(VariableType.GAMEPIECE, new VariableContainer(identifier, identifier, VariableType.GAMEPIECE)); //TODO Maybe temp, maybe not: identifier as value.
+        String identifier = ctx.identifier(0).getText();
+        addVariableToScope(VariableType.GAMEPIECE, new VariableContainer(identifier, null, VariableType.GAMEPIECE));
     }
 
     @Override
