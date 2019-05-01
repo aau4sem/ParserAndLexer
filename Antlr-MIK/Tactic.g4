@@ -24,18 +24,18 @@ dotStmt         : identifier ((DOT identifier(LBRACKET number? RBRACKET)*))+ ;
 dotAssignment   : dotStmt ASSIGN value;
 
 //Declaration
-intDcl      : INTEGER identifier ASSIGN (number | arithExpr | identifier) | INTEGER identifier;
-floatDcl    : FLOAT identifier (ASSIGN (number | identifier | arithExpr))?;
-vecDcl      : VEC identifier (ASSIGN vec)?;
-boolDcl     : BOOL identifier ASSIGN boolStmt | BOOL identifier;
-stringDcl   : STRING identifier (ASSIGN (string | identifier))?;
-gpDcl       : GAMEPIECE identifier;
-arrayDcl    : type LBRACKET integer RBRACKET identifier (ASSIGN LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY)?;
+intDcl      : INTEGER identifier (ASSIGN (number | arithExpr | identifier | functionCall))?;
+floatDcl    : FLOAT identifier (ASSIGN (number | identifier | arithExpr | functionCall))?;
+vecDcl      : VEC identifier (ASSIGN (vec | vecExpr | functionCall | identifier))?;
+boolDcl     : BOOL identifier (ASSIGN (boolStmt | functionCall | identifier))?;
+stringDcl   : STRING identifier (ASSIGN (string | identifier | functionCall))?;
+gpDcl       : GAMEPIECE identifier (ASSIGN (identifier | functionCall))?;
+arrayDcl    : type (LBRACKET integer RBRACKET)+ identifier (ASSIGN (LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY) | (identifier))?;
 
-assignment  : identifier (LBRACKET integer RBRACKET)? ASSIGN (value | arithExpr | functionCall | identifier | boolStmt);
+assignment  : identifier (LBRACKET integer RBRACKET)* ASSIGN (value | arithExpr | functionCall | boolStmt | vecExpr | (identifier (LBRACKET integer RBRACKET)*) | dotStmt);
 
 //Datastructure operations
-arrayExpr   : boolStmt | arithExpr | gpDcl | identifier | dotStmt | arrayDcl | value | vec ;
+arrayExpr   : boolStmt | arithExpr | gpDcl | identifier | dotStmt | arrayDcl | value | vec | floatDcl | vecExpr ;
 arrayAssign : identifier (((LBRACKET number RBRACKET)+ ASSIGN arrayExpr) | (LBRACKET RBRACKET ASSIGN LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY));
 
 
@@ -46,6 +46,10 @@ subExpr : (identifier | number) SUBTRACTION (identifier | number) ;
 divExpr : (identifier | number) DIVISION (identifier | number) ;
 mulExpr : (identifier | number) MULTIPLY (identifier | number) ;
 modExpr : (identifier | number) MODULO (identifier | number) ;
+
+vecExpr    : (vecAdd | vecSub) ((ADDITION | SUBTRACTION) (identifier | vec))* ;
+vecAdd     : (identifier | vec) ADDITION (identifier | vec) ;
+vecSub     : (identifier | vec) SUBTRACTION (identifier | vec) ;
 
 arguments       : value | arguments SEPERATOR arguments ;
 
