@@ -56,7 +56,7 @@ public class TypeCheckerHelper {
     /** Returns a GamePiece if the given string is an string, else null. */
     public static GamePiece parseGamePiece(String val){
 
-        //TODO, Handle GP. The value in VariableContainer2 should reflect a GP.
+        //TODO, Handle GP. The value in VariableContainer should reflect a GP.
 
         return new GamePiece();
     }

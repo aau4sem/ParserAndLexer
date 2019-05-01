@@ -2,8 +2,8 @@ package customListeners;
 
 import model.utils.ArithmeticResultHolder;
 import model.utils.TypeCheckerHelper;
-import model.variables.VariableContainer2;
-import model.variables.VariableScopeData2;
+import model.variables.VariableContainer;
+import model.variables.VariableScopeData;
 
 import gen.*;
 
@@ -43,10 +43,10 @@ public class VariableCollectorListener extends TacticBaseListener {
     /** Things to remember during implementation:
      * - Entering / exiting a scope. */
 
-    private VariableScopeData2 mainScope = new VariableScopeData2(VariableScopeData2.ScopeType.MAIN_SCOPE);
-    private VariableScopeData2 functionScope = new VariableScopeData2(VariableScopeData2.ScopeType.FUNCTION_SCOPE);
+    private VariableScopeData mainScope = new VariableScopeData(VariableScopeData.ScopeType.MAIN_SCOPE);
+    private VariableScopeData functionScope = new VariableScopeData(VariableScopeData.ScopeType.FUNCTION_SCOPE);
 
-    private VariableScopeData2.ScopeType currentScope = VariableScopeData2.ScopeType.MAIN_SCOPE;
+    private VariableScopeData.ScopeType currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
 
     public enum VariableType { INT, FLOAT, VEC, BOOL, STRING, GAMEPIECE}
 
@@ -55,8 +55,8 @@ public class VariableCollectorListener extends TacticBaseListener {
     /** Used to add variables to the current scope.
      * @param type the type of the given variable.
      * @param varCon variable container, containing the value of the variable. */
-    private void addVariableToScope(VariableType type, VariableContainer2 varCon){
-        if(currentScope == VariableScopeData2.ScopeType.MAIN_SCOPE){
+    private void addVariableToScope(VariableType type, VariableContainer varCon){
+        if(currentScope == VariableScopeData.ScopeType.MAIN_SCOPE){
             mainScope.addVariable(varCon);
         }else{
             functionScope.addVariable(varCon);
@@ -66,12 +66,12 @@ public class VariableCollectorListener extends TacticBaseListener {
     /** Used to get variables from the current scope.
      * @param identifier the identifier of the requested variable.
      * @return the value of the variable. */
-    private VariableContainer2 getValueFromScope(String identifier){
+    private VariableContainer getValueFromScope(String identifier){
 
-        VariableContainer2 varCon = null;
+        VariableContainer varCon = null;
 
         //Get VariableContainer from the current scope
-        if(currentScope == VariableScopeData2.ScopeType.MAIN_SCOPE)
+        if(currentScope == VariableScopeData.ScopeType.MAIN_SCOPE)
             varCon = mainScope.getVariable(identifier);
         else
             varCon = functionScope.getVariable(identifier);
@@ -86,7 +86,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     // PUBLIC METHODS ------------------------------------------------
 
     /** Used to get a value from an identifier. */
-    public VariableContainer2 getValueFromIdentifier(String identifier){
+    public VariableContainer getValueFromIdentifier(String identifier){
         return getValueFromScope(identifier);
     }
 
@@ -103,16 +103,16 @@ public class VariableCollectorListener extends TacticBaseListener {
     /** When entering a function, the current scope is changed. */
     @Override
     public void enterFunctionDef(Tactic.FunctionDefContext ctx) {
-        this.currentScope = VariableScopeData2.ScopeType.FUNCTION_SCOPE;
+        this.currentScope = VariableScopeData.ScopeType.FUNCTION_SCOPE;
     }
 
     /** When exiting a function definition the scope is changed back to MAIN_SCOPE,
      * and the saved variables for the function scope is removed. */
     @Override
     public void exitFunctionDef(Tactic.FunctionDefContext ctx) {
-        this.currentScope = VariableScopeData2.ScopeType.MAIN_SCOPE;
+        this.currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
         //Reset the function scope
-        this.functionScope = new VariableScopeData2(VariableScopeData2.ScopeType.FUNCTION_SCOPE);
+        this.functionScope = new VariableScopeData(VariableScopeData.ScopeType.FUNCTION_SCOPE);
     }
 
     // Declarations:
@@ -136,7 +136,7 @@ public class VariableCollectorListener extends TacticBaseListener {
             }
             else if(ctx.identifier().get(1) != null){ //format: INTEGER identifier ASSIGN identifier
                 String otherIdentifier = ctx.identifier().get(1).getText(); //Get the second identifier from the statement
-                VariableContainer2 varCon = getValueFromScope(otherIdentifier);
+                VariableContainer varCon = getValueFromScope(otherIdentifier);
 
                 //value = getValueFromScope(otherIdentifier); //Get the value from
 
@@ -165,7 +165,7 @@ public class VariableCollectorListener extends TacticBaseListener {
             value = null;
         }
 
-        addVariableToScope(VariableType.INT, new VariableContainer2(identifier, value, VariableType.INT));
+        addVariableToScope(VariableType.INT, new VariableContainer(identifier, value, VariableType.INT));
     }
 
     @Override
@@ -192,7 +192,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     @Override
     public void exitGpDcl(Tactic.GpDclContext ctx) {
         String identifier = ctx.identifier().getText();
-        addVariableToScope(VariableType.GAMEPIECE, new VariableContainer2(identifier, null, VariableType.GAMEPIECE));
+        addVariableToScope(VariableType.GAMEPIECE, new VariableContainer(identifier, null, VariableType.GAMEPIECE));
     }
 
     @Override

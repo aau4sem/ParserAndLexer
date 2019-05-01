@@ -12,7 +12,7 @@ import model.utils.buildInFunction.BuildInFunctionWait;
 import model.dataTypes.GamePiece;
 import model.dataTypes.Number;
 import model.dataTypes.Vector;
-import model.variables.VariableContainer2;
+import model.variables.VariableContainer;
 
 import java.util.ArrayList;
 
@@ -60,7 +60,7 @@ public class ActionCollectorListener extends TacticBaseListener {
 
             //VALUE EVALUATION --------------------------------------------
             //FIRST ARGUMENT
-            VariableContainer2 variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
+            VariableContainer variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
             GamePiece variableFirstArg = TypeCheckerHelper.parseGamePiece(variableConFirstArg.getValue());
 
             if(variableFirstArg == null)
@@ -96,7 +96,7 @@ public class ActionCollectorListener extends TacticBaseListener {
 
             //VALUE EVALUATION --------------------------------------------
             //FIRST ARGUMENT
-            VariableContainer2 variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
+            VariableContainer variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
             GamePiece variableFirstArg = TypeCheckerHelper.parseGamePiece(variableConFirstArg.getValue());
 
             if(variableFirstArg == null)
@@ -129,7 +129,7 @@ public class ActionCollectorListener extends TacticBaseListener {
 
             //VALUE EVALUATION --------------------------------------------
             //FIRST ARGUMENT
-            VariableContainer2 variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
+            VariableContainer variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
             GamePiece variableFirstArg = TypeCheckerHelper.parseGamePiece(variableConFirstArg.getValue());
 
             if(variableFirstArg == null)
@@ -186,7 +186,7 @@ public class ActionCollectorListener extends TacticBaseListener {
         if(arg.getType() == Argument.ArguemntType.IDENTIFIER){
 
             //Get value from identifier and try to parse
-            VariableContainer2 varCon = variableCollectorListener.getValueFromIdentifier(arg.getValue());
+            VariableContainer varCon = variableCollectorListener.getValueFromIdentifier(arg.getValue());
             num = TypeCheckerHelper.parseNumber(varCon.getValue());
 
         }else { //It is of type NUMBER

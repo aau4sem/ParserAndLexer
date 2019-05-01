@@ -4,7 +4,7 @@ import customListeners.VariableCollectorListener;
 import model.dataTypes.GamePiece;
 import model.dataTypes.Vector;
 import model.utils.TypeCheckerHelper;
-import model.variables.VariableContainer2;
+import model.variables.VariableContainer;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.*;
@@ -24,7 +24,7 @@ public class VariableCollectorListenerTests {
         parser.prog();
         Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
 
-        VariableContainer2 varCon = vcl.getValueFromIdentifier("x");
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
         //Was it saved?
         Assert.assertNotNull(varCon);
@@ -45,7 +45,7 @@ public class VariableCollectorListenerTests {
         parser.prog();
         Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
 
-        VariableContainer2 varCon = vcl.getValueFromIdentifier("x");
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
         //Was it saved?
         Assert.assertNotNull(varCon);
@@ -67,7 +67,7 @@ public class VariableCollectorListenerTests {
         parser.prog();
         Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
 
-        VariableContainer2 varCon = vcl.getValueFromIdentifier("x");
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
         //Was it saved?
         Assert.assertNotNull(varCon);
@@ -88,7 +88,7 @@ public class VariableCollectorListenerTests {
         parser.prog();
         Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
 
-        VariableContainer2 varCon = vcl.getValueFromIdentifier("x");
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
         //Was it saved?
         Assert.assertNotNull(varCon);
@@ -109,7 +109,7 @@ public class VariableCollectorListenerTests {
         parser.prog();
         Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
 
-        VariableContainer2 varCon = vcl.getValueFromIdentifier("x");
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
         //Was it saved?
         Assert.assertNotNull(varCon);
@@ -134,7 +134,7 @@ public class VariableCollectorListenerTests {
         parser.prog();
         Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
 
-        VariableContainer2 varCon = vcl.getValueFromIdentifier("x");
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
         //Was it saved?
         Assert.assertNotNull(varCon);
@@ -159,7 +159,7 @@ public class VariableCollectorListenerTests {
         parser.prog();
         Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
 
-        VariableContainer2 varCon = vcl.getValueFromIdentifier("x");
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
         //Was it saved?
         Assert.assertNotNull(varCon);
@@ -182,7 +182,7 @@ public class VariableCollectorListenerTests {
         parser.prog();
         Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
 
-        VariableContainer2 varCon = vcl.getValueFromIdentifier("x");
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
         //Was it saved?
         Assert.assertNotNull(varCon);
@@ -205,7 +205,7 @@ public class VariableCollectorListenerTests {
         parser.prog();
         Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
 
-        VariableContainer2 varCon = vcl.getValueFromIdentifier("x");
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
         //Was it saved?
         Assert.assertNotNull(varCon);
@@ -228,7 +228,7 @@ public class VariableCollectorListenerTests {
         parser.prog();
         Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
 
-        VariableContainer2 varCon = vcl.getValueFromIdentifier("x");
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
         //Was it saved?
         Assert.assertNotNull(varCon);
