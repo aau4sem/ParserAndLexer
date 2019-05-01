@@ -69,10 +69,11 @@ public class TypeCheckerHelper {
             StringBuilder zString = new StringBuilder();
 
             int commaCounter = 0;
+            int parenthesesCounter = 0;
             for (char c : val.toCharArray()){
 
                 if(c == '(' || c == ')')
-                    continue;
+                    parenthesesCounter++;
                 else if(c == ',')
                     commaCounter++;
                 else if(commaCounter == 0)
@@ -84,12 +85,14 @@ public class TypeCheckerHelper {
                 }
             }
 
+            if(parenthesesCounter != 2)
+                return null;
             if(commaCounter == 2)
                 return new Vector(Integer.parseInt(xString.toString()), Integer.parseInt(yString.toString()), Integer.parseInt(zString.toString()));
             if(commaCounter == 1)
                 return new Vector(Integer.parseInt(xString.toString()), Integer.parseInt(yString.toString()));
             if(commaCounter == 0)
-                throw new IllegalArgumentException(); //TODO Handle: a vector can not be parsed with only an x value. //Can this even happen?
+                return null;
         }catch (NumberFormatException e){
             return null;
         }
