@@ -56,9 +56,11 @@ public class TypeCheckerHelper {
     /** Returns a GamePiece if the given string is an string, else null. */
     public static GamePiece parseGamePiece(String val){
 
-        //TODO, Handle GP. The value in VariableContainer should reflect a GP.
+        //TODO add more?
 
-        return new GamePiece();
+        GamePiece gp = new GamePiece();
+        gp.setIdentifierName(val);
+        return gp;
     }
 
     /** Returns a Vector if the given string is an vector, else null. */

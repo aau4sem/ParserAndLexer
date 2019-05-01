@@ -192,7 +192,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     @Override
     public void exitGpDcl(Tactic.GpDclContext ctx) {
         String identifier = ctx.identifier().getText();
-        addVariableToScope(VariableType.GAMEPIECE, new VariableContainer(identifier, null, VariableType.GAMEPIECE));
+        addVariableToScope(VariableType.GAMEPIECE, new VariableContainer(identifier, identifier, VariableType.GAMEPIECE)); //TODO Maybe temp, maybe not: identifier as value.
     }
 
     @Override

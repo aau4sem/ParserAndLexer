@@ -4,12 +4,18 @@ public class GamePiece {
 
     public enum GamePieceProppertyTypes { POSITION, SIZE, COLOR, OPACITY, LABEL, SHAPE}
 
+    private String identifierName = "";
+
     private Vector position = null; //TODO Default?
     private Float size = null; //Must be positive //TODO Default?
     private String color = null; //Could also be of format: RBG
     private String label = "";
     private float opacity = 1; //Must be [0:1]
     private String shape =  "circle"; //Type check for shapes
+
+    public void setIdentifierName(String identifierName) {
+        this.identifierName = identifierName;
+    }
 
     public void setPosition(Vector position) {
         this.position = position;
@@ -29,6 +35,10 @@ public class GamePiece {
 
     public void setOpacity(float opacity) {
         this.opacity = opacity;
+    }
+
+    public String getIdentifierName() {
+        return identifierName;
     }
 
     public void setShape(String shape) {
