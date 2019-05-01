@@ -2,15 +2,14 @@ package codeGeneration;
 
 import model.dataTypes.GamePiece;
 
-import java.io.File;
+import java.io.*;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 public class CodeGenerator {
 
-    /** Ali, the JS god, want the following:
-     * - GamePieces
-     * - Levels of the board
-     * - Animations????*/
+    private String templateDirectoryPath;
+    private String outputDirectoryPath;
 
     private ArrayList<GamePiece> gamePieces;
     private ArrayList<String> gamePieceNames;
@@ -20,34 +19,161 @@ public class CodeGenerator {
         this.gamePieces = gamePieces;
         this.gamePieceNames = getAllGamePieceNames(gamePieces);
         this.boardPaths = boardPaths;
-    }
 
-    public void generateAll(){
-
-        //index.html
-        generateLinesForIndexSelector(gamePieceNames);
-        generateLinesForIndexObjects(gamePieces);
-        generateLinesForIndexButtons(boardPaths.size());
-
-        //stylesheet.css
-        generateStringForStylesheetBoard(boardPaths.get(0));
-        generateStringsForStylesheetGamePieces(gamePieces);
-
-        //animations.js
-        generateStringForAnimationsAnimationList(gamePieces);
-        generateStringsForAnimationFunctions(gamePieces);
-
-
+        //Get folder paths
+        String classPath = CodeGenerator.class.getProtectionDomain().getCodeSource().getLocation().toString();
+        String rootProjectPath = CodeGenerator.class.getProtectionDomain().getCodeSource().getLocation().toString().substring(0, classPath.length() - 15);
+        templateDirectoryPath = rootProjectPath + "webContent/template/";
+        outputDirectoryPath = rootProjectPath + "webContent/output/";
     }
 
     public void generateCompleteFolder(){
 
+        //TODO Removed files if there are any already / create folders?
+
         //index.html
+        ArrayList<String> selectorLines = generateLinesForIndexSelector(gamePieceNames);
+        ArrayList<String> objectLines = generateLinesForIndexObjects(gamePieces);
+        ArrayList<String> buttonLines = generateLinesForIndexButtons(boardPaths.size());
+        ArrayList<String> outputIndexLines = generateIndexFileStrings(selectorLines, objectLines, buttonLines);
+
+        //stylesheet.cs
+        ArrayList<String> boardLines = generateStringForStylesheetBoard(boardPaths.get(0));
+        ArrayList<String> gamePiecesLines = generateStringsForStylesheetGamePieces(gamePieces);
+        ArrayList<String> outputStylesheetLines = generateStylesheetFileStrings(boardLines, gamePiecesLines);
+
+        //animations.js
+        ArrayList<String> animationLines =  generateStringForAnimationsAnimationList(gamePieces);
+        ArrayList<String> functionLines = generateStringsForAnimationFunctions(gamePieces);
+        ArrayList<String> outputAnimations = generateAnimationsFileStrings(animationLines, functionLines);
+
+        //Write/create files
+        //outputIndexLines; //index.html
+        //outputStylesheetLines; //stylesheet.css
+        //outputAnimations; //animations.js
+
+
+        String fileSeparator = System.getProperty("file.separator");
+
+        File indexFile = new File(outputDirectoryPath + fileSeparator + "css" + fileSeparator + "index.html");
+        /*System.out.println(outputDirectoryPath + fileSeparator + "css" + fileSeparator + "index.html");
+        try {
+            indexFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+
+        indexFile.mkdir();
+
+        //Copy the last needed file
+        //TODO //anime.js
+    }
+
+    private void writeFile(String desiredPath, ArrayList<String> linesToWrite){
+
+
 
 
     }
 
-    //private Stream
+    /***/
+    private ArrayList<String> generateAnimationsFileStrings(ArrayList<String> animationLines, ArrayList<String> functionLines){
+
+        //Get all lines from the stylesheet template
+        ArrayList<String> animationsTemplateLines = getAllLinesFromFile(templateDirectoryPath + "animations.js");
+
+        //Find the "TAGS" and replace with code.
+        animationsTemplateLines = replaceTag(animationsTemplateLines, animationLines,"ANIMATIONSLISTTAG");
+        animationsTemplateLines = replaceTag(animationsTemplateLines, functionLines,"FUNCTIONTAG");
+
+        return animationsTemplateLines;
+    }
+
+    /***/
+    private ArrayList<String> generateStylesheetFileStrings(ArrayList<String> boardLines, ArrayList<String> gamePieceLines){
+
+        //Get all lines from the stylesheet template
+        ArrayList<String> stylesheetTemplateLines = getAllLinesFromFile(templateDirectoryPath + "css/stylesheet.css");
+
+        //Find the "TAGS" and replace with code.
+        stylesheetTemplateLines = replaceTag(stylesheetTemplateLines, boardLines,"BOARDTAG");
+        stylesheetTemplateLines = replaceTag(stylesheetTemplateLines, gamePieceLines,"GAMEPIECESTAG");
+
+        return stylesheetTemplateLines;
+    }
+
+    /***/
+    private ArrayList<String> generateIndexFileStrings(ArrayList<String> selectorLines, ArrayList<String> objectLines, ArrayList<String> buttonLines){
+
+        //Get all lines from the index template
+        ArrayList<String> indexTemplateLines = getAllLinesFromFile(templateDirectoryPath + "index.html");
+
+        //Find the "TAGS" and replace with code.
+        indexTemplateLines = replaceTag(indexTemplateLines, selectorLines,"SELECTORTAG");
+        indexTemplateLines = replaceTag(indexTemplateLines, buttonLines, "BUTTONSTAG");
+        indexTemplateLines = replaceTag(indexTemplateLines, objectLines, "OBJECTSTAG");
+
+        return indexTemplateLines;
+    }
+
+    /** Used when lines has to be placed into a template file.
+     * @param sourceStrings contains a strings with the given tag.
+     * @param inputStrings the lines that will be replaced where the tag is present in sourceStrings.
+     * @param tagToReplace the tag to replace
+     * @return sourceStrings where the string matching the given tagToReplace is replaced with all lines in the given inputString. */
+    private ArrayList<String> replaceTag(ArrayList<String> sourceStrings, ArrayList<String> inputStrings, String tagToReplace){
+
+        ArrayList<String> endResult = new ArrayList<>();
+
+        for(String sourceLine : sourceStrings){
+            //Is the current line the tagToReplace?
+            if(sourceLine.compareTo(tagToReplace) == 0){
+
+                //Insert all input strings
+                for(String inputLine : inputStrings){
+                    endResult.add(inputLine);
+                }
+
+            }else{ //If no, add the line to the endResult.
+                endResult.add(sourceLine);
+            }
+        }
+
+        return endResult;
+    }
+
+    private ArrayList<String> getAllLinesFromFile(String filePath){
+
+        System.out.println(filePath);
+
+        File file = new File(filePath);
+
+        BufferedReader reader = null;
+        ArrayList<String> lines = new ArrayList<>();
+
+        try {
+            reader = new BufferedReader(new FileReader(file));
+            String text = null;
+
+            while ((text = reader.readLine()) != null) {
+                lines.add(text);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (reader != null){
+                    reader.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return lines;
+    }
 
     /** @return all names of the given gamePieces. */
     private ArrayList<String> getAllGamePieceNames(ArrayList<GamePiece> gamePieces){
@@ -114,24 +240,24 @@ public class CodeGenerator {
     /** @return the .board section of stylesheet.css.
      * @param boardImagePath the path for the background image of the board.
      * //TODO only one level is supported atm.*/
-    private String generateStringForStylesheetBoard(String boardImagePath){
+    private ArrayList<String> generateStringForStylesheetBoard(String boardImagePath){
+
+        ArrayList<String> generatedLines = new ArrayList<>();
 
         int width = 1000;
         int height = 700;
 
-        StringBuilder sb = new StringBuilder();
+        generatedLines.add(".board {");
+        generatedLines.add("width: " + width + "px;");
+        generatedLines.add("height: " + height + "px;");
+        generatedLines.add("display: inline-block;");
+        generatedLines.add("background-image: url(\"" + boardImagePath + "\");");
+        generatedLines.add("background-size: 100% 100%;");
+        generatedLines.add("position: relative;");
+        generatedLines.add("margin: auto;");
+        generatedLines.add("}");
 
-        sb.append(".board {\n");
-        sb.append("width: ").append(width).append("px;\n");
-        sb.append("height: ").append(height).append("px;\n");
-        sb.append("display: inline-block;\n");
-        sb.append("background-image: url(\"").append(boardImagePath).append("\");\n");
-        sb.append("background-size: 100% 100%;\n");
-        sb.append("position: relative;\n");
-        sb.append("margin: auto;\n");
-        sb.append("}\n");
-
-        return sb.toString();
+        return generatedLines;
     }
 
     /**@return a list of strings for the gamePieces part in stylesheet.css.
@@ -154,25 +280,27 @@ public class CodeGenerator {
     }
 
     //animations.js generators ---------------------------------
-    /** @return a string for the animationsList of the animations.js file.
+    /** @return a list of strings for the animationsList of the animations.js file.
      * @param gamePieces a list of all GamePieces. */
-    private String generateStringForAnimationsAnimationList(ArrayList<GamePiece> gamePieces){
-        StringBuilder sb = new StringBuilder();
+    private ArrayList<String> generateStringForAnimationsAnimationList(ArrayList<GamePiece> gamePieces){
 
-        sb.append("const animationsList = {\n");
+        ArrayList<String> generatedLines = new ArrayList<>();
+
+        generatedLines.add("const animationsList = {");
 
         for(int i = 0; i < gamePieces.size(); i++){
-            sb.append(gamePieces.get(i).getIdentifierName()).append(": ").append(gamePieces.get(i).getIdentifierName()).append("()");
+
+            String lineToAdd = gamePieces.get(i).getIdentifierName() + ": " + gamePieces.get(i).getIdentifierName() + "()";
 
             if(i != gamePieces.size() -1)
-                sb.append(",\n");
-            else
-                sb.append("\n");
+                lineToAdd = lineToAdd + ",";
+
+            generatedLines.add(lineToAdd);
         }
 
-        sb.append("}\n");
+        generatedLines.add("}\n");
 
-        return sb.toString();
+        return generatedLines;
     }
 
     /** @return a string for the function part of the animations.js file.
