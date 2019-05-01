@@ -1,5 +1,10 @@
 parser grammar Tactic;
 
+//Used for when generating:
+@header {
+    package gen;
+}
+
 options { tokenVocab = TacticLexer; }
 
 prog    : ((stmt | functionDef) ENDSTNT)* ;

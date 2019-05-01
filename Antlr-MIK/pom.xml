@@ -17,23 +17,6 @@
         <!-- Plugins, for multiple source directories -->
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.basedir}/gen</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
@@ -42,15 +25,11 @@
                 </configuration>
             </plugin>
         </plugins>
-
-
     </build>
 
     <!-- Modules(Aggregation) -->
     <modules>
         <module>../antlr4-master/runtime/Java</module>
-        <!--<module>../antlr4-master</module>-->
-        <!--<module>../javac-master</module> -->
     </modules>
 
 <!-- Dependencies -->
@@ -102,7 +81,5 @@
             <version>4.7.3-SNAPSHOT</version>
         </dependency>
     </dependencies>
-
-
 </project>
 
