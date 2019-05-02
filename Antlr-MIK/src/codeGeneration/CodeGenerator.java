@@ -35,8 +35,6 @@ public class CodeGenerator {
 
         templateDirectoryPath = rootProjectPath + "webContent/template/";
         outputDirectoryPath = rootProjectPath + "webContent/output/";
-
-        generateCompleteFolder();
     }
 
     public void generateCompleteFolder(){
@@ -48,14 +46,14 @@ public class CodeGenerator {
         //TODO Generate folders:
         File folders = new File(outputDirectoryPath + fileSeparator + "css");
         boolean sucses = folders.mkdirs();
-        if(sucses != true)
+        if(!sucses)
             throw new IllegalStateException(); //Could not create folders
 
         //index.html
         ArrayList<String> selectorLines = generateLinesForIndexSelector(gamePieceNames);
         ArrayList<String> objectLines = generateLinesForIndexObjects(gamePieces);
         ArrayList<String> buttonLines = generateLinesForIndexButtons(boardPaths.size());
-        ArrayList<String> outputIndexLines = generateIndexFileStrings(selectorLines, objectLines, buttonLines);
+        ArrayList<String> outputIndexLines = generateIndexFileStrings(selectorLines, objectLines, buttonLines); //TODO: Bug: Does not replace tags
 
         //stylesheet.cs
         ArrayList<String> boardLines = generateStringForStylesheetBoard((boardPaths.size() > 0) ? boardPaths.get(0) : "");
@@ -85,6 +83,8 @@ public class CodeGenerator {
         }
     }
 
+    /** Deletes all content of the folder at the given path.
+     * @param path a path to a folder. */
     private void deleteDirectoryStream(Path path) {
         try {
             Files.walk(path)
@@ -178,7 +178,7 @@ public class CodeGenerator {
 
         for(String sourceLine : sourceStrings){
             //Is the current line the tagToReplace?
-            if(sourceLine.compareTo(tagToReplace) == 0){
+            if(sourceLine.trim().compareTo(tagToReplace) == 0){
 
                 //Insert all input strings
                 for(String inputLine : inputStrings){
@@ -262,6 +262,7 @@ public class CodeGenerator {
             StringBuilder sb = new StringBuilder();
 
             sb.append("<div class=\"");
+            sb.append(gp.getIdentifierName());
             //TODO TAGS //TOOD Has to be generated in the css file
             sb.append("\">");
             sb.append(gp.getLabel()); //LABEL
@@ -281,7 +282,7 @@ public class CodeGenerator {
         ArrayList<String> generatedLines = new ArrayList<>();
 
         for(int i = 0; i < numberOfLevels; i++)
-            generatedLines.add("<button disabled type=\"button\">" + i+1 + "</button>");
+            generatedLines.add("<button disabled type=\"button\">" + (i+1) + "</button>");
 
         return generatedLines;
     }
