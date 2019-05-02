@@ -231,7 +231,7 @@ public class CodeGenerator {
         ArrayList<String> gamePieceNames = new ArrayList<>();
 
         for(GamePiece gp : gamePieces)
-            gamePieceNames.add(gp.getIdentifierName());
+            gamePieceNames.add(gp.getName());
 
         return gamePieceNames;
     }
@@ -262,7 +262,7 @@ public class CodeGenerator {
             StringBuilder sb = new StringBuilder();
 
             sb.append("<div class=\"");
-            sb.append(gp.getIdentifierName());
+            sb.append(gp.getName());
             //TODO TAGS //TOOD Has to be generated in the css file
             sb.append("\">");
             sb.append(gp.getLabel()); //LABEL
@@ -321,7 +321,7 @@ public class CodeGenerator {
         for( GamePiece gp : gamePieces){
             StringBuilder sb = new StringBuilder();
 
-            sb.append(".").append(gp.getIdentifierName()).append("{\n");
+            sb.append(".").append(gp.getName()).append("{\n");
             //TODO more?
             sb.append("}\n");
 
@@ -342,7 +342,7 @@ public class CodeGenerator {
 
         for(int i = 0; i < gamePieces.size(); i++){
 
-            String lineToAdd = gamePieces.get(i).getIdentifierName() + ": " + gamePieces.get(i).getIdentifierName() + "()";
+            String lineToAdd = gamePieces.get(i).getName() + ": " + gamePieces.get(i).getName() + "()";
 
             if(i != gamePieces.size() -1)
                 lineToAdd = lineToAdd + ",";
@@ -364,9 +364,9 @@ public class CodeGenerator {
         for(GamePiece gp : gamePieces){
             StringBuilder sb = new StringBuilder();
 
-            sb.append("function ").append(gp.getIdentifierName()).append("() {\n");
+            sb.append("function ").append(gp.getName()).append("() {\n");
             sb.append("return anime({\n");
-            sb.append("targets: ").append("'.").append(gp.getIdentifierName()).append("',\n"); //TODO Has to be changed?
+            sb.append("targets: ").append("'.").append(gp.getName()).append("',\n"); //TODO Has to be changed?
             sb.append("keyframes: [\n");
             //TODO keyframes! Format: {left: 20, top: 500, duration: 1000},
             sb.append("],\n");
