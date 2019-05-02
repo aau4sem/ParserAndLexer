@@ -1,11 +1,14 @@
 package customListeners;
 
+import model.dataTypes.GamePiece;
 import model.utils.ArithmeticResultHolder;
 import model.utils.TypeCheckerHelper;
 import model.variables.VariableContainer;
 import model.variables.VariableScopeData;
 
 import gen.*;
+
+import java.util.ArrayList;
 
 public class VariableCollectorListener extends TacticBaseListener {
 
@@ -61,6 +64,19 @@ public class VariableCollectorListener extends TacticBaseListener {
         }else{
             functionScope.addVariable(varCon);
         }
+    }
+
+    /** @return all GamePieces instantiated. */
+    public ArrayList<GamePiece> getAllGamePieces(){
+
+        ArrayList<GamePiece> allGamePieces = new ArrayList<>();
+
+        for( VariableContainer varCon : mainScope.getAllVariablesOfType(VariableType.GAMEPIECE)){
+            allGamePieces.add(TypeCheckerHelper.parseGamePiece(varCon.getValue()));
+        }
+
+        return allGamePieces;
+
     }
 
     /** Used to get variables from the current scope.
