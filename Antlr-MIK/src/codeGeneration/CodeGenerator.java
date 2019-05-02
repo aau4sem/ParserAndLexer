@@ -4,7 +4,12 @@ import model.dataTypes.GamePiece;
 
 import java.io.*;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class CodeGenerator {
 
@@ -15,6 +20,8 @@ public class CodeGenerator {
     private ArrayList<String> gamePieceNames;
     private ArrayList<String> boardPaths;
 
+    private String fileSeparator = System.getProperty("file.separator");
+
     public CodeGenerator(ArrayList<GamePiece> gamePieces, ArrayList<String> boardPaths) {
         this.gamePieces = gamePieces;
         this.gamePieceNames = getAllGamePieceNames(gamePieces);
@@ -23,13 +30,26 @@ public class CodeGenerator {
         //Get folder paths
         String classPath = CodeGenerator.class.getProtectionDomain().getCodeSource().getLocation().toString();
         String rootProjectPath = CodeGenerator.class.getProtectionDomain().getCodeSource().getLocation().toString().substring(0, classPath.length() - 15);
+        classPath = classPath.substring(6);
+        rootProjectPath = rootProjectPath.substring(6);
+
         templateDirectoryPath = rootProjectPath + "webContent/template/";
         outputDirectoryPath = rootProjectPath + "webContent/output/";
+
+        generateCompleteFolder();
     }
 
     public void generateCompleteFolder(){
 
         //TODO Removed files if there are any already / create folders?
+        deleteDirectoryStream(new File(outputDirectoryPath).toPath());
+
+
+        //TODO Generate folders:
+        File folders = new File(outputDirectoryPath + fileSeparator + "css");
+        boolean sucses = folders.mkdirs();
+        if(sucses != true)
+            throw new IllegalStateException(); //Could not create folders
 
         //index.html
         ArrayList<String> selectorLines = generateLinesForIndexSelector(gamePieceNames);
@@ -38,7 +58,7 @@ public class CodeGenerator {
         ArrayList<String> outputIndexLines = generateIndexFileStrings(selectorLines, objectLines, buttonLines);
 
         //stylesheet.cs
-        ArrayList<String> boardLines = generateStringForStylesheetBoard(boardPaths.get(0));
+        ArrayList<String> boardLines = generateStringForStylesheetBoard((boardPaths.size() > 0) ? boardPaths.get(0) : "");
         ArrayList<String> gamePiecesLines = generateStringsForStylesheetGamePieces(gamePieces);
         ArrayList<String> outputStylesheetLines = generateStylesheetFileStrings(boardLines, gamePiecesLines);
 
@@ -48,32 +68,63 @@ public class CodeGenerator {
         ArrayList<String> outputAnimations = generateAnimationsFileStrings(animationLines, functionLines);
 
         //Write/create files
-        //outputIndexLines; //index.html
-        //outputStylesheetLines; //stylesheet.css
-        //outputAnimations; //animations.js
-
-
-        String fileSeparator = System.getProperty("file.separator");
-
-        File indexFile = new File(outputDirectoryPath + fileSeparator + "css" + fileSeparator + "index.html");
-        /*System.out.println(outputDirectoryPath + fileSeparator + "css" + fileSeparator + "index.html");
-        try {
-            indexFile.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-        indexFile.mkdir();
+        writeFile(outputDirectoryPath + fileSeparator + "index.html", outputIndexLines); //Index.html
+        writeFile(outputDirectoryPath + fileSeparator + "css" + fileSeparator + "stylesheet.css", outputStylesheetLines); //Stylesheet.html
+        writeFile(outputDirectoryPath + fileSeparator + "animations.js", outputAnimations); //animations.js
 
         //Copy the last needed file
-        //TODO //anime.js
+        File animeFileTemplate = new File(templateDirectoryPath + fileSeparator + "css" + fileSeparator + "anime.js");
+        File animeFileCopied = new File(outputDirectoryPath + fileSeparator + "css" + fileSeparator + "anime.js");
+
+        Path copied = Paths.get(outputDirectoryPath + fileSeparator + "css" + fileSeparator + "anime.js");
+        Path originalPath = animeFileTemplate.toPath();
+        try {
+            Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteDirectoryStream(Path path) {
+        try {
+            Files.walk(path)
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void writeFile(String desiredPath, ArrayList<String> linesToWrite){
 
+        File file = new File(desiredPath);
+        try {
+            if(!file.createNewFile()){
+                throw new IllegalArgumentException(); //Could not create file
+            }
+        } catch (IOException e) {
+            e.printStackTrace(); //Could not create file
+        }
 
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            writeLinesToFos(linesToWrite, fos);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+    }
 
+    private void writeLinesToFos(ArrayList<String> lines, FileOutputStream fos) throws IOException {
+        for(String line : lines){
+            fos.write(line.getBytes());
+            fos.write("\n".getBytes());
+        }
     }
 
     /***/
@@ -144,7 +195,7 @@ public class CodeGenerator {
 
     private ArrayList<String> getAllLinesFromFile(String filePath){
 
-        System.out.println(filePath);
+        System.out.println("HERE: " + filePath);
 
         File file = new File(filePath);
 
@@ -152,7 +203,7 @@ public class CodeGenerator {
         ArrayList<String> lines = new ArrayList<>();
 
         try {
-            reader = new BufferedReader(new FileReader(file));
+            reader = new BufferedReader(new FileReader(filePath));
             String text = null;
 
             while ((text = reader.readLine()) != null) {
