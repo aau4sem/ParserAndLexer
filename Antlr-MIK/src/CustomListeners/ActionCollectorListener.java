@@ -51,9 +51,10 @@ public class ActionCollectorListener extends TacticBaseListener {
             typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArguemntType.IDENTIFIER);
 
             if(TypeCheckerHelper.parseGamePiecePropertyType(arguments.get(1).getValue()) == null)
-                throw new IllegalArgumentType(1, identifier, Argument.ArguemntType.GAMEPIECE_PROPERTY);
+                throw new IllegalArgumentType(2, identifier, Argument.ArguemntType.GAMEPIECE_PROPERTY);
 
-            typeCheckArgument(arguments.get(2), 3, identifier, Argument.ArguemntType.STRING);
+            typeCheckArgument(arguments.get(2), 3, identifier, Argument.ArguemntType.STRING,
+                    Argument.ArguemntType.IDENTIFIER, Argument.ArguemntType.NUMBER, Argument.ArguemntType.VECTOR);
 
             typeCheckArgument(arguments.get(3), 4, identifier,
                     Argument.ArguemntType.IDENTIFIER, Argument.ArguemntType.NUMBER);
@@ -64,19 +65,19 @@ public class ActionCollectorListener extends TacticBaseListener {
             GamePiece variableFirstArg = TypeCheckerHelper.parseGamePiece(variableConFirstArg.getValue());
 
             if(variableFirstArg == null) //Was the parsed variable a GP?
-                throw new IllegalArgumentType(0, identifier, "GamePiece");
+                throw new IllegalArgumentType(1, identifier, "GamePiece");
 
-            //SECOND ARGUMENT
-            String secondArg = arguments.get(1).getValue();
+            //SECOND ARGUMENT //Make sure that the value matches the property
+            GamePiece.GamePiecePropertyType secondArg = TypeCheckerHelper.parseGamePiecePropertyType(arguments.get(1).getValue());
 
             //THIRD ARGUMENT
             String thirdArg = arguments.get(2).getValue();
 
             //FOURTH ARGUMENT
-            Number variableFourthArgNum = evalIdentifierOrNumberArgument(arguments.get(3), 3, identifier);
+            Number fourthArg = evalIdentifierOrNumberArgument(arguments.get(3), 3, identifier);
 
-            //Collect the function
-            actionFunctions.add(new BuildInFunctionChange(variableFirstArg, secondArg, thirdArg, variableFourthArgNum));
+            //Collect the function //This function is used because of the third argument - it can be multiple types
+            addChangeActionCall(variableFirstArg, secondArg, thirdArg, fourthArg);
 
         }else if(identifier.compareTo("move") == 0) {
             //Parameters: GP, vector, number
@@ -97,7 +98,7 @@ public class ActionCollectorListener extends TacticBaseListener {
             GamePiece variableFirstArg = TypeCheckerHelper.parseGamePiece(variableConFirstArg.getValue());
 
             if(variableFirstArg == null) //Was the parsed variable a GP?
-                throw new IllegalArgumentType(0, identifier, "GamePiece");
+                throw new IllegalArgumentType(1, identifier, "GamePiece");
 
             //SECOND ARGUMENT
             Vector variableSecondArgVec = TypeCheckerHelper.parseVector(arguments.get(1).getValue());
@@ -126,7 +127,7 @@ public class ActionCollectorListener extends TacticBaseListener {
             GamePiece variableFirstArg = TypeCheckerHelper.parseGamePiece(variableConFirstArg.getValue());
 
             if(variableFirstArg == null) //Was the parsed variable a GP?
-                throw new IllegalArgumentType(0, identifier, "GamePiece");
+                throw new IllegalArgumentType(1, identifier, "GamePiece");
 
             //SECOND ARGUMENT
             Number variableSecondArgNum = evalIdentifierOrNumberArgument(arguments.get(1), 1, identifier);
@@ -134,6 +135,24 @@ public class ActionCollectorListener extends TacticBaseListener {
             //Collect the function
             actionFunctions.add(new BuildInFunctionWait(variableFirstArg, variableSecondArgNum));
         }
+    }
+
+    /** Used to parse the type of the third argument of the change call.
+     * This can be a different types based on the property type. */
+    private void addChangeActionCall(GamePiece firstArg, GamePiece.GamePiecePropertyType secondArg, String thirdArg, Number fourthArg){
+
+        if(secondArg == GamePiece.GamePiecePropertyType.POSITION){
+            if(TypeCheckerHelper.parseVector(thirdArg) == null)
+                throw new IllegalArgumentType(3, "change", Argument.ArguemntType.VECTOR);
+        }else if(secondArg == GamePiece.GamePiecePropertyType.SIZE){
+            if(TypeCheckerHelper.parseFloat(thirdArg) == null)
+                throw new IllegalArgumentType(3, "change", "float");
+        }else if(secondArg == GamePiece.GamePiecePropertyType.OPACITY){
+            if(TypeCheckerHelper.parseFloat(thirdArg) == null)
+                throw new IllegalArgumentType(3, "change", "float");
+        }
+
+        actionFunctions.add(new BuildInFunctionChange(firstArg, secondArg, thirdArg, fourthArg));
     }
 
     /** This method is used to check if an argument is of the right type.
@@ -173,7 +192,7 @@ public class ActionCollectorListener extends TacticBaseListener {
 
         //Did it parse?
         if(num == null) // Was the value of type integer or float
-            throw new IllegalArgumentType(numberOfArguemnt, functionName, "integer or float");
+            throw new IllegalArgumentType(numberOfArguemnt + 1, functionName, "integer or float");
 
         return num;
     }
