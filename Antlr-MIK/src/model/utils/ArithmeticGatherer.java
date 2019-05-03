@@ -1,5 +1,6 @@
 package model.utils;
 
+import gen.Tactic;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
@@ -8,8 +9,12 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.util.ArrayList;
+
 /** This class is used when evaluating an arithmetic expression. */
-public class ArithmeticResultHolder implements TerminalNode {
+public class ArithmeticGatherer implements TerminalNode {
+
+    private ArrayList<Tactic.NumberContext> values = new ArrayList<>();
 
     private StringBuilder equation = new StringBuilder();
 

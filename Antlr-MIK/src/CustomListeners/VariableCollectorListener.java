@@ -1,7 +1,7 @@
 package customListeners;
 
 import model.dataTypes.GamePiece;
-import model.utils.ArithmeticResultHolder;
+import model.utils.ArithmeticGatherer;
 import model.utils.TypeCheckerHelper;
 import model.variables.VariableContainer;
 import model.variables.VariableScopeData;
@@ -206,12 +206,6 @@ public class VariableCollectorListener extends TacticBaseListener {
         super.exitArrayDcl(ctx);
     }
 
-    // Arithmetic expression evaluation
-    @Override
-    public void exitArithExpr(Tactic.ArithExprContext ctx) {
-        ctx.addChild(new ArithmeticResultHolder()); //TODO Not final
-    }
-
     @Override
     public void exitDotAssignment(Tactic.DotAssignmentContext ctx) {
 
@@ -247,4 +241,15 @@ public class VariableCollectorListener extends TacticBaseListener {
             addVariableToScope(new VariableContainer(identifier, changedGpValue, VariableType.GAMEPIECE));
         }
     }
+
+    // ARITHMETIC EXPRESSIONS ------------------------------
+
+
+    @Override
+    public void exitArithExpr(Tactic.ArithExprContext ctx) {
+        super.exitArithExpr(ctx);
+        new ArithmeticGatherer();
+    }
+
+
 }

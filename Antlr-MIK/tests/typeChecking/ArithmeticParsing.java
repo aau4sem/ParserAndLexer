@@ -13,6 +13,56 @@ public class ArithmeticParsing {
     private static VariableCollectorListener vlc;
 
     @Test
+    public void mixedCalculation01(){
+        parse("int i = (5 + 5) * 2");
+
+        Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(20, i.intValue());
+    }
+
+    @Test
+    public void mixedCalculation02(){
+        parse("int i = (5 + 5) * (2 + 2)");
+
+        Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(40, i.intValue());
+    }
+
+    @Test
+    public void mixedCalculation03(){
+        parse("int x = 2; int i = (5 + 5) * x");
+
+        Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(20, i.intValue());
+    }
+
+    @Test
+    public void mixedCalculation04(){
+        parse("int i = (5 + 5) * 2 * 2");
+
+        Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(40, i.intValue());
+    }
+
+    @Test
+    public void mixedCalculation05(){
+        parse("int i = 5 + (5) * 2");
+
+        Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(15, i.intValue());
+    }
+
+    @Test
     public void addition01(){
         parse("int x = 2 + 2;");
 
