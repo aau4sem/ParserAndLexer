@@ -45,12 +45,7 @@ arrayAssign : identifier (((LBRACKET number RBRACKET)+ ASSIGN arrayExpr) | (LBRA
 
 
 //Arithmetic operations
-arithExpr : ( addExpr | subExpr | divExpr | mulExpr | modExpr) ((ADDITION | SUBTRACTION | DIVISION | MULTIPLY | MODULO) (identifier | number))*;
-addExpr : (identifier | number) ADDITION (identifier | number) ;
-subExpr : (identifier | number) SUBTRACTION (identifier | number) ;
-divExpr : (identifier | number) DIVISION (identifier | number) ;
-mulExpr : (identifier | number) MULTIPLY (identifier | number) ;
-modExpr : (identifier | number) MODULO (identifier | number) ;
+arithExpr : (identifier | number) ((ADDITION | SUBTRACTION | DIVISION | MULTIPLY | MODULO) (identifier | number))*;
 
 vecExpr    : (vecAdd | vecSub) ((ADDITION | SUBTRACTION) (identifier | vec))* ;
 vecAdd     : (identifier | vec) ADDITION (identifier | vec) ;
