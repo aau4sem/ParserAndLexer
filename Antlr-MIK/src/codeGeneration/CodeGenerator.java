@@ -350,7 +350,7 @@ public class CodeGenerator {
             generatedLines.add(lineToAdd);
         }
 
-        generatedLines.add("}\n");
+        generatedLines.add("};\n");
 
         return generatedLines;
     }
