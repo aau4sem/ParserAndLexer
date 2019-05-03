@@ -2,3 +2,4 @@ gen/*
 src/gen/*
 .idea/*
 target/*
+webContent/*
