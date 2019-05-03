@@ -66,11 +66,13 @@ public class GamePiece {
 
         StringBuilder sb = new StringBuilder();
         sb.append(GamePiecePropertyType.NAME.getString()).append(":").append(this.getName()).append(",");
-        sb.append(GamePiece.GamePiecePropertyType.POSITION.getString()).append(":").append(this.getPosition().toString()).append(",");
+        String positionVal = (position == null) ? "" : position.toString();
+        sb.append(GamePiece.GamePiecePropertyType.POSITION.getString()).append(":").append(positionVal).append(",");
         sb.append(GamePiece.GamePiecePropertyType.SIZE.getString()).append(":").append(this.getSize()).append(",");
-        sb.append(GamePiece.GamePiecePropertyType.COLOR.getString()).append(":").append(this.getColor()).append(",");
-        sb.append(GamePiece.GamePiecePropertyType.OPACITY.getString()).append(":").append(this.getOpacity()).append(",");
+        String colorVal = (color == null) ? "" : color;
+        sb.append(GamePiece.GamePiecePropertyType.COLOR.getString()).append(":").append(colorVal).append(",");
         sb.append(GamePiece.GamePiecePropertyType.LABEL.getString()).append(":").append(this.getLabel()).append(",");
+        sb.append(GamePiece.GamePiecePropertyType.OPACITY.getString()).append(":").append(this.getOpacity()).append(",");
         sb.append(GamePiece.GamePiecePropertyType.SHAPE.getString()).append(":").append(this.getShape()).append(",");
         return sb.toString();
     }
