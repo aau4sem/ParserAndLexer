@@ -1,6 +1,5 @@
 package typeChecking;
 
-import customListeners.ActionCollectorListener;
 import customListeners.VariableCollectorListener;
 import gen.Tactic;
 import gen.TacticLexer;
@@ -79,6 +78,78 @@ public class GamePieceParsingTests {
         GamePiece gp = TypeCheckerHelper.parseGamePiece(varCon.getValue());
         Assert.assertNotNull(gp);
 
-        Assert.assertEquals(2.56f, gp.getSize().floatValue());
+        Assert.assertEquals(2.56f, gp.getSize().floatValue(), 4);
+    }
+
+    @Test
+    public void propertyChangeColor01(){
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.color = \"RED\";"));
+        parser = new Tactic(new CommonTokenStream(lexer));
+        VariableCollectorListener vcl = new VariableCollectorListener();
+        parser.addParseListener(vcl);
+        parser.prog();
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("gp");
+        Assert.assertNotNull(varCon);
+
+        GamePiece gp = TypeCheckerHelper.parseGamePiece(varCon.getValue());
+        Assert.assertNotNull(gp);
+
+        Assert.assertEquals("RED", gp.getColor());
+    }
+
+    @Test
+    public void propertyChangeLabel01(){
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.label = \"PlayerOne\";"));
+        parser = new Tactic(new CommonTokenStream(lexer));
+        VariableCollectorListener vcl = new VariableCollectorListener();
+        parser.addParseListener(vcl);
+        parser.prog();
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("gp");
+        Assert.assertNotNull(varCon);
+
+        GamePiece gp = TypeCheckerHelper.parseGamePiece(varCon.getValue());
+        Assert.assertNotNull(gp);
+
+        Assert.assertEquals("PlayerOne", gp.getLabel());
+    }
+
+    @Test
+    public void propertyChangeOpacity01(){
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.opacity = 0.3;"));
+        parser = new Tactic(new CommonTokenStream(lexer));
+        VariableCollectorListener vcl = new VariableCollectorListener();
+        parser.addParseListener(vcl);
+        parser.prog();
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("gp");
+        Assert.assertNotNull(varCon);
+
+        GamePiece gp = TypeCheckerHelper.parseGamePiece(varCon.getValue());
+        Assert.assertNotNull(gp);
+
+        Assert.assertEquals(0.3f, gp.getOpacity(), 3);
+    }
+
+    @Test
+    public void propertyChangeShape01(){
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.shape = \"Square\";"));
+        parser = new Tactic(new CommonTokenStream(lexer));
+        VariableCollectorListener vcl = new VariableCollectorListener();
+        parser.addParseListener(vcl);
+        parser.prog();
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("gp");
+        Assert.assertNotNull(varCon);
+
+        GamePiece gp = TypeCheckerHelper.parseGamePiece(varCon.getValue());
+        Assert.assertNotNull(gp);
+
+        Assert.assertEquals("Square", gp.getShape());
     }
 }
