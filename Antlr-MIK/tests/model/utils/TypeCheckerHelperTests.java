@@ -1,8 +1,7 @@
-package typeChecking.utils;
+package model.utils;
 
 import model.dataTypes.Number;
 import model.dataTypes.Vector;
-import model.utils.TypeCheckerHelper;
 import org.junit.*;
 
 public class TypeCheckerHelperTests {
