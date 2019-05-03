@@ -12,7 +12,7 @@ public class IllegalArgumentType extends RuntimeException {
     }
 
     /** @return an error message used when an argument of a function call is of the wrong type.
-     * @param argumentNumber which number the argument is, in the function call (Counting from 0).
+     * @param argumentNumber which number the argument is, in the function call. (Counting from 1)
      * @param functionName the name of the function which argument is being checked.
      * @param allowedType a given amount of ArgumentTypes which the given Argument has to be ONE of. */
     private static String printErrorMessage(int argumentNumber, String functionName, Argument.ArguemntType ... allowedType){
