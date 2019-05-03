@@ -56,12 +56,56 @@ public class TypeCheckerHelper {
     /** Returns a GamePiece if the given string is an string, else null. */
     public static GamePiece parseGamePiece(String val){
 
-        //TODO add more?
-
+        //TODO IdentifierName????
         GamePiece gp = new GamePiece();
-        gp.setIdentifierName(val);
+
+        //Format of string should be:
+        //"name:VAL,position:VAL,size:VAL,color:VAL,label:VAL,opacity:VAL,shape:VAL,"
+        //"name:test,position:(2,3,4),size:3.2,color:RED,label:test,opacity:0.2,shape:circle,"
+        //"name:STRING,position:VECTOR,size:FLOAT,color:STRING,label:STRING,opacity:FLOAT[0:1],shape:STRING,"
+        //"name:,position:,size:,color:,label:STRING,opacity:,shape:STRING,"
+
+        boolean readingProperty = true;
+        boolean readingValue = false;
+        boolean readingVector = false;
+
+        String collectorProperty = "";
+        String collectorValue = "";
+
+        for(char c : val.toCharArray()){
+
+            //This is done to avoid the commas in a vector messing up the reading of the string
+            if(c == '(')
+                readingVector = true;
+            else if(c == ')')
+                readingVector = false;
+
+
+            if(c == ':'){
+                readingProperty = false;
+                readingValue = true;
+            }else if(c == ',' && !readingVector){
+                readingProperty = true;
+                readingValue = false;
+
+                //Save/collect value for the property
+                GamePiece.GamePiecePropertyType currentType = parseGamePiecePropertyType(collectorProperty);
+                gp.changeProperty(currentType, collectorValue);
+
+                //Reset collectors
+                collectorProperty = "";
+                collectorValue = "";
+            }else if(readingProperty){
+                collectorProperty += c;
+            }else if(readingValue){
+                collectorValue += c;
+            }
+        }
+
         return gp;
     }
+
+
 
     /** Returns a Vector if the given string is an vector, else null. */
     public static Vector parseVector(String val){
@@ -97,6 +141,16 @@ public class TypeCheckerHelper {
                 return null;
         }catch (NumberFormatException e){
             return null;
+        }
+
+        return null;
+    }
+
+    /** @return the property type matches the given string. Can be null.*/
+    public static GamePiece.GamePiecePropertyType parseGamePiecePropertyType(String val){
+        for(GamePiece.GamePiecePropertyType type : GamePiece.GamePiecePropertyType.values()){
+            if(val.compareTo(type.getString()) == 0)
+                return type;
         }
 
         return null;

@@ -1,5 +1,8 @@
 package model.variables;
 
+import customListeners.VariableCollectorListener;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /** This class will contain information of variables for a given scope. */
@@ -20,6 +23,17 @@ public class VariableScopeData {
     public VariableScopeData(ScopeType type, String functionIdentifier) {
         this.type = type;
         this.functionIdentifier = functionIdentifier;
+    }
+
+    /** @return all variables of the given type.*/
+    public ArrayList<VariableContainer> getAllVariablesOfType(VariableCollectorListener.VariableType type){
+
+        ArrayList<VariableContainer> collectedVariables = new ArrayList<>();
+
+        for(VariableContainer varCon : variables.values())
+            if(varCon.getType() == type)
+                collectedVariables.add(varCon);
+        return collectedVariables;
     }
 
     /** Used to add a variable to this scope. */

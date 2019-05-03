@@ -2,4 +2,4 @@ gen/*
 src/gen/*
 .idea/*
 target/*
-webContent/*
+webContent/output/*

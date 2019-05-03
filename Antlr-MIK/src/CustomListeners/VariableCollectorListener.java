@@ -1,11 +1,14 @@
 package customListeners;
 
+import model.dataTypes.GamePiece;
 import model.utils.ArithmeticResultHolder;
 import model.utils.TypeCheckerHelper;
 import model.variables.VariableContainer;
 import model.variables.VariableScopeData;
 
 import gen.*;
+
+import java.util.ArrayList;
 
 public class VariableCollectorListener extends TacticBaseListener {
 
@@ -63,6 +66,29 @@ public class VariableCollectorListener extends TacticBaseListener {
         }
     }
 
+    /** @return all GamePieces instantiated. */
+    public ArrayList<GamePiece> getAllGamePieces(){
+
+        ArrayList<GamePiece> allGamePieces = new ArrayList<>();
+
+        for( VariableContainer varCon : mainScope.getAllVariablesOfType(VariableType.GAMEPIECE)){
+            allGamePieces.add(TypeCheckerHelper.parseGamePiece(varCon.getValue()));
+        }
+
+        return allGamePieces;
+
+    }
+
+    /** Changes the value of the variable matching the given identifier.
+     * @param identifier the identifier of a variable.
+     * @param val the new value of the variable matching the given identifier. */
+    public void changeValueOfVariable(String identifier, String val){
+
+        //TODO Might not be needed.
+        //TODO use addVariableToScope to overwrite variable
+
+    }
+
     /** Used to get variables from the current scope.
      * @param identifier the identifier of the requested variable.
      * @return the value of the variable. */
@@ -73,10 +99,23 @@ public class VariableCollectorListener extends TacticBaseListener {
         //Get VariableContainer from the current scope
         if(currentScope == VariableScopeData.ScopeType.MAIN_SCOPE)
             varCon = mainScope.getVariable(identifier);
-        else
+        else{
             varCon = functionScope.getVariable(identifier);
+            if(varCon == null)
+                varCon = mainScope.getVariable(identifier);
+
+        }
+
 
         return varCon;
+    }
+
+    /** @return true if the given identifier is found in the current scope. */
+    private boolean hasBeenInitialized(String identifier){
+
+        VariableContainer varCon = getValueFromScope(identifier);
+
+        return varCon != null;
     }
 
     private String getValueFromArithmeticExpr(String todoTemp){
@@ -192,7 +231,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     @Override
     public void exitGpDcl(Tactic.GpDclContext ctx) {
         String identifier = ctx.identifier(0).getText();
-        addVariableToScope(VariableType.GAMEPIECE, new VariableContainer(identifier, null, VariableType.GAMEPIECE));
+        addVariableToScope(VariableType.GAMEPIECE, new VariableContainer(identifier, "name:" + identifier + ",position:,size:,color:,label:,opacity:,shape:,", VariableType.GAMEPIECE));
     }
 
     @Override
@@ -205,5 +244,65 @@ public class VariableCollectorListener extends TacticBaseListener {
     @Override
     public void exitArithExpr(Tactic.ArithExprContext ctx) {
         ctx.addChild(new ArithmeticResultHolder());
+    }
+
+    @Override
+    public void exitDotAssignment(Tactic.DotAssignmentContext ctx) {
+
+        String identifier = ctx.dotStmt().identifier().get(0).getText();
+
+        if(!hasBeenInitialized(identifier))
+            throw new IllegalArgumentException(); //dot assignment is used on a non-initialized variable
+
+        VariableContainer variableBeingDotted = getValueFromScope(identifier);
+
+        //This section is triggered when DotAssignment is used on a GamePiece
+        if(variableBeingDotted.getType() == VariableType.GAMEPIECE){
+
+            String identifierAfterDot = ctx.dotStmt().identifier().get(1).getText();
+
+            //Parse identifierAfterDot to get the GP property
+            GamePiece.GamePiecePropertyType gpPropType = TypeCheckerHelper.parseGamePiecePropertyType(identifierAfterDot);
+            if(gpPropType == null)
+                throw new IllegalArgumentException(); //A GamePiece is being dotted with a non-GPProperty string
+
+            //Change the property in the GP
+            String newPropertyValue = ctx.value().getText();
+            GamePiece gp = TypeCheckerHelper.parseGamePiece(getValueFromScope(identifier).getValue());
+
+            //Remove citations if needed
+            newPropertyValue = trimCitations(newPropertyValue);
+
+            gp.changeProperty(gpPropType, newPropertyValue);
+
+            //TODO Save the GP?! HOW ?!
+
+            //Save the changed GamePiece
+            String changedGpValue = gp.getGamePieceString();
+            addVariableToScope(VariableType.GAMEPIECE, new VariableContainer(identifier, changedGpValue, VariableType.GAMEPIECE));
+        }
+    }
+
+    /** @return the same string but without " at the start and the end. */
+    private String trimCitations(String input){
+
+        StringBuilder output = new StringBuilder();
+
+        boolean isFirstCitation = false;
+        boolean isLastCitation = false;
+
+        if(input.charAt(0) == '"')
+            isFirstCitation = true;
+        if(input.charAt(input.length() -1) == '"')
+            isLastCitation = true;
+
+        if(isFirstCitation && isLastCitation)
+            return input.substring(1, input.length() -1);
+        if(isFirstCitation)
+            return input.substring(1);
+        if(isLastCitation)
+            return input.substring(0, input.length() -1);
+
+        return input;
     }
 }

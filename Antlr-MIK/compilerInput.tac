@@ -1,11 +1,9 @@
-board_level[2] = "testTwoPath";
-board_level[0] = "testZeroPath";
+GamePiece playerOne;
+playerOne.position = (0,0,0);
+playerOne.label = "PlayerO";
+move(gp, (500,500,0), 5);
 
-GamePiece x;
-int y = 5;
-
-Change(x, "", "testTwo", y);
-Wait(x, 10);
-Move(x, (1,2,3), 2);
-
-vector t = (2,3);
+GamePiece playerTwo;
+playerTwo.position = (0,0,0);
+playerTwo.label = "PlayerT";
+move(playerTwo, (400,400,0), 3);

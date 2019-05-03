@@ -27,4 +27,9 @@ public class Vector {
     public int getZ() {
         return z;
     }
+
+    @Override
+    public String toString() {
+        return "(" + x + "," + y + "," + z + ')';
+    }
 }
