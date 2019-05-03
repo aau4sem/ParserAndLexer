@@ -269,6 +269,10 @@ public class VariableCollectorListener extends TacticBaseListener {
             //Change the property in the GP
             String newPropertyValue = ctx.value().getText();
             GamePiece gp = TypeCheckerHelper.parseGamePiece(getValueFromScope(identifier).getValue());
+
+            //Remove citations if needed
+            newPropertyValue = trimCitations(newPropertyValue);
+
             gp.changeProperty(gpPropType, newPropertyValue);
 
             //TODO Save the GP?! HOW ?!
@@ -277,5 +281,28 @@ public class VariableCollectorListener extends TacticBaseListener {
             String changedGpValue = gp.getGamePieceString();
             addVariableToScope(VariableType.GAMEPIECE, new VariableContainer(identifier, changedGpValue, VariableType.GAMEPIECE));
         }
+    }
+
+    /** @return the same string but without " at the start and the end. */
+    private String trimCitations(String input){
+
+        StringBuilder output = new StringBuilder();
+
+        boolean isFirstCitation = false;
+        boolean isLastCitation = false;
+
+        if(input.charAt(0) == '"')
+            isFirstCitation = true;
+        if(input.charAt(input.length() -1) == '"')
+            isLastCitation = true;
+
+        if(isFirstCitation && isLastCitation)
+            return input.substring(1, input.length() -1);
+        if(isFirstCitation)
+            return input.substring(1);
+        if(isLastCitation)
+            return input.substring(0, input.length() -1);
+
+        return input;
     }
 }
