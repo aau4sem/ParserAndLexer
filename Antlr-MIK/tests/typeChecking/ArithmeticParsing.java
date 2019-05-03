@@ -82,6 +82,16 @@ public class ArithmeticParsing {
         Assert.assertEquals(1f, x, 4);
     }
 
+    @Test
+    public void mod01(){
+        parse("int x = 4 mod 3;");
+
+        Integer x = Integer.parseInt(vlc.getValueFromIdentifier("x").getValue());
+
+        Assert.assertNotNull(x);
+        Assert.assertEquals(1, x.intValue());
+    }
+
     /** Parses the given input and the results can be found in the field. */
     public static void parse(String input){
         TacticLexer lexer = new TacticLexer(new ANTLRInputStream(input));
