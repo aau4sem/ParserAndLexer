@@ -44,7 +44,63 @@ public class ActionCollectorListenerTests {
 
     @Test
     public void change02(){
-        lexer = new TacticLexer(new ANTLRInputStream("GamePiece one; change(one, \"label\",\"test\", 2);"));
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece one; change(one, \"name\",\"test\", 2);"));
+        parser = new Tactic(new CommonTokenStream(lexer));
+        VariableCollectorListener vcl = new VariableCollectorListener();
+        ActionCollectorListener acl = new ActionCollectorListener(vcl);
+        parser.addParseListener(vcl);
+        parser.addParseListener(acl);
+        parser.prog();
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+
+        Assert.assertEquals(1, acl.getActionFunctions().size());
+    }
+
+    @Test
+    public void change03(){
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece one; change(one, \"position\",(2,3,2), 2);"));
+        parser = new Tactic(new CommonTokenStream(lexer));
+        VariableCollectorListener vcl = new VariableCollectorListener();
+        ActionCollectorListener acl = new ActionCollectorListener(vcl);
+        parser.addParseListener(vcl);
+        parser.addParseListener(acl);
+        parser.prog();
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+
+        Assert.assertEquals(1, acl.getActionFunctions().size());
+    }
+
+    @Test
+    public void change04(){
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece one; change(one, \"size\",2.0, 2);"));
+        parser = new Tactic(new CommonTokenStream(lexer));
+        VariableCollectorListener vcl = new VariableCollectorListener();
+        ActionCollectorListener acl = new ActionCollectorListener(vcl);
+        parser.addParseListener(vcl);
+        parser.addParseListener(acl);
+        parser.prog();
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+
+        Assert.assertEquals(1, acl.getActionFunctions().size());
+    }
+
+    @Test
+    public void change05(){
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece one; change(one, \"color\",\"RED\", 2);"));
+        parser = new Tactic(new CommonTokenStream(lexer));
+        VariableCollectorListener vcl = new VariableCollectorListener();
+        ActionCollectorListener acl = new ActionCollectorListener(vcl);
+        parser.addParseListener(vcl);
+        parser.addParseListener(acl);
+        parser.prog();
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+
+        Assert.assertEquals(1, acl.getActionFunctions().size());
+    }
+
+    @Test
+    public void change06(){
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece one; change(one, \"shape\",\"square\", 2);"));
         parser = new Tactic(new CommonTokenStream(lexer));
         VariableCollectorListener vcl = new VariableCollectorListener();
         ActionCollectorListener acl = new ActionCollectorListener(vcl);
