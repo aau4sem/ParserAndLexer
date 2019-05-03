@@ -5,60 +5,31 @@ import model.utils.ArithmeticResultHolder;
 import model.utils.TypeCheckerHelper;
 import model.variables.VariableContainer;
 import model.variables.VariableScopeData;
-
 import gen.*;
-
 import java.util.ArrayList;
 
+/** This class will collect and handle variables during parsing.
+ * The idea is that during the pass, this class will contain a
+ * model with the current state of variables, and other classes
+ * and listeners will request this class for information regarding
+ * variables. */
 public class VariableCollectorListener extends TacticBaseListener {
 
-    /** This class will collect and handle variables during parsing.
-     * The idea is that during the pass, this class will contain a
-     * model with the current state of variables, and other classes
-     * and listeners will request this class for information regarding
-     * variables. */
-
-    /** This listener should overwrite all / implement all method
-     * regarding declarations. */
-
-    /** TODO / Throughts
-     * Fields:
-     *  - mainScope - Used when in the mainScope.
-     *  - functionScope - Only contains one scope. Being used when
-     *                    entering a function and will be reset when
-     *                    exiting a function. Should be searched before
-     *                    mainScope, at all times.
-     *  - Scope currentScope - Used to keep track of the current scope.
-     *
-     * private methods:
-     *  - findVariableFromIdentifier - Searches first the function scope
-     *                    for a value matching the identifier, then the
-     *                    mainScope. If non is found, return null.
-     *
-     * public methods:
-     *  - .. - Used to request a value from an identifier. Will return
-     *         null if value was not found.
-     *  - getTypeFromIdentifier - Used to get a type from an identifier.
-     *
-     * Overwrites: (Everything regarding declarations and entering and exiting functions)
-     * */
-
-    /** Things to remember during implementation:
-     * - Entering / exiting a scope. */
-
+    //Two variableScopeData to keep track of variable declarations in the main and function scope
     private VariableScopeData mainScope = new VariableScopeData(VariableScopeData.ScopeType.MAIN_SCOPE);
     private VariableScopeData functionScope = new VariableScopeData(VariableScopeData.ScopeType.FUNCTION_SCOPE);
 
+    //Keeps track of which scope the parsing/tree walk currently is in
     private VariableScopeData.ScopeType currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
 
+    //All supported variable types
     public enum VariableType { INT, FLOAT, VEC, BOOL, STRING, GAMEPIECE}
 
+    // CORE METHODS -----------------------------------------------------------
 
-    // PRIVATE METHODS ----------------------------------------------
     /** Used to add variables to the current scope.
-     * @param type the type of the given variable.
-     * @param varCon variable container, containing the value of the variable. */
-    private void addVariableToScope(VariableType type, VariableContainer varCon){
+     * @param varCon variable container, containing the value and information of the variable. */
+    private void addVariableToScope(VariableContainer varCon){
         if(currentScope == VariableScopeData.ScopeType.MAIN_SCOPE){
             mainScope.addVariable(varCon);
         }else{
@@ -66,35 +37,14 @@ public class VariableCollectorListener extends TacticBaseListener {
         }
     }
 
-    /** @return all GamePieces instantiated. */
-    public ArrayList<GamePiece> getAllGamePieces(){
-
-        ArrayList<GamePiece> allGamePieces = new ArrayList<>();
-
-        for( VariableContainer varCon : mainScope.getAllVariablesOfType(VariableType.GAMEPIECE)){
-            allGamePieces.add(TypeCheckerHelper.parseGamePiece(varCon.getValue()));
-        }
-
-        return allGamePieces;
-
-    }
-
-    /** Changes the value of the variable matching the given identifier.
-     * @param identifier the identifier of a variable.
-     * @param val the new value of the variable matching the given identifier. */
-    public void changeValueOfVariable(String identifier, String val){
-
-        //TODO Might not be needed.
-        //TODO use addVariableToScope to overwrite variable
-
-    }
-
-    /** Used to get variables from the current scope.
+    /** Used to get variables from the current scope. If the current scope
+     * is function scope, and ff the variable is not found in the function
+     * scope, it will then search the main scope.
      * @param identifier the identifier of the requested variable.
      * @return the value of the variable. */
     private VariableContainer getValueFromScope(String identifier){
 
-        VariableContainer varCon = null;
+        VariableContainer varCon;
 
         //Get VariableContainer from the current scope
         if(currentScope == VariableScopeData.ScopeType.MAIN_SCOPE)
@@ -103,43 +53,58 @@ public class VariableCollectorListener extends TacticBaseListener {
             varCon = functionScope.getVariable(identifier);
             if(varCon == null)
                 varCon = mainScope.getVariable(identifier);
-
         }
-
 
         return varCon;
     }
-
-    /** @return true if the given identifier is found in the current scope. */
-    private boolean hasBeenInitialized(String identifier){
-
-        VariableContainer varCon = getValueFromScope(identifier);
-
-        return varCon != null;
-    }
-
-    private String getValueFromArithmeticExpr(String todoTemp){
-        return null;
-    }
-
-    // PUBLIC METHODS ------------------------------------------------
 
     /** Used to get a value from an identifier. */
     public VariableContainer getValueFromIdentifier(String identifier){
         return getValueFromScope(identifier);
     }
 
-    /** Used to get a type from an identifier. */
-    public VariableType getTypeFromIdentifier(){
-        //TODO
+    /** @return true if the given identifier is found in the current scope or an above scope. */
+    private boolean hasBeenInitialized(String identifier){
+        return getValueFromScope(identifier) != null;
+    }
 
-        return null;
+    // UTILITIES -----------------------------------------------------------------
+
+    /** @return the same string but without " at the start and the end. */
+    private String trimCitations(String input){
+
+        boolean isFirstCitation = false;
+        boolean isLastCitation = false;
+
+        if(input.charAt(0) == '"')
+            isFirstCitation = true;
+        if(input.charAt(input.length() -1) == '"')
+            isLastCitation = true;
+
+        if(isFirstCitation && isLastCitation)
+            return input.substring(1, input.length() -1);
+        if(isFirstCitation)
+            return input.substring(1);
+        if(isLastCitation)
+            return input.substring(0, input.length() -1);
+
+        return input;
+    }
+
+    /** @return all GamePieces instantiated. */
+    public ArrayList<GamePiece> getAllGamePieces(){
+
+        ArrayList<GamePiece> allGamePieces = new ArrayList<>();
+
+        for( VariableContainer varCon : mainScope.getAllVariablesOfType(VariableType.GAMEPIECE))
+            allGamePieces.add(TypeCheckerHelper.parseGamePiece(varCon.getValue()));
+
+        return allGamePieces;
     }
 
     // OVERWRITES ----------------------------------------------------
 
-    // Enter and exit function bodies:
-    /** When entering a function, the current scope is changed. */
+    /** When entering a function definition, the current scope is changed. */
     @Override
     public void enterFunctionDef(Tactic.FunctionDefContext ctx) {
         this.currentScope = VariableScopeData.ScopeType.FUNCTION_SCOPE;
@@ -153,6 +118,8 @@ public class VariableCollectorListener extends TacticBaseListener {
         //Reset the function scope
         this.functionScope = new VariableScopeData(VariableScopeData.ScopeType.FUNCTION_SCOPE);
     }
+
+    //TODO: If we still support functions: The scope should also change when entering a function call
 
     // Declarations:
     @Override
@@ -174,10 +141,9 @@ public class VariableCollectorListener extends TacticBaseListener {
                 }
             }
             else if(ctx.identifier().get(1) != null){ //format: INTEGER identifier ASSIGN identifier
-                String otherIdentifier = ctx.identifier().get(1).getText(); //Get the second identifier from the statement
+                //Get the second identifier from the statement and the matching variable
+                String otherIdentifier = ctx.identifier().get(1).getText();
                 VariableContainer varCon = getValueFromScope(otherIdentifier);
-
-                //value = getValueFromScope(otherIdentifier); //Get the value from
 
                 if(varCon == null){
                     System.out.println("The requested variable has not been declared.");
@@ -195,16 +161,17 @@ public class VariableCollectorListener extends TacticBaseListener {
                 }
 
                 value = TypeCheckerHelper.parseInt(varCon.getValue()).toString();
-            } else if(ctx.arithExpr() != null) //format: INTEGER identifier ASSIGN arithExpr
-                value = getValueFromArithmeticExpr(""); //TODO TEMP
-            else
-                throw new IllegalArgumentException(); //If this is thrown, the grammar has been changed.
 
+            } else if(ctx.arithExpr() != null) {  //format: INTEGER identifier ASSIGN arithExpr
+                value = null; //TODO TEMP //Use the same technique used for gathering arguments
+            }else{
+                throw new IllegalArgumentException(); //If this is thrown, the grammar has been changed.
+            }
         }else{ //format: INTEGER identifier
             value = null;
         }
 
-        addVariableToScope(VariableType.INT, new VariableContainer(identifier, value, VariableType.INT));
+        addVariableToScope(new VariableContainer(identifier, value, VariableType.INT));
     }
 
     @Override
@@ -227,11 +194,11 @@ public class VariableCollectorListener extends TacticBaseListener {
         super.exitStringDcl(ctx);
     }
 
-    /** The GP declaration can only have one format: GamePiece identifier.*/
     @Override
     public void exitGpDcl(Tactic.GpDclContext ctx) {
+        //The GP declaration can only have one format: GamePiece identifier.
         String identifier = ctx.identifier(0).getText();
-        addVariableToScope(VariableType.GAMEPIECE, new VariableContainer(identifier, "name:" + identifier + ",position:,size:,color:,label:,opacity:,shape:,", VariableType.GAMEPIECE));
+        addVariableToScope(new VariableContainer(identifier, "name:" + identifier + ",position:,size:,color:,label:,opacity:,shape:,", VariableType.GAMEPIECE));
     }
 
     @Override
@@ -240,10 +207,9 @@ public class VariableCollectorListener extends TacticBaseListener {
     }
 
     // Arithmetic expression evaluation
-
     @Override
     public void exitArithExpr(Tactic.ArithExprContext ctx) {
-        ctx.addChild(new ArithmeticResultHolder());
+        ctx.addChild(new ArithmeticResultHolder()); //TODO Not final
     }
 
     @Override
@@ -251,8 +217,10 @@ public class VariableCollectorListener extends TacticBaseListener {
 
         String identifier = ctx.dotStmt().identifier().get(0).getText();
 
-        if(!hasBeenInitialized(identifier))
-            throw new IllegalArgumentException(); //dot assignment is used on a non-initialized variable
+        if(!hasBeenInitialized(identifier)){
+            System.out.println("Dot assignment is used on a non-initialized variable.");
+            throw new IllegalArgumentException();
+        }
 
         VariableContainer variableBeingDotted = getValueFromScope(identifier);
 
@@ -263,46 +231,20 @@ public class VariableCollectorListener extends TacticBaseListener {
 
             //Parse identifierAfterDot to get the GP property
             GamePiece.GamePiecePropertyType gpPropType = TypeCheckerHelper.parseGamePiecePropertyType(identifierAfterDot);
-            if(gpPropType == null)
-                throw new IllegalArgumentException(); //A GamePiece is being dotted with a non-GPProperty string
 
-            //Change the property in the GP
-            String newPropertyValue = ctx.value().getText();
+            if(gpPropType == null){
+                System.out.println("A GamePiece is being dotted with a non-GPProperty string");
+                throw new IllegalArgumentException();
+            }
+
+            //Change the property in the GP (also removed citation-marks if needed)
+            String newPropertyValue = trimCitations(ctx.value().getText());
             GamePiece gp = TypeCheckerHelper.parseGamePiece(getValueFromScope(identifier).getValue());
-
-            //Remove citations if needed
-            newPropertyValue = trimCitations(newPropertyValue);
-
             gp.changeProperty(gpPropType, newPropertyValue);
-
-            //TODO Save the GP?! HOW ?!
 
             //Save the changed GamePiece
             String changedGpValue = gp.getGamePieceString();
-            addVariableToScope(VariableType.GAMEPIECE, new VariableContainer(identifier, changedGpValue, VariableType.GAMEPIECE));
+            addVariableToScope(new VariableContainer(identifier, changedGpValue, VariableType.GAMEPIECE));
         }
-    }
-
-    /** @return the same string but without " at the start and the end. */
-    private String trimCitations(String input){
-
-        StringBuilder output = new StringBuilder();
-
-        boolean isFirstCitation = false;
-        boolean isLastCitation = false;
-
-        if(input.charAt(0) == '"')
-            isFirstCitation = true;
-        if(input.charAt(input.length() -1) == '"')
-            isLastCitation = true;
-
-        if(isFirstCitation && isLastCitation)
-            return input.substring(1, input.length() -1);
-        if(isFirstCitation)
-            return input.substring(1);
-        if(isLastCitation)
-            return input.substring(0, input.length() -1);
-
-        return input;
     }
 }
