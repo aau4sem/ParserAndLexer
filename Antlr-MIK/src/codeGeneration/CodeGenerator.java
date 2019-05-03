@@ -195,8 +195,6 @@ public class CodeGenerator {
 
     private ArrayList<String> getAllLinesFromFile(String filePath){
 
-        System.out.println("HERE: " + filePath);
-
         File file = new File(filePath);
 
         BufferedReader reader = null;
