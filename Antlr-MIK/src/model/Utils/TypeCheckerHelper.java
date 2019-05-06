@@ -107,7 +107,9 @@ public class TypeCheckerHelper {
 
 
 
-    /** Returns a Vector if the given string is an vector, else null. */
+    /** Returns a Vector if the given string is an vector, else null.
+     * //TODO Current only parses vectors whose values are of the type int.
+     * //TODO Do we support float vectors? */
     public static Vector parseVector(String val){
         try {
             StringBuilder xString = new StringBuilder();

@@ -1,5 +1,6 @@
 package customListeners;
 
+import exceptions.IllegalArgumentType;
 import model.dataTypes.GamePiece;
 import model.utils.ArithmeticGatherer;
 import model.utils.TypeCheckerHelper;
@@ -226,7 +227,148 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     @Override
     public void exitVecDcl(Tactic.VecDclContext ctx) {
-        super.exitVecDcl(ctx);
+
+        String identifier = ctx.children.get(1).getText();
+        String value = null;
+
+        //Is there an assign?
+        if(ctx.ASSIGN() != null){ //format: VEC identifier ASSIGN (vec | vecExpr | functionCall | identifier);
+            if(ctx.vec() != null) { //format: VEC identifier ASSIGN vec //format: vector x = (3,2,3) eller vector x = (3,2)
+
+                //Get all children of type number
+                ArrayList<Tactic.NumberContext> numbers = new ArrayList<>();
+
+                for(int i = 0; i < ctx.vec().children.size(); i++){
+                    if(ctx.vec().children.get(i) instanceof Tactic.NumberContext)
+                        numbers.add((Tactic.NumberContext)ctx.vec().children.get(i));
+                }
+
+                //2d or 3d vector? Then check types of values
+                if(numbers.size() == 2){ //2d vector
+
+                    int intValues = 0;
+                    int floatValues = 0;
+
+                    //Count number of each type
+                    for(Tactic.NumberContext numCon : numbers){
+                        if(numCon.integer() != null)
+                            intValues++;
+                        if(numCon.floatVal() != null)
+                            floatValues++;
+                    }
+
+                    if(intValues == 2){
+
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("(");
+                        sb.append(numbers.get(0).integer().getText());
+                        sb.append(",");
+                        sb.append(numbers.get(1).integer().getText());
+                        sb.append(",");
+                        sb.append("-1");
+                        sb.append(")");
+
+                        value = sb.toString();
+
+                    }else if(floatValues == 2){
+
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("(");
+                        sb.append(numbers.get(0).floatVal().getText());
+                        sb.append(",");
+                        sb.append(numbers.get(1).floatVal().getText());
+                        sb.append(",");
+                        sb.append("-1");
+                        sb.append(")");
+
+                        value = sb.toString();
+
+                    } else{
+                        System.out.println("The vector has been declared with a mix of types!");
+                        throw new IllegalArgumentException();
+                    }
+
+                } else if(numbers.size() == 3){ //3d vector
+
+                    int intValues = 0;
+                    int floatValues = 0;
+
+                    //Count number of each type
+                    for(Tactic.NumberContext numCon : numbers){
+                        if(numCon.integer() != null)
+                            intValues++;
+                        if(numCon.floatVal() != null)
+                            floatValues++;
+                    }
+
+                    if(intValues == 3){
+
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("(");
+                        sb.append(numbers.get(0).integer().getText());
+                        sb.append(",");
+                        sb.append(numbers.get(1).integer().getText());
+                        sb.append(",");
+                        sb.append(numbers.get(2).integer().getText());
+                        sb.append(")");
+
+                        value = sb.toString();
+
+                    }else if(floatValues == 3){
+
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("(");
+                        sb.append(numbers.get(0).floatVal().getText());
+                        sb.append(",");
+                        sb.append(numbers.get(1).floatVal().getText());
+                        sb.append(")");
+                        sb.append(numbers.get(2).floatVal().getText());
+                        sb.append(")");
+
+                        value = sb.toString();
+
+                    } else{
+                        System.out.println("The vector has been declared with a mix of types!");
+                        throw new IllegalArgumentException();
+                    }
+
+                } else{
+                    throw new IllegalArgumentException(); //Cannot happen unless grammar has been changed
+                }
+            } else if(ctx.vecExpr() != null){
+
+                //TODO parse vector expression
+
+            } else if(ctx.identifier().get(1) != null){ //format: VEC identifier ASSIGN identifier
+                //Get the second identifier from the statement and the matching variable
+                String otherIdentifier = ctx.identifier().get(1).getText();
+                VariableContainer varCon = getValueFromScope(otherIdentifier);
+
+                if(varCon == null){
+                    System.out.println("The requested variable has not been declared.");
+                    throw new IllegalArgumentException();
+                }
+
+                if(varCon.getValue() == null){
+                    System.out.println("The requested variable has been declared but not assigned.");
+                    throw new IllegalArgumentException();
+                }
+
+                if(varCon.getType() != VariableType.VEC){
+                    System.out.println("The requested variable does exist, is assigned, but is not a vector."); //TODO This should never happen: we check the value before assigning it.
+                    throw new IllegalArgumentException();
+                }
+
+                value = TypeCheckerHelper.parseVector(varCon.getValue()).toString();
+
+            } else{
+                throw new IllegalArgumentException(); //If this is thrown, the grammar has been changed.
+            }
+        }else{ //format: VEC identifier
+            value = null;
+        }
+
+        addVariableToScope(new VariableContainer(identifier, value, VariableType.VEC));
     }
 
     @Override

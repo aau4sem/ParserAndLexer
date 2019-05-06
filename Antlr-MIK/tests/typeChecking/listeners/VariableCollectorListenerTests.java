@@ -127,7 +127,7 @@ public class VariableCollectorListenerTests {
 
     @Test
     public void vectorDcl02(){
-        lexer = new TacticLexer(new ANTLRInputStream("vector x = (2,3);"));
+        lexer = new TacticLexer(new ANTLRInputStream("vector x = (22,3);"));
         parser = new Tactic(new CommonTokenStream(lexer));
         VariableCollectorListener vcl = new VariableCollectorListener();
         parser.addParseListener(vcl);
@@ -142,8 +142,33 @@ public class VariableCollectorListenerTests {
         //Does it have the right value?
         Vector vec = TypeCheckerHelper.parseVector(varCon.getValue());
         Assert.assertNotNull(vec);
-        Assert.assertEquals(2, vec.getX());
+        Assert.assertEquals(22, vec.getX());
         Assert.assertEquals(3, vec.getY());
+        Assert.assertEquals(-1, vec.getZ());
+
+        //Does it have the right type?
+        Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.VEC);
+    }
+
+    @Test
+    public void vectorDcl03(){
+        lexer = new TacticLexer(new ANTLRInputStream("vector x = (2.2,3.3);"));
+        parser = new Tactic(new CommonTokenStream(lexer));
+        VariableCollectorListener vcl = new VariableCollectorListener();
+        parser.addParseListener(vcl);
+        parser.prog();
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right value?
+        Vector vec = TypeCheckerHelper.parseVector(varCon.getValue());
+        Assert.assertNotNull(vec);
+        Assert.assertEquals(2.2, vec.getX());
+        Assert.assertEquals(3.3, vec.getY());
         Assert.assertEquals(-1, vec.getZ());
 
         //Does it have the right type?
