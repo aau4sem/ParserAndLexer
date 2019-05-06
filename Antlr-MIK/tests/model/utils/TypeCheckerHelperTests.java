@@ -275,4 +275,32 @@ public class TypeCheckerHelperTests {
         Assert.assertNotNull(output);
         Assert.assertEquals(GamePiece.GamePiecePropertyType.SHAPE, output);
     }
+
+    @Test
+    public void parseString01(){
+        String input = "\"test\"";
+        String output = TypeCheckerHelper.parseString(input);
+        Assert.assertEquals("test", output);
+    }
+
+    @Test
+    public void parseString02(){
+        String input = "test\"";
+        String output = TypeCheckerHelper.parseString(input);
+        Assert.assertEquals("test", output);
+    }
+
+    @Test
+    public void parseString03(){
+        String input = "\"test";
+        String output = TypeCheckerHelper.parseString(input);
+        Assert.assertEquals("test", output);
+    }
+
+    @Test
+    public void parseString04(){
+        String input = "test";
+        String output = TypeCheckerHelper.parseString(input);
+        Assert.assertEquals("test", output);
+    }
 }

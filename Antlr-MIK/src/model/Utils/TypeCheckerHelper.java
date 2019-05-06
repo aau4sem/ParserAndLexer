@@ -157,4 +157,19 @@ public class TypeCheckerHelper {
 
         return null;
     }
+
+    /** @return the same string but with removed start and end parentheses. "test" -> test*/
+    public static String parseString(String val){
+
+        String output = val; //Does this even copy the content?
+
+        if(output.charAt(0) == '"')
+            output = output.substring(1);
+
+        if(output.charAt(output.length() - 1) == '"')
+            output = output.substring(0, output.length() - 1);
+
+
+        return output;
+    }
 }
