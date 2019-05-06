@@ -44,6 +44,18 @@ public class TypeCheckerHelper {
         }
     }
 
+    /** @return an Integer if the given string is an integer, else null. */
+    public static int trimFloatToInt(String val){
+        try {
+            Float floatVal = Float.parseFloat(val);
+            return floatVal.intValue();
+
+
+        } catch (NumberFormatException e){
+            throw new IllegalArgumentException();
+        }
+    }
+
     /** @return a Float if the given string is a float, else null. */
     public static Float parseFloat(String val){
         try {
