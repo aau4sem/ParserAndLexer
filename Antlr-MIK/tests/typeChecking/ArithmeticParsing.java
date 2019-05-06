@@ -3,6 +3,8 @@ package typeChecking;
 import customListeners.VariableCollectorListener;
 import gen.Tactic;
 import gen.TacticLexer;
+import model.utils.TypeCheckerHelper;
+import model.variables.VariableContainer;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.Assert;
@@ -140,6 +142,24 @@ public class ArithmeticParsing {
 
         Assert.assertNotNull(x);
         Assert.assertEquals(1, x.intValue());
+    }
+
+    @Test
+    public void arithExpr01(){
+        TacticLexer lexer = new TacticLexer(new ANTLRInputStream("int i = 3; int x = 2 + 3 * 1 - (2 + 2) * (2 + 2 * 2) + i;"));
+        Tactic parser = new Tactic(new CommonTokenStream(lexer));
+        VariableCollectorListener vcl = new VariableCollectorListener();
+        parser.addParseListener(vcl);
+        parser.prog();
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right value?
+        Assert.assertEquals(-16, TypeCheckerHelper.parseInt(varCon.getValue()).intValue());
     }
 
     /** Parses the given input and the results can be found in the field. */
