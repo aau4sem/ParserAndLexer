@@ -41,6 +41,16 @@ public class VariableCollectorListener extends TacticBaseListener {
         }
     }
 
+    /** used to overwrite a value of a variable in the current scope.
+     * @param val the new value that will be used to overwrite the old one.
+     * @param identifier the identifier of the variable to overwrite. */
+    private void overwriteValueOfVariable(String identifier, String val){
+        if(currentScope == VariableScopeData.ScopeType.MAIN_SCOPE)
+            mainScope.overwriteValueOfVariable(identifier, val);
+        else
+            functionScope.overwriteValueOfVariable(identifier, val);
+    }
+
     /** Used to get variables from the current scope. If the current scope
      * is function scope, and ff the variable is not found in the function
      * scope, it will then search the main scope.
@@ -114,6 +124,85 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     // OVERWRITES ----------------------------------------------------
 
+    @Override
+    public void exitAssignment(Tactic.AssignmentContext ctx) {
+
+        String identifier = ctx.identifier(0).getText();
+        String value = null;
+
+        //Check the identifier on the left side of the assignment
+        VariableContainer varConToOverwrite = getValueFromIdentifier(identifier);
+
+        if(varConToOverwrite == null){
+            System.out.println("The variable to overwrite does not exist!");
+            throw new IllegalArgumentException();
+        }
+
+        VariableType typeLeftIdentifier = varConToOverwrite.getType();
+
+
+        //TODO Check if it is an array assignment
+
+        if(ctx.value() != null){ //format: identifier = value
+
+            //Get value
+            Tactic.ValueContext valueContext = ctx.value(); //format: identifier | number | bool | string | vec;
+            if (valueContext.identifier() != null){ //format: identifier
+
+                VariableContainer varConRight = getValueFromIdentifier(valueContext.identifier().getText());
+
+                if(varConRight == null){
+                    System.out.println("The identifier on the right side of equals is not found.");
+                    throw new IllegalArgumentException();
+                }
+
+                //Type checking for assignment
+                if(typeLeftIdentifier == varConRight.getType()){
+                    value = varConRight.getValue();
+                } else if(typeLeftIdentifier == VariableType.INT && varConRight.getType() == VariableType.FLOAT){
+
+                    //TODO We do want to casts float to int right?
+                    value = String.valueOf(TypeCheckerHelper.trimFloatToInt(varConRight.getValue())); //Cast value from float to int
+                } else if(typeLeftIdentifier == VariableType.FLOAT && varConRight.getType() == VariableType.INT){
+
+                    //TODO We do want to casts int to float right?
+                    value = varConRight.getValue();
+                } else{
+
+                    System.out.println("The value in the right side of the assignment is wrong.");
+                    throw new IllegalArgumentException();
+                }
+
+
+            }else if(valueContext.number() != null){ //format: number
+                throw new IllegalArgumentException(); //TODO Not yet implemented
+            }else if(valueContext.bool() != null){ //format: bool
+                throw new IllegalArgumentException(); //TODO Not yet implemented
+            }else if(valueContext.string() != null){ //format: string
+                throw new IllegalArgumentException(); //TODO Not yet implemented
+            } else if(valueContext.vec() != null){ //format: vec
+                throw new IllegalArgumentException(); //TODO Not yet implemented
+            }else
+                throw new IllegalArgumentException(); //Grammar has changed
+
+        } else if(ctx.arithExpr() != null){ //format identifier = arithExpr
+            throw new IllegalArgumentException(); //TODO Not yet implemented
+        } else if(ctx.functionCall() != null){ //format identifier = functionCall
+            throw new IllegalArgumentException(); //TODO Not yet implemented
+        } else if(ctx.boolStmt() != null){ //format identifier = boolStmt
+            throw new IllegalArgumentException(); //TODO Not yet implemented
+        } else if(ctx.vecExpr() != null){ //format identifier = vecExpr
+            throw new IllegalArgumentException(); //TODO Not yet implemented
+        } else if(ctx.identifier().size() == 2){ //format identifier = (identifier (LBRACKET integer RBRACKET)+) | dotStmt)
+            throw new IllegalArgumentException(); //TODO Not yet implemented
+        } else
+            throw new IllegalArgumentException(); //Grammar has changed
+
+        overwriteValueOfVariable(identifier, value);
+    }
+
+
+    // Functions:
     /** When entering a function definition, the current scope is changed. */
     @Override
     public void enterFunctionDef(Tactic.FunctionDefContext ctx) {
