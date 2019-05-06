@@ -306,27 +306,4 @@ public class VariableCollectorListenerTests {
         //Does it have the right type?
         Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.FLOAT);
     }
-
-    @Test
-    public void arithExpr01(){
-        lexer = new TacticLexer(new ANTLRInputStream("(2 + 2) * (2 + 2 * 2) + i;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
-
-        /*
-        VariableContainer varCon = vcl.getValueFromIdentifier("x");
-
-        //Was it saved?
-        Assert.assertNotNull(varCon);
-
-        //Does it have the right value?
-        Assert.assertEquals(6, Float.parseFloat(varCon.getValue()), 2);
-
-        //Does it have the right type?
-        Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.FLOAT);*/
-        //TODO
-    }
 }
