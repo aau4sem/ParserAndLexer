@@ -50,8 +50,8 @@ arithExprParenth : arithExprRight? arithExprParenthMiddle (arithExprBoth arithEx
 arithExprParenthMiddle : LPAREN arithExpr RPAREN ;
 arithExprLeft : (arithAction (identifier | number))+ ; //Open left: + 2 + 2 +2
 arithExprRight : ((identifier | number) arithAction)+ ; //Open right: 2 + 2 + 2 +
-arithExprMiddle : (identifier | number) (arithAction (identifier | number))*; //Not open: 2 + 2 + 2
-arithExprBoth : arithAction ((identifier | number) arithAction)* ;
+arithExprMiddle : (identifier | number) (arithAction (identifier | number))+; //Not open: 2 + 2 + 2
+arithExprBoth : arithAction ((identifier | number) arithAction)+ ;
 arithAction : ADDITION | SUBTRACTION | DIVISION | MULTIPLY | MODULO ;
 
 
