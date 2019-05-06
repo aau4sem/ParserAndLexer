@@ -41,6 +41,15 @@ public class VariableScopeData {
         variables.put(varCon.getIdentifier(), varCon);
     }
 
+    /** Overwrites the value of the variable matching the given identifier.
+     * @param identifier the identifier of the value to overwrite.
+     * @param val the new value to overwrite with. */
+    public void overwriteValueOfVariable(String identifier, String val){
+        VariableContainer varCon = variables.get(identifier);
+        varCon.overwriteValue(val);
+        variables.put(identifier, varCon);
+    }
+
     /** Used to get a variable from this scope. Returns null
      * if the quested variable does not exist.  */
     public VariableContainer getVariable(String identifier){
