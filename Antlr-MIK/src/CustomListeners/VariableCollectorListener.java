@@ -7,7 +7,10 @@ import model.utils.TypeCheckerHelper;
 import model.variables.VariableContainer;
 import model.variables.VariableScopeData;
 import gen.*;
+import org.antlr.v4.runtime.tree.ParseTree;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /** This class will collect and handle variables during parsing.
  * The idea is that during the pass, this class will contain a
@@ -146,14 +149,15 @@ public class VariableCollectorListener extends TacticBaseListener {
                     System.out.println("The value being assigned is not of type integer.");
                     throw new IllegalArgumentException();
                 }
+            } else if(ctx.arithExpr() != null){ //format: INTEGER identifier ASSIGN arithExpr
+                String result = String.valueOf(getArithmeticResult(ctx.arithExpr())); //Get the result of the arithmetic expression
+                value = String.valueOf(TypeCheckerHelper.trimFloatToInt(result)); //Convert the result to an integer and save the value
             } else if(ctx.identifier().get(1) != null){ //format: INTEGER identifier ASSIGN identifier
 
                 //Get the second identifier from the statement and the matching variable
                 VariableContainer varCon = identifierToValueCheck(ctx.identifier().get(1).getText(), VariableType.INT);
                 value = TypeCheckerHelper.parseInt(varCon.getValue()).toString();
 
-            } else if(ctx.arithExpr() != null) {  //format: INTEGER identifier ASSIGN arithExpr
-                value = null; //TODO TEMP //Use the same technique used for gathering arguments
             }else{
                 throw new IllegalArgumentException(); //If this is thrown, the grammar has been changed.
             }
@@ -458,36 +462,103 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     // ARITHMETIC EXPRESSIONS ------------------------------
 
+    private float getArithmeticResult(Tactic.ArithExprContext ctx){
+
+        if(ctx.children.get(0).getChild(ctx.children.get(0).getChildCount() -1)  instanceof ArithmeticGatherer)
+            return (float)((ArithmeticGatherer) ctx.children.get(0).getChild(ctx.children.get(0).getChildCount() -1)).getResult();
+
+        //This should never happen. If it does, the arithmetic expression
+        //parsing (below functions) did not go ad expected.
+        throw new IllegalArgumentException();
+    }
+
+    @Override
+    public void exitArithExprParent(Tactic.ArithExprParentContext ctx) {
+
+        //Get all arithmeticGatherers from the children
+        ArrayList<ArithmeticGatherer> ags = new ArrayList<>();
+
+        for (ParseTree child : ctx.children)
+            ags.add((ArithmeticGatherer) child.getChild(child.getChildCount() -1));
+
+        //Put together the final ag with the final equation
+        ArithmeticGatherer finalAG = new ArithmeticGatherer();
+        for (ArithmeticGatherer ag : ags)
+            finalAG.addValue(ag.getEquation());
+
+        ctx.addChild(finalAG);
+    }
+
+    @Override
+    public void exitArithExprParenthMiddle(Tactic.ArithExprParenthMiddleContext ctx) {
+
+        ArithmeticGatherer ag = new ArithmeticGatherer();
+        ag.addValue("(");
+        ag.addValue(((ArithmeticGatherer)ctx.arithExpr().children.get(0).getChild(ctx.arithExpr().children.get(0).getChildCount() -1)).getEquation());
+        ag.addValue(")");
+
+        ctx.addChild(ag);
+    }
 
     @Override
     public void exitArithExprMiddle(Tactic.ArithExprMiddleContext ctx) {
 
         ArithmeticGatherer ag = new ArithmeticGatherer();
+        getAllArithmeticEndNodes(ag, ctx.children);
 
-        ag.addValue("(");
+        //Attach ArithmeticGatherer to the current node as a child
+        ctx.addChild(ag);
+    }
 
-        for(int i = 0; i < ctx.children.size(); i++){
+    @Override
+    public void exitArithExprRight(Tactic.ArithExprRightContext ctx) {
+        ArithmeticGatherer ag = new ArithmeticGatherer();
+        getAllArithmeticEndNodes(ag, ctx.children);
 
-            if(ctx.children.get(i) instanceof Tactic.NumberContext){
-                ag.addValue(ctx.children.get(i).getText());
+        //Attach ArithmeticGatherer to the current node as a child
+        ctx.addChild(ag);
+    }
 
-            } else if(ctx.children.get(i) instanceof Tactic.ArithActionContext){
+    @Override
+    public void exitArithExprLeft(Tactic.ArithExprLeftContext ctx) {
+        ArithmeticGatherer ag = new ArithmeticGatherer();
+        getAllArithmeticEndNodes(ag, ctx.children);
 
-                ag.addValue(ctx.children.get(i).getText());
+        //Attach ArithmeticGatherer to the current node as a child
+        ctx.addChild(ag);
+    }
 
-            } else if(ctx.children.get(i) instanceof Tactic.IdentifierContext){
+    @Override
+    public void exitArithExprBoth(Tactic.ArithExprBothContext ctx) {
+        ArithmeticGatherer ag = new ArithmeticGatherer();
+        getAllArithmeticEndNodes(ag, ctx.children);
 
-                System.out.println("temp");
+        //Attach ArithmeticGatherer to the current node as a child
+        ctx.addChild(ag);
+    }
 
-            }else{
+    /** Fills the given ArithmeticGatherer with the values of children in the given list.
+     * @param nodes the list of children found in: arithExprMiddle, arithExprRight, arithExprBoth and arithExprLeft.*/
+    private void getAllArithmeticEndNodes(ArithmeticGatherer ag, List<ParseTree> nodes){
+        for (ParseTree node : nodes) {
+            if (node instanceof Tactic.NumberContext) {
+                ag.addValue(node.getText());
+            } else if (node instanceof Tactic.ArithActionContext) {
+                ag.addValue(node.getText());
+            } else if (node instanceof Tactic.IdentifierContext) {
+
+                VariableContainer varCon = getValueFromIdentifier(node.getText());
+
+                if(varCon == null)
+                    throw new IllegalArgumentException(); //The variable has not been initialized
+
+                if(varCon.getType() != VariableType.INT && varCon.getType() != VariableType.FLOAT)
+                    throw new IllegalArgumentException(); //Not the correct type
+
+                ag.addValue(varCon.getValue());
+            } else {
                 throw new IllegalArgumentException(); //Grammar has changed
             }
-
-
         }
-
-        ag.addValue(")");
-
-        //TODO attach ag
     }
 }
