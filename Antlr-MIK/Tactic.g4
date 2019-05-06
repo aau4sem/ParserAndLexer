@@ -37,7 +37,7 @@ stringDcl   : STRING identifier (ASSIGN (string | identifier | functionCall))?;
 gpDcl       : GAMEPIECE identifier (ASSIGN (identifier | functionCall))?;
 arrayDcl    : type (LBRACKET integer RBRACKET)+ identifier (ASSIGN (LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY) | (identifier))?;
 
-assignment  : identifier (LBRACKET integer RBRACKET)* ASSIGN (value | arithExpr | functionCall | boolStmt | vecExpr | (identifier (LBRACKET integer RBRACKET)*) | dotStmt);
+assignment  : identifier (LBRACKET integer RBRACKET)* ASSIGN (value | arithExpr | functionCall | boolStmt | vecExpr | (identifier (LBRACKET integer RBRACKET)+) | dotStmt);
 
 //Datastructure operations
 arrayExpr   : boolStmt | arithExpr | gpDcl | identifier | dotStmt | arrayDcl | value | vec | floatDcl | vecExpr ;
