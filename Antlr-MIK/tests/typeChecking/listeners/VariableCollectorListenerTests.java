@@ -94,7 +94,7 @@ public class VariableCollectorListenerTests {
         Assert.assertNotNull(varCon);
 
         //Does it have the right value?
-        Assert.assertEquals(5.3, Float.parseFloat(varCon.getValue()));
+        Assert.assertEquals(5.3, Float.parseFloat(varCon.getValue()),4);
 
         //Does it have the right type?
         Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.FLOAT);
