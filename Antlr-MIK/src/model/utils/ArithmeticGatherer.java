@@ -18,6 +18,14 @@ public class ArithmeticGatherer implements TerminalNode {
 
     private StringBuilder equation = new StringBuilder();
 
+    public void addValue(String val){
+        equation.append(val);
+    }
+
+    public String getEquation(){
+        return equation.toString();
+    }
+
     @Override
     public ParseTree getParent() {
         return null;

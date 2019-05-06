@@ -69,6 +69,33 @@ public class VariableCollectorListener extends TacticBaseListener {
         return getValueFromScope(identifier) != null;
     }
 
+    /** Used to check if an identifier is declared, assigned and has the correct type.
+     * Will throw an exceptions of any of the three cases does not pass.
+     * @param identifier the identifier for the value to check.
+     * @param requestedType the type the value should have.
+     * @return a variableContainer holding the value matching the given identifier. */
+    public VariableContainer identifierToValueCheck(String identifier, VariableType requestedType){
+
+        VariableContainer varCon = getValueFromScope(identifier);
+
+        if(varCon == null){
+            System.out.println("The requested variable has not been declared.");
+            throw new IllegalArgumentException();
+        }
+
+        if(varCon.getValue() == null){
+            System.out.println("The requested variable has been declared but not assigned.");
+            throw new IllegalArgumentException();
+        }
+
+        if(varCon.getType() != requestedType){
+            System.out.println("The requested variable does exist, is assigned, but is not of the right type."); //TODO This should never happen: we check the value before assigning it.
+            throw new IllegalArgumentException();
+        }
+
+        return varCon;
+    }
+
     // UTILITIES -----------------------------------------------------------------
 
     /** @return the same string but without " at the start and the end. */
@@ -141,25 +168,9 @@ public class VariableCollectorListener extends TacticBaseListener {
                     throw new IllegalArgumentException();
                 }
             } else if(ctx.identifier().get(1) != null){ //format: INTEGER identifier ASSIGN identifier
+
                 //Get the second identifier from the statement and the matching variable
-                String otherIdentifier = ctx.identifier().get(1).getText();
-                VariableContainer varCon = getValueFromScope(otherIdentifier);
-
-                if(varCon == null){
-                    System.out.println("The requested variable has not been declared.");
-                    throw new IllegalArgumentException();
-                }
-
-                if(varCon.getValue() == null){
-                    System.out.println("The requested variable has been declared but not assigned.");
-                    throw new IllegalArgumentException();
-                }
-
-                if(varCon.getType() != VariableType.INT){
-                    System.out.println("The requested variable does exist, is assigned, but is not an integer."); //TODO This should never happen: we check the value before assigning it.
-                    throw new IllegalArgumentException();
-                }
-
+                VariableContainer varCon = identifierToValueCheck(ctx.identifier().get(1).getText(), VariableType.INT);
                 value = TypeCheckerHelper.parseInt(varCon.getValue()).toString();
 
             } else if(ctx.arithExpr() != null) {  //format: INTEGER identifier ASSIGN arithExpr
@@ -194,25 +205,9 @@ public class VariableCollectorListener extends TacticBaseListener {
             }else if(ctx.identifier().get(1) != null) { //format: FLOAT identifier ASSIGN identifier
 
                 //Get the second identifier from the statement and the matching variable
-                String otherIdentifier = ctx.identifier().get(1).getText();
-                VariableContainer varCon = getValueFromScope(otherIdentifier);
-
-                if(varCon == null){
-                    System.out.println("The requested variable has not been declared.");
-                    throw new IllegalArgumentException();
-                }
-
-                if(varCon.getValue() == null){
-                    System.out.println("The requested variable has been declared but not assigned.");
-                    throw new IllegalArgumentException();
-                }
-
-                if(varCon.getType() != VariableType.FLOAT){
-                    System.out.println("The requested variable does exist, is assigned, but is not a float."); //TODO This should never happen: we check the value before assigning it.
-                    throw new IllegalArgumentException();
-                }
-
+                VariableContainer varCon = identifierToValueCheck(ctx.identifier().get(1).getText(), VariableType.FLOAT);
                 value = TypeCheckerHelper.parseFloat(varCon.getValue()).toString();
+
             } else if(ctx.arithExpr() != null){ //format: FLOAT identifier ASSIGN arithExpr
                 value = null; //TODO TEMP //Use the same technique used for gathering arguments
             }else{
@@ -341,24 +336,7 @@ public class VariableCollectorListener extends TacticBaseListener {
 
             } else if(ctx.identifier().get(1) != null){ //format: VEC identifier ASSIGN identifier
                 //Get the second identifier from the statement and the matching variable
-                String otherIdentifier = ctx.identifier().get(1).getText();
-                VariableContainer varCon = getValueFromScope(otherIdentifier);
-
-                if(varCon == null){
-                    System.out.println("The requested variable has not been declared.");
-                    throw new IllegalArgumentException();
-                }
-
-                if(varCon.getValue() == null){
-                    System.out.println("The requested variable has been declared but not assigned.");
-                    throw new IllegalArgumentException();
-                }
-
-                if(varCon.getType() != VariableType.VEC){
-                    System.out.println("The requested variable does exist, is assigned, but is not a vector."); //TODO This should never happen: we check the value before assigning it.
-                    throw new IllegalArgumentException();
-                }
-
+                VariableContainer varCon = identifierToValueCheck(ctx.identifier().get(1).getText(), VariableType.VEC);
                 value = TypeCheckerHelper.parseVector(varCon.getValue()).toString();
 
             } else{
@@ -384,25 +362,10 @@ public class VariableCollectorListener extends TacticBaseListener {
                 if(ctx.boolStmt().bool() != null){
                     value = ctx.boolStmt().bool().getText();
                 }else if(ctx.boolStmt().identifier() != null) {
-                    String otherIdentifier = ctx.identifier().get(1).getText();
-                    VariableContainer varCon = getValueFromScope(otherIdentifier);
 
-                    if (varCon == null) {
-                        System.out.println("The requested variable has not been declared.");
-                        throw new IllegalArgumentException();
-                    }
-
-                    if (varCon.getValue() == null) {
-                        System.out.println("The requested variable has been declared but not assigned.");
-                        throw new IllegalArgumentException();
-                    }
-
-                    if (varCon.getType() != VariableType.BOOL) {
-                        System.out.println("The requested variable does exist, is assigned, but is not a boolean."); //TODO This should never happen: we check the value before assigning it.
-                        throw new IllegalArgumentException();
-                    }
-
+                    VariableContainer varCon = identifierToValueCheck(ctx.identifier().get(1).getText(), VariableType.BOOL);
                     value = TypeCheckerHelper.parseBool(varCon.getValue()).toString();
+
                 } else if(ctx.boolStmt().boolOperaters() != null){
 
                     //TODO Parse bool statement
@@ -412,25 +375,9 @@ public class VariableCollectorListener extends TacticBaseListener {
                 }
 
             } else if(ctx.identifier().get(1) != null){ //format: BOOL identifier ASSIGN identifier
+
                 //Get the second identifier from the statement and the matching variable
-                String otherIdentifier = ctx.identifier().get(1).getText();
-                VariableContainer varCon = getValueFromScope(otherIdentifier);
-
-                if(varCon == null){
-                    System.out.println("The requested variable has not been declared.");
-                    throw new IllegalArgumentException();
-                }
-
-                if(varCon.getValue() == null){
-                    System.out.println("The requested variable has been declared but not assigned.");
-                    throw new IllegalArgumentException();
-                }
-
-                if(varCon.getType() != VariableType.BOOL){
-                    System.out.println("The requested variable does exist, is assigned, but is not a boolean."); //TODO This should never happen: we check the value before assigning it.
-                    throw new IllegalArgumentException();
-                }
-
+                VariableContainer varCon = identifierToValueCheck(ctx.identifier().get(1).getText(), VariableType.BOOL);
                 value = TypeCheckerHelper.parseBool(varCon.getValue()).toString();
 
             } else if(ctx.functionCall() != null) {  //format: BOOL identifier ASSIGN functionCall
@@ -467,24 +414,7 @@ public class VariableCollectorListener extends TacticBaseListener {
 
             } else if(ctx.identifier().get(1) != null){ //format: STRING identifier ASSIGN identifier
                 //Get the second identifier from the statement and the matching variable
-                String otherIdentifier = ctx.identifier().get(1).getText();
-                VariableContainer varCon = getValueFromScope(otherIdentifier);
-
-                if(varCon == null){
-                    System.out.println("The requested variable has not been declared.");
-                    throw new IllegalArgumentException();
-                }
-
-                if(varCon.getValue() == null){
-                    System.out.println("The requested variable has been declared but not assigned.");
-                    throw new IllegalArgumentException();
-                }
-
-                if(varCon.getType() != VariableType.STRING){
-                    System.out.println("The requested variable does exist, is assigned, but is not a string."); //TODO This should never happen: we check the value before assigning it.
-                    throw new IllegalArgumentException();
-                }
-
+                VariableContainer varCon = identifierToValueCheck(ctx.identifier().get(1).getText(), VariableType.STRING);
                 value = varCon.getValue();
 
             } else if(ctx.functionCall() != null) {  //format: STRING identifier ASSIGN functionCall
@@ -550,5 +480,35 @@ public class VariableCollectorListener extends TacticBaseListener {
     // ARITHMETIC EXPRESSIONS ------------------------------
 
 
+    @Override
+    public void exitArithExprMiddle(Tactic.ArithExprMiddleContext ctx) {
 
+        ArithmeticGatherer ag = new ArithmeticGatherer();
+
+        ag.addValue("(");
+
+        for(int i = 0; i < ctx.children.size(); i++){
+
+            if(ctx.children.get(i) instanceof Tactic.NumberContext){
+                ag.addValue(ctx.children.get(i).getText());
+
+            } else if(ctx.children.get(i) instanceof Tactic.ArithActionContext){
+
+                ag.addValue(ctx.children.get(i).getText());
+
+            } else if(ctx.children.get(i) instanceof Tactic.IdentifierContext){
+
+                System.out.println("temp");
+
+            }else{
+                throw new IllegalArgumentException(); //Grammar has changed
+            }
+
+
+        }
+
+        ag.addValue(")");
+
+        //TODO attach ag
+    }
 }
