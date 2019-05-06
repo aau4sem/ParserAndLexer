@@ -373,7 +373,76 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     @Override
     public void exitBoolDcl(Tactic.BoolDclContext ctx) {
-        super.exitBoolDcl(ctx);
+
+        String identifier = ctx.children.get(1).getText();
+        String value = null;
+
+        //Is there an assign?
+        if(ctx.ASSIGN() != null){ //format: BOOL identifier (ASSIGN (boolStmt | functionCall | identifier))
+            if(ctx.boolStmt() != null){ //format: INTEGER identifier ASSIGN boolStmt
+
+                if(ctx.boolStmt().bool() != null){
+                    value = ctx.boolStmt().bool().getText();
+                }else if(ctx.boolStmt().identifier() != null) {
+                    String otherIdentifier = ctx.identifier().get(1).getText();
+                    VariableContainer varCon = getValueFromScope(otherIdentifier);
+
+                    if (varCon == null) {
+                        System.out.println("The requested variable has not been declared.");
+                        throw new IllegalArgumentException();
+                    }
+
+                    if (varCon.getValue() == null) {
+                        System.out.println("The requested variable has been declared but not assigned.");
+                        throw new IllegalArgumentException();
+                    }
+
+                    if (varCon.getType() != VariableType.BOOL) {
+                        System.out.println("The requested variable does exist, is assigned, but is not a boolean."); //TODO This should never happen: we check the value before assigning it.
+                        throw new IllegalArgumentException();
+                    }
+
+                    value = TypeCheckerHelper.parseBool(varCon.getValue()).toString();
+                } else if(ctx.boolStmt().boolOperaters() != null){
+
+                    //TODO Parse bool statement
+
+                } else {
+                    throw new IllegalArgumentException(); //If this is throw, the grammar has changed
+                }
+
+            } else if(ctx.identifier().get(1) != null){ //format: BOOL identifier ASSIGN identifier
+                //Get the second identifier from the statement and the matching variable
+                String otherIdentifier = ctx.identifier().get(1).getText();
+                VariableContainer varCon = getValueFromScope(otherIdentifier);
+
+                if(varCon == null){
+                    System.out.println("The requested variable has not been declared.");
+                    throw new IllegalArgumentException();
+                }
+
+                if(varCon.getValue() == null){
+                    System.out.println("The requested variable has been declared but not assigned.");
+                    throw new IllegalArgumentException();
+                }
+
+                if(varCon.getType() != VariableType.BOOL){
+                    System.out.println("The requested variable does exist, is assigned, but is not a boolean."); //TODO This should never happen: we check the value before assigning it.
+                    throw new IllegalArgumentException();
+                }
+
+                value = TypeCheckerHelper.parseBool(varCon.getValue()).toString();
+
+            } else if(ctx.functionCall() != null) {  //format: BOOL identifier ASSIGN functionCall
+                value = null; //TODO does we keep functions?
+            }else{
+                throw new IllegalArgumentException(); //If this is thrown, the grammar has been changed.
+            }
+        }else{ //format: BOOL identifier
+            value = null;
+        }
+
+        addVariableToScope(new VariableContainer(identifier, value, VariableType.BOOL));
     }
 
     @Override
