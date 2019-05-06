@@ -447,7 +447,56 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     @Override
     public void exitStringDcl(Tactic.StringDclContext ctx) {
-        super.exitStringDcl(ctx);
+
+        String identifier = ctx.children.get(1).getText();
+        String value;
+
+        //Is there an assign?
+        if(ctx.ASSIGN() != null){ //STRING identifier ASSIGN (string | identifier | functionCall)
+            if(ctx.string() != null){ //format: INTEGER identifier ASSIGN string
+                value = ctx.string().getText();
+
+                value = TypeCheckerHelper.parseString(value);
+
+                /*
+                //Integer parsedValue = TypeCheckerHelper.parse(value);
+                if(parsedValue == null){
+                    System.out.println("The value being assigned is not of type integer.");
+                    throw new IllegalArgumentException();
+                }*/
+
+            } else if(ctx.identifier().get(1) != null){ //format: STRING identifier ASSIGN identifier
+                //Get the second identifier from the statement and the matching variable
+                String otherIdentifier = ctx.identifier().get(1).getText();
+                VariableContainer varCon = getValueFromScope(otherIdentifier);
+
+                if(varCon == null){
+                    System.out.println("The requested variable has not been declared.");
+                    throw new IllegalArgumentException();
+                }
+
+                if(varCon.getValue() == null){
+                    System.out.println("The requested variable has been declared but not assigned.");
+                    throw new IllegalArgumentException();
+                }
+
+                if(varCon.getType() != VariableType.STRING){
+                    System.out.println("The requested variable does exist, is assigned, but is not a string."); //TODO This should never happen: we check the value before assigning it.
+                    throw new IllegalArgumentException();
+                }
+
+                value = varCon.getValue();
+
+            } else if(ctx.functionCall() != null) {  //format: STRING identifier ASSIGN functionCall
+                value = null; //TODO TEMP
+            }else{
+                throw new IllegalArgumentException(); //If this is thrown, the grammar has been changed.
+            }
+        }else{ //format: STRING identifier
+            value = null;
+        }
+
+        addVariableToScope(new VariableContainer(identifier, value, VariableType.STRING));
     }
 
     @Override
