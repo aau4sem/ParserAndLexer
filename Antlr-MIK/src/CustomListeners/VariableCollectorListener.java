@@ -185,14 +185,14 @@ public class VariableCollectorListener extends TacticBaseListener {
                     System.out.println("The value being assigned is not of type float.");
                     throw new IllegalArgumentException();
                 }
-            }else if(ctx.identifier().get(1) != null) { //format: FLOAT identifier ASSIGN identifier
+            } else if(ctx.arithExpr() != null){ //format: FLOAT identifier ASSIGN arithExpr
+                value = String.valueOf(getArithmeticResult(ctx.arithExpr())); //Get the result of the arithmetic expression
+
+            } else if(ctx.identifier().get(1) != null) { //format: FLOAT identifier ASSIGN identifier
 
                 //Get the second identifier from the statement and the matching variable
                 VariableContainer varCon = identifierToValueCheck(ctx.identifier().get(1).getText(), VariableType.FLOAT);
                 value = TypeCheckerHelper.parseFloat(varCon.getValue()).toString();
-
-            } else if(ctx.arithExpr() != null){ //format: FLOAT identifier ASSIGN arithExpr
-                value = null; //TODO TEMP //Use the same technique used for gathering arguments
             }else{
                 throw new IllegalArgumentException(); //If this is thrown, the grammar has been changed.
             }
