@@ -98,27 +98,6 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     // UTILITIES -----------------------------------------------------------------
 
-    /** @return the same string but without " at the start and the end. */
-    private String trimCitations(String input){
-
-        boolean isFirstCitation = false;
-        boolean isLastCitation = false;
-
-        if(input.charAt(0) == '"')
-            isFirstCitation = true;
-        if(input.charAt(input.length() -1) == '"')
-            isLastCitation = true;
-
-        if(isFirstCitation && isLastCitation)
-            return input.substring(1, input.length() -1);
-        if(isFirstCitation)
-            return input.substring(1);
-        if(isLastCitation)
-            return input.substring(0, input.length() -1);
-
-        return input;
-    }
-
     /** @return all GamePieces instantiated. */
     public ArrayList<GamePiece> getAllGamePieces(){
 
@@ -467,7 +446,7 @@ public class VariableCollectorListener extends TacticBaseListener {
             }
 
             //Change the property in the GP (also removed citation-marks if needed)
-            String newPropertyValue = trimCitations(ctx.value().getText());
+            String newPropertyValue = TypeCheckerHelper.parseString(ctx.value().getText()); //Trim citations
             GamePiece gp = TypeCheckerHelper.parseGamePiece(getValueFromScope(identifier).getValue());
             gp.changeProperty(gpPropType, newPropertyValue);
 
