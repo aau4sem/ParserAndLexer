@@ -45,13 +45,13 @@ arrayAssign : identifier (((LBRACKET number RBRACKET)+ ASSIGN arrayExpr) | (LBRA
 
 
 //Arithmetic operations
-arithExpr : arithExprParenth | arithExprMiddle ;
-arithExprParenth : arithExprRight? arithExprParenthMiddle (arithExprBoth arithExprParenthMiddle)* arithExprLeft? ;
+arithExpr : arithExprParent | arithExprMiddle ;
+arithExprParent : arithExprRight? arithExprParenthMiddle (arithExprBoth arithExprParenthMiddle)* arithExprLeft? ;
 arithExprParenthMiddle : LPAREN arithExpr RPAREN ;
 arithExprLeft : (arithAction (identifier | number))+ ; //Open left: + 2 + 2 +2
 arithExprRight : ((identifier | number) arithAction)+ ; //Open right: 2 + 2 + 2 +
 arithExprMiddle : (identifier | number) (arithAction (identifier | number))+; //Not open: 2 + 2 + 2
-arithExprBoth : arithAction ((identifier | number) arithAction)+ ;
+arithExprBoth : arithAction ((identifier | number) arithAction)* ;
 arithAction : ADDITION | SUBTRACTION | DIVISION | MULTIPLY | MODULO ;
 
 
