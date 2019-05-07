@@ -1,5 +1,7 @@
 package customListeners;
 
+import exceptions.IllegalArgumentType;
+import exceptions.IllegalNumberOfArguments;
 import gen.Tactic;
 import gen.TacticBaseListener;
 import model.utils.Argument;
@@ -17,45 +19,44 @@ import model.variables.VariableContainer;
 import java.util.ArrayList;
 
 /** The purpose of this call is to collect and store all action calls.
- * This is limited to function calls with the identifiers: Move, Change and Wait.
- * This call will also perform type checking for the parameters of the action function calls.*/
+ * This is limited to function calls with the identifiers: move, change and wait.
+ * This class will also perform type checking for the parameters of the action function calls.*/
 public class ActionCollectorListener extends TacticBaseListener {
 
     private ArrayList<BuildInFunction> actionFunctions = new ArrayList<>();
-
     private VariableCollectorListener variableCollectorListener;
 
+    /**@param variableCollectorListener is used for getting variables from identifiers used in function calls. */
     public ActionCollectorListener(VariableCollectorListener variableCollectorListener) {
         this.variableCollectorListener = variableCollectorListener;
     }
 
+    /** This method will only detect function calls with the prefix/identifier: wait, change or move. */
     @Override
     public void exitFunctionCall(Tactic.FunctionCallContext ctx) {
 
         String identifier = ctx.identifier().getText();
-        //Get the argumentContext of the function call. and get the last child of that, which is the attached ArgumentGatherer.
+
+        //Get the argumentContext of the function call, and get the last child of that, which is the attached ArgumentGatherer.
         ArgumentGatherer ag = (ArgumentGatherer)((Tactic.ArgumentsContext) ctx.children.get(2)).children.get(ctx.children.get(2).getChildCount() -1);
         ArrayList<Argument> arguments = ag.getConvertedArgumentsList();
 
-        if(identifier.compareTo("Change") == 0){
-            //Parameters: GP, string, string, number //TODO Might have changed
+        if(identifier.compareTo("change") == 0){
+            //Parameters: GP, string, string, number
 
-            if(ag.getNumberOfArguments() != 4){
-                System.out.println("The Change-action call does not have the correct number of arguments.");
-                throw new IllegalArgumentException();
-            }
+            if(ag.getNumberOfArguments() != 4)
+                throw new IllegalNumberOfArguments(4, identifier, ag.getNumberOfArguments());
 
             //INITIAL TYPE CHECKING --------------------------------------------
-            //TODO Can the user declare a GP in the function call?
-            typeCheckArgument(arguments.get(0), 1, "Change", Argument.ArguemntType.IDENTIFIER);
+            typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArguemntType.IDENTIFIER);
 
-            //TODO When grammar is changed: Then this will be a unique category
-            typeCheckArgument(arguments.get(1), 2, "Change", Argument.ArguemntType.STRING);
+            if(TypeCheckerHelper.parseGamePiecePropertyType(arguments.get(1).getValue()) == null)
+                throw new IllegalArgumentType(2, identifier, Argument.ArguemntType.GAMEPIECE_PROPERTY);
 
-            //TODO When grammar is changed: Then this will be a unique category
-            typeCheckArgument(arguments.get(2), 3, "Change", Argument.ArguemntType.STRING);
+            typeCheckArgument(arguments.get(2), 3, identifier, Argument.ArguemntType.STRING,
+                    Argument.ArguemntType.IDENTIFIER, Argument.ArguemntType.NUMBER, Argument.ArguemntType.VECTOR);
 
-            typeCheckArgument(arguments.get(3), 4, "Change",
+            typeCheckArgument(arguments.get(3), 4, identifier,
                     Argument.ArguemntType.IDENTIFIER, Argument.ArguemntType.NUMBER);
 
             //VALUE EVALUATION --------------------------------------------
@@ -63,35 +64,32 @@ public class ActionCollectorListener extends TacticBaseListener {
             VariableContainer variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
             GamePiece variableFirstArg = TypeCheckerHelper.parseGamePiece(variableConFirstArg.getValue());
 
-            if(variableFirstArg == null)
-                throw new IllegalArgumentException(); //The parsed variable was not a GP
+            if(variableFirstArg == null) //Was the parsed variable a GP?
+                throw new IllegalArgumentType(1, identifier, "GamePiece");
 
-            //SECOND ARGUMENT
-            String secondArg = arguments.get(1).getValue();
+            //SECOND ARGUMENT //Make sure that the value matches the property
+            GamePiece.GamePiecePropertyType secondArg = TypeCheckerHelper.parseGamePiecePropertyType(arguments.get(1).getValue());
 
             //THIRD ARGUMENT
             String thirdArg = arguments.get(2).getValue();
 
             //FOURTH ARGUMENT
-            Number variableFourthArgNum = evalIdentifierOrNumberArgument(arguments.get(3));
+            Number fourthArg = evalIdentifierOrNumberArgument(arguments.get(3), 3, identifier);
 
-            //Collect the function
-            actionFunctions.add(new BuildInFunctionChange(variableFirstArg, secondArg, thirdArg, variableFourthArgNum));
+            //Collect the function //This function is used because of the third argument - it can be multiple types
+            addChangeActionCall(variableFirstArg, secondArg, thirdArg, fourthArg);
 
-        }else if(identifier.compareTo("Move") == 0) {
-            //Parameters: GP, vector, number //TODO Might have changed
+        }else if(identifier.compareTo("move") == 0) {
+            //Parameters: GP, vector, number
 
-            if(ag.getNumberOfArguments() != 3){
-                System.out.println("The Move-action call does not have the correct number of arguments.");
-                throw new IllegalArgumentException();
-            }
+            if(ag.getNumberOfArguments() != 3)
+                throw new IllegalNumberOfArguments(3, identifier, ag.getNumberOfArguments());
 
-            //TODO Can the user declare a GP in the function call?
-            typeCheckArgument(arguments.get(0), 1, "Move", Argument.ArguemntType.IDENTIFIER);
+            typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArguemntType.IDENTIFIER);
 
-            typeCheckArgument(arguments.get(1), 2, "Move", Argument.ArguemntType.VECTOR);
+            typeCheckArgument(arguments.get(1), 2, identifier, Argument.ArguemntType.VECTOR);
 
-            typeCheckArgument(arguments.get(2), 3, "Move",
+            typeCheckArgument(arguments.get(2), 3, identifier,
                     Argument.ArguemntType.IDENTIFIER, Argument.ArguemntType.NUMBER);
 
             //VALUE EVALUATION --------------------------------------------
@@ -99,32 +97,28 @@ public class ActionCollectorListener extends TacticBaseListener {
             VariableContainer variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
             GamePiece variableFirstArg = TypeCheckerHelper.parseGamePiece(variableConFirstArg.getValue());
 
-            if(variableFirstArg == null)
-                throw new IllegalArgumentException(); //The parsed variable was not a GP
+            if(variableFirstArg == null) //Was the parsed variable a GP?
+                throw new IllegalArgumentType(1, identifier, "GamePiece");
 
             //SECOND ARGUMENT
             Vector variableSecondArgVec = TypeCheckerHelper.parseVector(arguments.get(1).getValue());
 
             //THIRD ARGUMENT
-            Number variableThirdArgNum = evalIdentifierOrNumberArgument(arguments.get(2));
+            Number variableThirdArgNum = evalIdentifierOrNumberArgument(arguments.get(2), 2, identifier);
 
             //Collect the function
             actionFunctions.add(new BuildInFuctionMove(variableFirstArg, variableSecondArgVec, variableThirdArgNum));
 
-        }else if(identifier.compareTo("Wait") == 0){
-
+        }else if(identifier.compareTo("wait") == 0){
             //Parameters: GP, number
 
-            if(ag.getNumberOfArguments() != 2){
-                System.out.println("The Wait-action call does not have the correct number of arguments.");
-                throw new IllegalArgumentException();
-            }
+            if(ag.getNumberOfArguments() != 2)
+                throw new IllegalNumberOfArguments(2, identifier, ag.getNumberOfArguments());
 
             //INITIAL TYPE CHECKING --------------------------------------------
-            //TODO Can the user declare a GP in the function call?
-            typeCheckArgument(arguments.get(0), 1, "Wait", Argument.ArguemntType.IDENTIFIER);
+            typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArguemntType.IDENTIFIER);
 
-            typeCheckArgument(arguments.get(1), 2, "Wait",
+            typeCheckArgument(arguments.get(1), 2, identifier,
                     Argument.ArguemntType.IDENTIFIER, Argument.ArguemntType.NUMBER);
 
             //VALUE EVALUATION --------------------------------------------
@@ -132,15 +126,33 @@ public class ActionCollectorListener extends TacticBaseListener {
             VariableContainer variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
             GamePiece variableFirstArg = TypeCheckerHelper.parseGamePiece(variableConFirstArg.getValue());
 
-            if(variableFirstArg == null)
-                throw new IllegalArgumentException(); //The parsed variable was not a GP
+            if(variableFirstArg == null) //Was the parsed variable a GP?
+                throw new IllegalArgumentType(1, identifier, "GamePiece");
 
             //SECOND ARGUMENT
-            Number variableSecondArgNum = evalIdentifierOrNumberArgument(arguments.get(1));
+            Number variableSecondArgNum = evalIdentifierOrNumberArgument(arguments.get(1), 1, identifier);
 
             //Collect the function
             actionFunctions.add(new BuildInFunctionWait(variableFirstArg, variableSecondArgNum));
         }
+    }
+
+    /** Used to parse the type of the third argument of the change call.
+     * This can be a different types based on the property type. */
+    private void addChangeActionCall(GamePiece firstArg, GamePiece.GamePiecePropertyType secondArg, String thirdArg, Number fourthArg){
+
+        if(secondArg == GamePiece.GamePiecePropertyType.POSITION){
+            if(TypeCheckerHelper.parseVector(thirdArg) == null)
+                throw new IllegalArgumentType(3, "change", Argument.ArguemntType.VECTOR);
+        }else if(secondArg == GamePiece.GamePiecePropertyType.SIZE){
+            if(TypeCheckerHelper.parseFloat(thirdArg) == null)
+                throw new IllegalArgumentType(3, "change", "float");
+        }else if(secondArg == GamePiece.GamePiecePropertyType.OPACITY){
+            if(TypeCheckerHelper.parseFloat(thirdArg) == null)
+                throw new IllegalArgumentType(3, "change", "float");
+        }
+
+        actionFunctions.add(new BuildInFunctionChange(firstArg, secondArg, thirdArg, fourthArg));
     }
 
     /** This method is used to check if an argument is of the right type.
@@ -157,31 +169,16 @@ public class ActionCollectorListener extends TacticBaseListener {
             if(type == arg.getType())
                 isArgumentRequestedType = true;
 
+        //Did the check fail: is the argument of the requested type?
         if(!isArgumentRequestedType){
-
-            //Generate error message
-            StringBuilder sb = new StringBuilder();
-            sb.append("The ").append(argumentNumber).append(" argument of the ")
-                    .append(functionName).append("-action call is not of the type ");
-
-            if(allowedType.length == 1)
-                sb.append(allowedType[0].toString());
-            else{
-                for(int i = 0; i < allowedType.length -1; i++)
-                    sb.append(allowedType[i].toString()).append(" or ");
-
-                sb.append(allowedType[allowedType.length-1]).append(".");
-            }
-
-            System.out.println(sb.toString());
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentType(argumentNumber, functionName, allowedType);
         }
     }
 
     /** This method is used if an Argument can be either an IDENTIFIER or NUMBER.
      * @return a Number containing the parsed value. */
-    private Number evalIdentifierOrNumberArgument(Argument arg){
-        Number num = null;
+    private Number evalIdentifierOrNumberArgument(Argument arg, int numberOfArguemnt, String functionName){
+        Number num;
 
         if(arg.getType() == Argument.ArguemntType.IDENTIFIER){
 
@@ -194,8 +191,8 @@ public class ActionCollectorListener extends TacticBaseListener {
         }
 
         //Did it parse?
-        if(num == null)
-            throw new IllegalArgumentException(); //Value was not an integer or float
+        if(num == null) // Was the value of type integer or float
+            throw new IllegalArgumentType(numberOfArguemnt + 1, functionName, "integer or float");
 
         return num;
     }

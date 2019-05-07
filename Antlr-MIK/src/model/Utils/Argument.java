@@ -2,7 +2,7 @@ package model.utils;
 
 public class Argument {
 
-    public enum ArguemntType { IDENTIFIER, NUMBER, BOOL, STRING, VECTOR}
+    public enum ArguemntType { IDENTIFIER, NUMBER, BOOL, STRING, VECTOR, GAMEPIECE_PROPERTY}
 
     private String value;
     private ArguemntType type;

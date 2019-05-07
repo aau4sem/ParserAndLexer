@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/stylesheet.css">
+</head>
+<body>
+
+<script src="css/anime.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+    function logCoordinates(e) {
+        x = e.offsetX;
+        y = e.offsetY;
+        console.log("(" + x + "," + y + ")");
+    }
+
+    function printCoordinates(e) {
+        x = e.offsetX;
+        y = e.offsetY;
+        document.getElementById("coordinates-text").innerHTML = "(" + x + "," + y + ")";
+    }
+</script>
+
+<div id="wrapper">
+    <div class="board-and-levels"> <!-- onmouseout="cnvs_clearCoordinates()" -->
+        <div class="board" onmousedown="logCoordinates(event)" onmousemove="printCoordinates(event)">
+            OBJECTSTAG
+        </div>
+
+        <div class="levels">
+            <p>Levels</p>
+            BUTTONSTAG
+        </div>
+    </div>
+
+    <div class="objects-and-media">
+        <div class="object-list">
+            <select id="selector">
+                <option>Simultaneously</p></option>
+                SELECTORTAG
+            </select>
+
+        </div>
+
+        <div class="play-options">
+            <div class="slider">
+                <input class="progress" disabled type="range" step=".001" min="0" max="100" value="0"/>
+            </div>
+
+            <div class="media-options">
+                <button class="play-btn">PLAY</button>
+                <button class="pause-btn">PAUSE</button>
+                <button class="restart-btn">RESTART</button>
+                <button class="reset-btn">RESET</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="coordinates-box">
+    <p id="coordinates-text" style="margin: 0;font-size: 14pt;font-weight: bold">(100, 500)</p>
+</div>
+
+
+<script>
+    var $circle = $('.coordinates-box'),
+        $wrapper = $('.board');
+
+    function moveCircle(e) {
+        $circle.css({
+            "left": e.pageX,
+            "top": e.pageY
+        });
+    }
+
+    var flag = false;
+    $($wrapper).mouseover(function () {
+        flag = true;
+        $circle.css({
+            "visibility": "visible"
+        });
+        $($wrapper).on('mousemove', moveCircle);
+    });
+    $($wrapper).mouseout(function () {
+        flag = false;
+        $circle.css({
+            "visibility": "hidden"
+        });
+    });
+
+</script>
+</div>
+
+<script src="animations.js"></script>
+
+</body>
+</html>

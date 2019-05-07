@@ -6,13 +6,13 @@ import model.dataTypes.Number;
 public class BuildInFunctionChange implements BuildInFunction {
 
     private GamePiece gp;
-    private String secondArgument; //TODO rename //TODO Handle when implemented in the grammar
+    private GamePiece.GamePiecePropertyType gpPropperty;
     private String thridArguemnt; //TODO rename //TODO Handle when implemented in the grammar
     private Number time;
 
-    public BuildInFunctionChange(GamePiece gp, String secondArgument, String thridArguemnt, Number time) {
+    public BuildInFunctionChange(GamePiece gp, GamePiece.GamePiecePropertyType gpPropperty, String thridArguemnt, Number time) {
         this.gp = gp;
-        this.secondArgument = secondArgument;
+        this.gpPropperty = gpPropperty;
         this.thridArguemnt = thridArguemnt;
         this.time = time;
     }
@@ -21,8 +21,8 @@ public class BuildInFunctionChange implements BuildInFunction {
         return gp;
     }
 
-    public String getSecondArgument() {
-        return secondArgument;
+    public GamePiece.GamePiecePropertyType getSecondArgument() {
+        return gpPropperty;
     }
 
     public String getThridArguemnt() {

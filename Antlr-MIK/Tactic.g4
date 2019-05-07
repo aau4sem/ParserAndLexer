@@ -45,12 +45,15 @@ arrayAssign : identifier (((LBRACKET number RBRACKET)+ ASSIGN arrayExpr) | (LBRA
 
 
 //Arithmetic operations
-arithExpr : ( addExpr | subExpr | divExpr | mulExpr | modExpr) ((ADDITION | SUBTRACTION | DIVISION | MULTIPLY | MODULO) (identifier | number))*;
-addExpr : (identifier | number) ADDITION (identifier | number) ;
-subExpr : (identifier | number) SUBTRACTION (identifier | number) ;
-divExpr : (identifier | number) DIVISION (identifier | number) ;
-mulExpr : (identifier | number) MULTIPLY (identifier | number) ;
-modExpr : (identifier | number) MODULO (identifier | number) ;
+arithExpr : arithExprParent | arithExprMiddle ;
+arithExprParent : arithExprRight? arithExprParenthMiddle (arithExprBoth arithExprParenthMiddle)* arithExprLeft? ;
+arithExprParenthMiddle : LPAREN arithExpr RPAREN ;
+arithExprLeft : (arithAction (identifier | number))+ ; //Open left: + 2 + 2 +2
+arithExprRight : ((identifier | number) arithAction)+ ; //Open right: 2 + 2 + 2 +
+arithExprMiddle : (identifier | number) (arithAction (identifier | number))+; //Not open: 2 + 2 + 2
+arithExprBoth : arithAction ((identifier | number) arithAction)* ;
+arithAction : ADDITION | SUBTRACTION | DIVISION | MULTIPLY | MODULO ;
+
 
 vecExpr    : (vecAdd | vecSub) ((ADDITION | SUBTRACTION) (identifier | vec))* ;
 vecAdd     : (identifier | vec) ADDITION (identifier | vec) ;

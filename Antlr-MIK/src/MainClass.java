@@ -2,6 +2,7 @@ import codeGeneration.CodeGenerator;
 import customListeners.ActionCollectorListener;
 import customListeners.BoardListener;
 import customListeners.VariableCollectorListener;
+import model.dataTypes.GamePiece;
 import model.utils.buildInFunction.BuildInFunction;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CharStream;
@@ -9,6 +10,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,9 +48,13 @@ public class MainClass {
             ArrayList<BuildInFunction> actionCalls = new ArrayList<>(actionCollectorListener.getActionFunctions());
             //Get the list of paths
             String[] boardPaths = boardListener.getBoardPaths();
+            //Get all GamePieces
+            ArrayList<GamePiece> gamePieces = variableListener.getAllGamePieces();
             //TODO Get other needed data.
-            //TODO Create and run CodeGeneration.
-            CodeGenerator cg = new CodeGenerator(); //TODO Not final! Very much empty!
+            
+            //Instantiate and run CodeGenerator
+            CodeGenerator cg = new CodeGenerator(gamePieces, new ArrayList<>(Arrays.asList(boardPaths)));
+            cg.generateCompleteFolder();
 
         } catch (IOException ex){
             Logger.getLogger(MainClass.class.getName()).log(Level.SEVERE, null, ex); //Reports if no file was found.

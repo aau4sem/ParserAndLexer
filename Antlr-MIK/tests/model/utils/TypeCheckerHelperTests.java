@@ -1,8 +1,8 @@
-package typeChecking.utils;
+package model.utils;
 
+import model.dataTypes.GamePiece;
 import model.dataTypes.Number;
 import model.dataTypes.Vector;
-import model.utils.TypeCheckerHelper;
 import org.junit.*;
 
 public class TypeCheckerHelperTests {
@@ -190,5 +190,117 @@ public class TypeCheckerHelperTests {
         String input = "(2.0, 2.0)";
         Vector output = TypeCheckerHelper.parseVector(input);
         Assert.assertNull(output);
+    }
+
+    @Test
+    public void parseVector10(){
+        String input = ")";
+        Vector output = TypeCheckerHelper.parseVector(input);
+        Assert.assertNull(output);
+    }
+
+    @Test
+    public void parseVector11(){
+        String input = "(";
+        Vector output = TypeCheckerHelper.parseVector(input);
+        Assert.assertNull(output);
+    }
+
+    @Test
+    public void parseVector12(){
+        String input = "";
+        Vector output = TypeCheckerHelper.parseVector(input);
+        Assert.assertNull(output);
+    }
+
+    @Test
+    public void parseVector13(){
+        String input = "()()";
+        Vector output = TypeCheckerHelper.parseVector(input);
+        Assert.assertNull(output);
+    }
+
+    @Test
+    public void parseGamePiecePropertyType01(){
+        String input = "name";
+        GamePiece.GamePiecePropertyType output = TypeCheckerHelper.parseGamePiecePropertyType(input);
+        Assert.assertNotNull(output);
+        Assert.assertEquals(GamePiece.GamePiecePropertyType.NAME, output);
+    }
+
+    @Test
+    public void parseGamePiecePropertyType02(){
+        String input = "position";
+        GamePiece.GamePiecePropertyType output = TypeCheckerHelper.parseGamePiecePropertyType(input);
+        Assert.assertNotNull(output);
+        Assert.assertEquals(GamePiece.GamePiecePropertyType.POSITION, output);
+    }
+
+    @Test
+    public void parseGamePiecePropertyType03(){
+        String input = "size";
+        GamePiece.GamePiecePropertyType output = TypeCheckerHelper.parseGamePiecePropertyType(input);
+        Assert.assertNotNull(output);
+        Assert.assertEquals(GamePiece.GamePiecePropertyType.SIZE, output);
+    }
+
+    @Test
+    public void parseGamePiecePropertyType04(){
+        String input = "color";
+        GamePiece.GamePiecePropertyType output = TypeCheckerHelper.parseGamePiecePropertyType(input);
+        Assert.assertNotNull(output);
+        Assert.assertEquals(GamePiece.GamePiecePropertyType.COLOR, output);
+    }
+
+    @Test
+    public void parseGamePiecePropertyType05(){
+        String input = "opacity";
+        GamePiece.GamePiecePropertyType output = TypeCheckerHelper.parseGamePiecePropertyType(input);
+        Assert.assertNotNull(output);
+        Assert.assertEquals(GamePiece.GamePiecePropertyType.OPACITY, output);
+    }
+
+    @Test
+    public void parseGamePiecePropertyType06(){
+        String input = "label";
+        GamePiece.GamePiecePropertyType output = TypeCheckerHelper.parseGamePiecePropertyType(input);
+        Assert.assertNotNull(output);
+        Assert.assertEquals(GamePiece.GamePiecePropertyType.LABEL, output);
+    }
+
+    @Test
+    public void parseGamePiecePropertyType07(){
+        String input = "shape";
+        GamePiece.GamePiecePropertyType output = TypeCheckerHelper.parseGamePiecePropertyType(input);
+        Assert.assertNotNull(output);
+        Assert.assertEquals(GamePiece.GamePiecePropertyType.SHAPE, output);
+    }
+
+    @Test
+    public void parseString01(){
+        String input = "\"test\"";
+        String output = TypeCheckerHelper.parseString(input);
+        Assert.assertEquals("test", output);
+    }
+
+    @Test
+    public void parseString02(){
+        String input = "test\"";
+        String output = TypeCheckerHelper.parseString(input);
+        Assert.assertEquals("test", output);
+    }
+
+    @Test
+    public void parseString03(){
+        String input = "\"test";
+        String output = TypeCheckerHelper.parseString(input);
+        Assert.assertEquals("test", output);
+    }
+
+    @Test
+    public void parseString04(){
+        String input = "test";
+        String output = TypeCheckerHelper.parseString(input);
+        Assert.assertEquals("test", output);
     }
 }

@@ -23,6 +23,10 @@ public class VariableContainer {
         return value;
     }
 
+    public void overwriteValue(String value) {
+        this.value = value;
+    }
+
     public VariableType getType() {
         return type;
     }
