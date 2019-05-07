@@ -7,37 +7,37 @@ parser grammar Tactic;
 
 options { tokenVocab = TacticLexer; }
 
-prog    : ((stmt | functionDef) ENDSTNT)* ;
-stmt    : arithExpr | identifier | dotStmt | dotAssignment | dcl | arrayAssign | functionCall | condStmt | whileStmt | assignment;
+prog    : ((procedureDef | dcl) ENDSTNT)* (stmt ENDSTNT)*;
+stmt    : arithExpr | identifier | dotStmt | dotAssignment | arrayAssign | procedureCall | condStmt | whileStmt | assignment;
 dcl     : intDcl | boolDcl | arrayDcl | stringDcl | gpDcl | floatDcl | vecDcl;
 
 integer         : NUMBER | DIGIT ;
 floatVal        : (NUMBER | DIGIT) DOT (NUMBER | DIGIT);
 number          : integer | floatVal ;
 word            : WORD | LETTER ;
-string          : STRING_MARK word? STRING_MARK ;
-identifier      : word DIGIT* NUMBER*;
+string          : STRINGTEXT ;
+identifier      : word (WORD|NUMBER|DIGIT|LETTER)*;
 value           : identifier | number | bool | string | vec;
 vec             : LPAREN number SEPERATOR number (SEPERATOR number)? RPAREN;
 type            : INTEGER | FLOAT | VEC | BOOL | STRING | GAMEPIECE ;
 
-functionCall    : identifier LPAREN arguments? RPAREN;
-functionDef     : (type | VOID) identifier LPAREN ((type | VOID) identifier (SEPERATOR (type | VOID) identifier)*)? RPAREN functionBlock;
-functionBlock   : LCURLY stmt* (RETURN (value | identifier | vec) ENDSTNT)? RCURLY | LCURLY (RETURN (value | identifier | vec) ENDSTNT)? RCURLY;
+procedureCall    : identifier LPAREN arguments? RPAREN;
+procedureDef     : identifier LPAREN (type identifier (SEPERATOR type identifier)*)? RPAREN procedureBlock;
+procedureBlock   : LCURLY (stmt ENDSTNT)* RCURLY;
 
 dotStmt         : identifier ((DOT identifier(LBRACKET number? RBRACKET)*))+ ;
 dotAssignment   : dotStmt ASSIGN value;
 
 //Declaration
-intDcl      : INTEGER identifier (ASSIGN (number | arithExpr | identifier | functionCall))?;
-floatDcl    : FLOAT identifier (ASSIGN (number | identifier | arithExpr | functionCall))?;
-vecDcl      : VEC identifier (ASSIGN (vec | vecExpr | functionCall | identifier))?;
-boolDcl     : BOOL identifier (ASSIGN (boolStmt | functionCall | identifier))?;
-stringDcl   : STRING identifier (ASSIGN (string | identifier | functionCall))?;
-gpDcl       : GAMEPIECE identifier (ASSIGN (identifier | functionCall))?;
-arrayDcl    : type (LBRACKET integer RBRACKET)+ identifier (ASSIGN (LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY) | (identifier))?;
+intDcl      : INTEGER identifier;
+floatDcl    : FLOAT identifier;
+vecDcl      : VEC identifier;
+boolDcl     : BOOL identifier;
+stringDcl   : STRING identifier;
+gpDcl       : GAMEPIECE identifier;
+arrayDcl    : type (LBRACKET integer RBRACKET)+ identifier;
 
-assignment  : identifier (LBRACKET integer RBRACKET)* ASSIGN (value | arithExpr | functionCall | boolStmt | vecExpr | (identifier (LBRACKET integer RBRACKET)*) | dotStmt);
+assignment  : identifier (LBRACKET integer RBRACKET)* ASSIGN (value | arithExpr | procedureCall | boolStmt | vecExpr | (identifier (LBRACKET integer RBRACKET)*) | dotStmt);
 
 //Datastructure operations
 arrayExpr   : boolStmt | arithExpr | gpDcl | identifier | dotStmt | arrayDcl | value | vec | floatDcl | vecExpr ;
@@ -59,10 +59,9 @@ vecSub     : (identifier | vec) SUBTRACTION (identifier | vec) ;
 arguments       : value | arguments SEPERATOR arguments ;
 
 //Control structures
-condStmt        : ifStmt | ifStmt elseifStmt* elseStmt? ;
-block           : LCURLY stmt* RCURLY | LCURLY RCURLY ;
+condStmt        : ifStmt elseStmt? ;
+block           : LCURLY (stmt ENDSTNT)* RCURLY ;
 ifStmt          : IF LPAREN (boolStmt) RPAREN  block ;
-elseifStmt      : ELSEIF LPAREN (boolStmt) RPAREN  block ;
 elseStmt        : ELSE block ;
 
 whileStmt       : WHILE LPAREN boolStmt RPAREN block ;

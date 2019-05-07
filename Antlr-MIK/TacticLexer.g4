@@ -35,6 +35,7 @@ RETURN      :       'return';
 DIGIT           : ('0'..'9') ;
 LETTER          : [a-z] | [A-Z] | [_] ;
 WORD            : LETTER LETTER* ;
+STRINGTEXT      : '"' ~('\r' | '\n' | '"')* '"' ;
 NUMBER          : DIGIT+;
 ASSIGN          : '='  ;
 ADDITION        : '+'  ;
