@@ -28,4 +28,20 @@ public class ArithmeticGathererTests {
 
         Assert.assertEquals(expectedResult, ArithmeticGatherer.eval(input), 10);
     }
+
+    @Test
+    public void eval04(){
+        String input = "(1 + 1) / 2";
+        double expectedResult = 0;
+
+        Assert.assertEquals(expectedResult, ArithmeticGatherer.eval(input), 10);
+    }
+
+    @Test
+    public void eval05(){
+        String input = "1 / 0";
+        double expectedResult = 0;
+
+        Assert.assertEquals(expectedResult, ArithmeticGatherer.eval(input), 10);
+    }
 }
