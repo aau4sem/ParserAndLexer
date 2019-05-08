@@ -1,5 +1,6 @@
 package model.utils;
 
+import customListeners.VariableCollectorListener;
 import model.dataTypes.GamePiece;
 import model.dataTypes.Vector;
 import model.dataTypes.Number;
@@ -183,5 +184,22 @@ public class TypeCheckerHelper {
 
 
         return output;
+    }
+
+    /** @return the VariableType matching the given input. */
+    public static VariableCollectorListener.VariableType parseVariableType(String val){
+
+        //todo HANDLE ARRAYS
+
+        switch (val){
+            case "int": return VariableCollectorListener.VariableType.INT;
+            case "float" : return VariableCollectorListener.VariableType.FLOAT;
+            case "GamePiece" : return VariableCollectorListener.VariableType.GAMEPIECE;
+            case "vector" : return VariableCollectorListener.VariableType.VEC;
+            case "string" : return VariableCollectorListener.VariableType.STRING;
+            case "bool" : return VariableCollectorListener.VariableType.BOOL;
+        }
+
+        return null;
     }
 }

@@ -3,7 +3,7 @@ package exceptions;
 import model.utils.Argument;
 
 public class IllegalArgumentType extends RuntimeException {
-    public IllegalArgumentType(int argumentNumber, String functionName, Argument.ArguemntType ... allowedType) {
+    public IllegalArgumentType(int argumentNumber, String functionName, Argument.ArgumentType... allowedType) {
         super(printErrorMessage(argumentNumber, functionName, allowedType));
     }
 
@@ -15,7 +15,7 @@ public class IllegalArgumentType extends RuntimeException {
      * @param argumentNumber which number the argument is, in the function call. (Counting from 1)
      * @param functionName the name of the function which argument is being checked.
      * @param allowedType a given amount of ArgumentTypes which the given Argument has to be ONE of. */
-    private static String printErrorMessage(int argumentNumber, String functionName, Argument.ArguemntType ... allowedType){
+    private static String printErrorMessage(int argumentNumber, String functionName, Argument.ArgumentType... allowedType){
         StringBuilder sb = new StringBuilder();
         sb.append("The ").append(argumentNumber).append(" argument of the ")
                 .append(functionName).append("-action call is not of the type ");

@@ -11,18 +11,13 @@ public class VariableScopeData {
     public enum ScopeType {MAIN_SCOPE, PROCEDURE_SCOPE }
 
     private ScopeType type;
-    private String functionIdentifier = null; //TODO Is this needed?
+    private String procedureIdentifier = "";
 
     //A map that maps identifiers of variables to a container that hold their value.
     private HashMap<String, VariableContainer> variables = new HashMap<>();
 
     public VariableScopeData(ScopeType type) {
         this.type = type;
-    }
-
-    public VariableScopeData(ScopeType type, String functionIdentifier) {
-        this.type = type;
-        this.functionIdentifier = functionIdentifier;
     }
 
     /** @return all variables of the given type.*/
@@ -60,7 +55,11 @@ public class VariableScopeData {
         return type;
     }
 
-    public String getFunctionIdentifier() {
-        return functionIdentifier;
+    public void setProcedureIdentifier(String procedureIdentifier) {
+        this.procedureIdentifier = procedureIdentifier;
+    }
+
+    public void resetProcedureIdentifier(){
+        this.procedureIdentifier = "";
     }
 }

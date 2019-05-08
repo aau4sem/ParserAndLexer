@@ -34,6 +34,7 @@ public class ActionCollectorListener extends TacticBaseListener {
     /** This method will only detect function calls with the prefix/identifier: wait, change or move. */
     @Override
     public void exitProcedureCall(Tactic.ProcedureCallContext ctx) {
+        //System.out.println(ctx.children.get(0).getText());
         String identifier = ctx.identifier().getText();
 
         //Get the argumentContext of the function call, and get the last child of that, which is the attached ArgumentGatherer.
@@ -47,16 +48,16 @@ public class ActionCollectorListener extends TacticBaseListener {
                 throw new IllegalNumberOfArguments(4, identifier, ag.getNumberOfArguments());
 
             //INITIAL TYPE CHECKING --------------------------------------------
-            typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArguemntType.IDENTIFIER);
+            typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArgumentType.IDENTIFIER);
 
             if(TypeCheckerHelper.parseGamePiecePropertyType(arguments.get(1).getValue()) == null)
-                throw new IllegalArgumentType(2, identifier, Argument.ArguemntType.GAMEPIECE_PROPERTY);
+                throw new IllegalArgumentType(2, identifier, Argument.ArgumentType.GAMEPIECE_PROPERTY);
 
-            typeCheckArgument(arguments.get(2), 3, identifier, Argument.ArguemntType.STRING,
-                    Argument.ArguemntType.IDENTIFIER, Argument.ArguemntType.NUMBER, Argument.ArguemntType.VECTOR);
+            typeCheckArgument(arguments.get(2), 3, identifier, Argument.ArgumentType.STRING,
+                    Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.NUMBER, Argument.ArgumentType.VECTOR);
 
             typeCheckArgument(arguments.get(3), 4, identifier,
-                    Argument.ArguemntType.IDENTIFIER, Argument.ArguemntType.NUMBER);
+                    Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.NUMBER);
 
             //VALUE EVALUATION --------------------------------------------
             //FIRST ARGUMENT
@@ -84,12 +85,12 @@ public class ActionCollectorListener extends TacticBaseListener {
             if(ag.getNumberOfArguments() != 3)
                 throw new IllegalNumberOfArguments(3, identifier, ag.getNumberOfArguments());
 
-            typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArguemntType.IDENTIFIER);
+            typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArgumentType.IDENTIFIER);
 
-            typeCheckArgument(arguments.get(1), 2, identifier, Argument.ArguemntType.VECTOR);
+            typeCheckArgument(arguments.get(1), 2, identifier, Argument.ArgumentType.VECTOR);
 
             typeCheckArgument(arguments.get(2), 3, identifier,
-                    Argument.ArguemntType.IDENTIFIER, Argument.ArguemntType.NUMBER);
+                    Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.NUMBER);
 
             //VALUE EVALUATION --------------------------------------------
             //FIRST ARGUMENT
@@ -115,10 +116,10 @@ public class ActionCollectorListener extends TacticBaseListener {
                 throw new IllegalNumberOfArguments(2, identifier, ag.getNumberOfArguments());
 
             //INITIAL TYPE CHECKING --------------------------------------------
-            typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArguemntType.IDENTIFIER);
+            typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArgumentType.IDENTIFIER);
 
             typeCheckArgument(arguments.get(1), 2, identifier,
-                    Argument.ArguemntType.IDENTIFIER, Argument.ArguemntType.NUMBER);
+                    Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.NUMBER);
 
             //VALUE EVALUATION --------------------------------------------
             //FIRST ARGUMENT
@@ -142,7 +143,7 @@ public class ActionCollectorListener extends TacticBaseListener {
 
         if(secondArg == GamePiece.GamePiecePropertyType.POSITION){
             if(TypeCheckerHelper.parseVector(thirdArg) == null)
-                throw new IllegalArgumentType(3, "change", Argument.ArguemntType.VECTOR);
+                throw new IllegalArgumentType(3, "change", Argument.ArgumentType.VECTOR);
         }else if(secondArg == GamePiece.GamePiecePropertyType.SIZE){
             if(TypeCheckerHelper.parseFloat(thirdArg) == null)
                 throw new IllegalArgumentType(3, "change", "float");
@@ -160,11 +161,11 @@ public class ActionCollectorListener extends TacticBaseListener {
      * @param argumentNumber which number the argument is, in the function call.
      * @param functionName the name of the function which argument is being checked.
      * @param allowedType a given amount of ArgumentTypes which the given Argument has to be ONE of. */
-    private void typeCheckArgument(Argument arg, int argumentNumber, String functionName, Argument.ArguemntType ... allowedType){
+    private void typeCheckArgument(Argument arg, int argumentNumber, String functionName, Argument.ArgumentType... allowedType){
 
         boolean isArgumentRequestedType = false;
 
-        for( Argument.ArguemntType type : allowedType)
+        for( Argument.ArgumentType type : allowedType)
             if(type == arg.getType())
                 isArgumentRequestedType = true;
 
@@ -179,7 +180,7 @@ public class ActionCollectorListener extends TacticBaseListener {
     private Number evalIdentifierOrNumberArgument(Argument arg, int numberOfArguments, String functionName){
         Number num;
 
-        if(arg.getType() == Argument.ArguemntType.IDENTIFIER){
+        if(arg.getType() == Argument.ArgumentType.IDENTIFIER){
 
             //Get value from identifier and try to parse
             VariableContainer varCon = variableCollectorListener.getValueFromIdentifier(arg.getValue());
