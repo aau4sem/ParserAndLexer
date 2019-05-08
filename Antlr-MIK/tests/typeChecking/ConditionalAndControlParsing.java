@@ -14,7 +14,7 @@ public class ConditionalAndControlParsing {
 
     @Test
     public void while01(){
-        parse("int i = 0; while(i < 5{ i = i + 1;};");
+        parse("int i; i = 0; while(i < 5){ i = i + 1;};;");
 
         Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
 
