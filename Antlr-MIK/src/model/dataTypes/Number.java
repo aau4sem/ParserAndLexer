@@ -5,7 +5,7 @@ public class Number {
     private Integer intValue = null;
     private Float floatValue = null;
 
-    public Number(int intValue) {
+    public Number(Integer intValue) {
         this.intValue = intValue;
     }
 

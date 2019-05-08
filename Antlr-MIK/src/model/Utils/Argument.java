@@ -2,12 +2,12 @@ package model.utils;
 
 public class Argument {
 
-    public enum ArguemntType { IDENTIFIER, NUMBER, BOOL, STRING, VECTOR, GAMEPIECE_PROPERTY}
+    public enum ArgumentType { IDENTIFIER, NUMBER, BOOL, STRING, VECTOR, GAMEPIECE_PROPERTY}
 
     private String value;
-    private ArguemntType type;
+    private ArgumentType type;
 
-    public Argument(String value, ArguemntType type) {
+    public Argument(String value, ArgumentType type) {
         this.value = value;
         this.type = type;
     }
@@ -16,7 +16,7 @@ public class Argument {
         return value;
     }
 
-    public ArguemntType getType() {
+    public ArgumentType getType() {
         return type;
     }
 }

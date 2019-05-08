@@ -44,14 +44,14 @@ public class ArgumentGatherer implements TerminalNode {
 
             //Find the type of the argument
             if(vc.number() != null){ //The argument is a number
-                arg = new Argument(vc.number().getText(), Argument.ArguemntType.NUMBER);
+                arg = new Argument(vc.number().getText(), Argument.ArgumentType.NUMBER);
             }else if(vc.identifier() != null){ //The argument is an identifier
-                arg = new Argument(vc.identifier().getText(), Argument.ArguemntType.IDENTIFIER);
+                arg = new Argument(vc.identifier().getText(), Argument.ArgumentType.IDENTIFIER);
             }else if(vc.string() != null){ //The argument is a string
                 //The substring is taken to avoid saving the "" around the string
-                arg = new Argument(vc.string().getText().substring(1, vc.string().getText().length()-1), Argument.ArguemntType.STRING);
+                arg = new Argument(vc.string().getText().substring(1, vc.string().getText().length()-1), Argument.ArgumentType.STRING);
             }else if(vc.vec() != null){ //The argument is a vector
-                arg = new Argument(vc.vec().getText(), Argument.ArguemntType.VECTOR);
+                arg = new Argument(vc.vec().getText(), Argument.ArgumentType.VECTOR);
             }else{
                 throw new IllegalArgumentException();
             }
