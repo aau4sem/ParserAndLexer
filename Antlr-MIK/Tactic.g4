@@ -18,7 +18,7 @@ word            : WORD | LETTER ;
 string          : STRINGTEXT ;
 identifier      : word (WORD|NUMBER|DIGIT|LETTER)*;
 value           : identifier | number | bool | string | vec;
-vec             : LPAREN number SEPERATOR number (SEPERATOR number)? RPAREN;
+vec             : LPAREN integer SEPERATOR integer (SEPERATOR integer)? RPAREN;
 type            : INTEGER | FLOAT | VEC | BOOL | STRING | GAMEPIECE ;
 
 procedureCall    : identifier LPAREN arguments? RPAREN;
