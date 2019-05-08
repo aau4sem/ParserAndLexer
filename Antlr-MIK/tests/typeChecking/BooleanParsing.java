@@ -14,7 +14,7 @@ public class BooleanParsing {
 
     @Test
     public void equal01(){
-        parse("bool x = true == true;");
+        parse("bool x; x = true == true;;");
 
         String x = vlc.getValueFromIdentifier("x").getValue();
 
@@ -28,8 +28,7 @@ public class BooleanParsing {
 
     @Test
     public void equal02(){
-
-        parse("bool x = false == false;");
+        parse("bool x; x = false == false;;");
 
         String x = vlc.getValueFromIdentifier("x").getValue();
 
@@ -43,8 +42,7 @@ public class BooleanParsing {
 
     @Test
     public void equal03(){
-
-        parse("bool x = true == false;");
+        parse("bool x; x = true == false;;");
 
         String x = vlc.getValueFromIdentifier("x").getValue();
 
@@ -58,8 +56,7 @@ public class BooleanParsing {
 
     @Test
     public void equal04(){
-
-        parse("bool x = false == true;");
+        parse("bool x; x = false == true;;");
 
         String x = vlc.getValueFromIdentifier("x").getValue();
 
@@ -73,8 +70,7 @@ public class BooleanParsing {
 
     @Test
     public void lesser01(){
-
-        parse("bool x = 4 > 2;");
+        parse("bool x; x = 4 > 2;;");
 
         String x = vlc.getValueFromIdentifier("x").getValue();
 
@@ -88,8 +84,7 @@ public class BooleanParsing {
 
     @Test
     public void lesser02(){
-
-        parse("bool x = 1 > 2;");
+        parse("bool x; x = 1 > 2;;");
 
         String x = vlc.getValueFromIdentifier("x").getValue();
 
@@ -103,8 +98,7 @@ public class BooleanParsing {
 
     @Test
     public void greater01(){
-
-        parse("bool x = 4 < 10;");
+        parse("bool x; x = 4 < 10;;");
 
         String x = vlc.getValueFromIdentifier("x").getValue();
 
@@ -118,8 +112,7 @@ public class BooleanParsing {
 
     @Test
     public void greater02(){
-
-        parse("bool x = 5 < 2;");
+        parse("bool x; x = 5 < 2;;");
 
         String x = vlc.getValueFromIdentifier("x").getValue();
 
