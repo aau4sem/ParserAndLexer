@@ -207,8 +207,6 @@ public class VariableCollectorListener extends TacticBaseListener {
 
         } else if(ctx.arithExpr() != null){ //format identifier = arithExpr
             value = String.valueOf(getArithmeticResult(ctx.arithExpr()));
-        } else if(ctx.procedureCall() != null){ //format identifier = procedureCall
-            throw new IllegalArgumentException(); //TODO Not yet implemented
         } else if(ctx.boolStmt() != null){ //format identifier = boolStmt
             value = String.valueOf(getBoolStmtResult(ctx.boolStmt()));
         } else if(ctx.vecExpr() != null){ //format identifier = vecExpr (subtraction or addition)
