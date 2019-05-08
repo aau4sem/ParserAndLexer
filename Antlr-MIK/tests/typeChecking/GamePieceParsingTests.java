@@ -19,7 +19,7 @@ public class GamePieceParsingTests {
 
     @Test
     public void propertyDefaultValues01(){
-        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp;"));
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp;;"));
         parser = new Tactic(new CommonTokenStream(lexer));
         VariableCollectorListener vcl = new VariableCollectorListener();
         parser.addParseListener(vcl);
@@ -42,7 +42,7 @@ public class GamePieceParsingTests {
 
     @Test
     public void propertyChangeVector01(){
-        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.position = (2,3,1);"));
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.position = (2,3,1);;"));
         parser = new Tactic(new CommonTokenStream(lexer));
         VariableCollectorListener vcl = new VariableCollectorListener();
         parser.addParseListener(vcl);
@@ -65,7 +65,7 @@ public class GamePieceParsingTests {
 
     @Test
     public void propertyChangeSize01(){
-        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.size = 2.56;"));
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.size = 2.56;;"));
         parser = new Tactic(new CommonTokenStream(lexer));
         VariableCollectorListener vcl = new VariableCollectorListener();
         parser.addParseListener(vcl);
@@ -83,7 +83,7 @@ public class GamePieceParsingTests {
 
     @Test
     public void propertyChangeColor01(){
-        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.color = \"RED\";"));
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.color = \"RED\";;"));
         parser = new Tactic(new CommonTokenStream(lexer));
         VariableCollectorListener vcl = new VariableCollectorListener();
         parser.addParseListener(vcl);
@@ -101,7 +101,7 @@ public class GamePieceParsingTests {
 
     @Test
     public void propertyChangeLabel01(){
-        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.label = \"PlayerOne\";"));
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.label = \"PlayerOne\";;"));
         parser = new Tactic(new CommonTokenStream(lexer));
         VariableCollectorListener vcl = new VariableCollectorListener();
         parser.addParseListener(vcl);
@@ -119,7 +119,7 @@ public class GamePieceParsingTests {
 
     @Test
     public void propertyChangeOpacity01(){
-        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.opacity = 0.3;"));
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.opacity = 0.3;;"));
         parser = new Tactic(new CommonTokenStream(lexer));
         VariableCollectorListener vcl = new VariableCollectorListener();
         parser.addParseListener(vcl);
@@ -137,7 +137,7 @@ public class GamePieceParsingTests {
 
     @Test
     public void propertyChangeShape01(){
-        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.shape = \"Square\";"));
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.shape = \"Square\";;"));
         parser = new Tactic(new CommonTokenStream(lexer));
         VariableCollectorListener vcl = new VariableCollectorListener();
         parser.addParseListener(vcl);
