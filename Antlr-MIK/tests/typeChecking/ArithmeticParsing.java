@@ -16,7 +16,7 @@ public class ArithmeticParsing {
 
     @Test
     public void mixedCalculation01(){
-        parse("int i = (5 + 5) * 2");
+        parse("int i; i = (5 + 5) * 2;;");
 
         Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
 
@@ -26,7 +26,7 @@ public class ArithmeticParsing {
 
     @Test
     public void mixedCalculation02(){
-        parse("int i = (5 + 5) * (2 + 2)");
+        parse("int i; i = (5 + 5) * (2 + 2);;");
 
         Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
 
@@ -36,7 +36,7 @@ public class ArithmeticParsing {
 
     @Test
     public void mixedCalculation03(){
-        parse("int x = 2; int i = (5 + 5) * x");
+        parse("int x; x = 2; int i = (5 + 5) * x;;");
 
         Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
 
@@ -46,7 +46,7 @@ public class ArithmeticParsing {
 
     @Test
     public void mixedCalculation04(){
-        parse("int i = (5 + 5) * 2 * 2");
+        parse("int i; i = (5 + 5) * 2 * 2;;");
 
         Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
 
@@ -56,7 +56,7 @@ public class ArithmeticParsing {
 
     @Test
     public void mixedCalculation05(){
-        parse("int i = 5 + (5) * 2");
+        parse("int i; i = 5 + (5) * 2;;");
 
         Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
 
@@ -66,7 +66,7 @@ public class ArithmeticParsing {
 
     @Test
     public void addition01(){
-        parse("int x = 2 + 2;");
+        parse("int x; x = 2 + 2;;");
 
         Integer x = Integer.parseInt(vlc.getValueFromIdentifier("x").getValue());
 
@@ -76,7 +76,7 @@ public class ArithmeticParsing {
 
     @Test
     public void addition02(){
-        parse("float x = 2.5 + 2.5;");
+        parse("float x; x = 2.5 + 2.5;;");
 
         Float x = Float.parseFloat(vlc.getValueFromIdentifier("x").getValue());
 
@@ -86,7 +86,7 @@ public class ArithmeticParsing {
 
     @Test
     public void subtraction01(){
-        parse("int x = 2 - 2;");
+        parse("int x; x = 2 - 2;;");
 
         Integer x = Integer.parseInt(vlc.getValueFromIdentifier("x").getValue());
 
@@ -96,7 +96,7 @@ public class ArithmeticParsing {
 
     @Test
     public void subtraction02(){
-        parse("float x = 2.5 - 2.5;");
+        parse("float x; x = 2.5 - 2.5;;");
 
         Float x = Float.parseFloat(vlc.getValueFromIdentifier("x").getValue());
 
@@ -106,7 +106,7 @@ public class ArithmeticParsing {
 
     @Test
     public void division01(){
-        parse("float x = 2 / 2;");
+        parse("float x; x = 2 / 2;;");
 
         Float x = Float.parseFloat(vlc.getValueFromIdentifier("x").getValue());
 
@@ -116,7 +116,7 @@ public class ArithmeticParsing {
 
     @Test
     public void multiply01(){
-        parse("int x = 2 * 2;");
+        parse("int x; x = 2 * 2;;");
 
         Integer x = Integer.parseInt(vlc.getValueFromIdentifier("x").getValue());
 
@@ -126,7 +126,7 @@ public class ArithmeticParsing {
 
     @Test
     public void multiply02(){
-        parse("float x = 0.5 * 2;");
+        parse("float x; x = 0.5 * 2;;");
 
         Float x = Float.parseFloat(vlc.getValueFromIdentifier("x").getValue());
 
@@ -136,7 +136,7 @@ public class ArithmeticParsing {
 
     @Test
     public void mod01(){
-        parse("int x = 4 mod 3;");
+        parse("int x; x = 4 mod 3;;");
 
         Integer x = Integer.parseInt(vlc.getValueFromIdentifier("x").getValue());
 
@@ -146,7 +146,7 @@ public class ArithmeticParsing {
 
     @Test
     public void arithExpr01(){
-        TacticLexer lexer = new TacticLexer(new ANTLRInputStream("int i = 3; int x = 2 + 3 * 1 - (2 + 2) * (2 + 2 * 2) + i;"));
+        TacticLexer lexer = new TacticLexer(new ANTLRInputStream("int i; int x; i = 3; x = 2 + 3 * 1 - (2 + 2) * (2 + 2 * 2) + i;;"));
         Tactic parser = new Tactic(new CommonTokenStream(lexer));
         VariableCollectorListener vcl = new VariableCollectorListener();
         parser.addParseListener(vcl);
