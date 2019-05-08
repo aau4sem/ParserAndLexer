@@ -283,7 +283,8 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     @Override
     public void exitGpDcl(Tactic.GpDclContext ctx) {
-        addVariableToScope(new VariableContainer(ctx.identifier().getText(), null, VariableType.GAMEPIECE));
+        String identifier = ctx.identifier().getText();
+        addVariableToScope(new VariableContainer(identifier, "name:" + identifier + ",position:,size:,color:,label:,opacity:,shape:,", VariableType.GAMEPIECE));
     }
 
     @Override
