@@ -191,13 +191,9 @@ public class VariableCollectorListenerTests {
         Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.FLOAT);
     }
 
-    // ALL ABOVE HAS BEEN REWORKED!! ----------------------------------
-
-
-
     @Test
     public void vectorDcl01(){
-        lexer = new TacticLexer(new ANTLRInputStream("vector x = (2,3,4);"));
+        lexer = new TacticLexer(new ANTLRInputStream("vector x; x = (2,3,4);"));
         parser = new Tactic(new CommonTokenStream(lexer));
         VariableCollectorListener vcl = new VariableCollectorListener();
         parser.addParseListener(vcl);
@@ -222,7 +218,7 @@ public class VariableCollectorListenerTests {
 
     @Test
     public void vectorDcl02(){
-        lexer = new TacticLexer(new ANTLRInputStream("vector x = (22,3);"));
+        lexer = new TacticLexer(new ANTLRInputStream("vector x; x = (22,3);"));
         parser = new Tactic(new CommonTokenStream(lexer));
         VariableCollectorListener vcl = new VariableCollectorListener();
         parser.addParseListener(vcl);
@@ -247,7 +243,7 @@ public class VariableCollectorListenerTests {
 
     @Test
     public void vectorDcl03(){
-        lexer = new TacticLexer(new ANTLRInputStream("vector x = (2.2,3.3);"));
+        lexer = new TacticLexer(new ANTLRInputStream("vector x; x = (2.2,3.3);"));
         parser = new Tactic(new CommonTokenStream(lexer));
         VariableCollectorListener vcl = new VariableCollectorListener();
         parser.addParseListener(vcl);
@@ -272,7 +268,7 @@ public class VariableCollectorListenerTests {
 
     @Test
     public void boolDcl01(){
-        lexer = new TacticLexer(new ANTLRInputStream("bool x = true;"));
+        lexer = new TacticLexer(new ANTLRInputStream("bool x; x = true;"));
         parser = new Tactic(new CommonTokenStream(lexer));
         VariableCollectorListener vcl = new VariableCollectorListener();
         parser.addParseListener(vcl);
@@ -295,7 +291,7 @@ public class VariableCollectorListenerTests {
 
     @Test
     public void stringDcl01(){
-        lexer = new TacticLexer(new ANTLRInputStream("string x = \"test\";"));
+        lexer = new TacticLexer(new ANTLRInputStream("string x; x = \"test\";"));
         parser = new Tactic(new CommonTokenStream(lexer));
         VariableCollectorListener vcl = new VariableCollectorListener();
         parser.addParseListener(vcl);
@@ -341,7 +337,7 @@ public class VariableCollectorListenerTests {
 
     @Test
     public void mixedDcl01(){
-        lexer = new TacticLexer(new ANTLRInputStream("int x = 5; float x = 6.0;"));
+        lexer = new TacticLexer(new ANTLRInputStream("int x; float x; x = 6.0;"));
         parser = new Tactic(new CommonTokenStream(lexer));
         VariableCollectorListener vcl = new VariableCollectorListener();
         parser.addParseListener(vcl);
@@ -362,7 +358,7 @@ public class VariableCollectorListenerTests {
 
     @Test
     public void mixedDcl02(){
-        lexer = new TacticLexer(new ANTLRInputStream("int x = 5; float x = 3 + 3;"));
+        lexer = new TacticLexer(new ANTLRInputStream("int x; float x; x = 3 + 3;"));
         parser = new Tactic(new CommonTokenStream(lexer));
         VariableCollectorListener vcl = new VariableCollectorListener();
         parser.addParseListener(vcl);
