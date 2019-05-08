@@ -8,7 +8,7 @@ import java.util.HashMap;
 /** This class will contain information of variables for a given scope. */
 public class VariableScopeData {
 
-    public enum ScopeType {MAIN_SCOPE, FUNCTION_SCOPE }
+    public enum ScopeType {MAIN_SCOPE, PROCEDURE_SCOPE }
 
     private ScopeType type;
     private String functionIdentifier = null; //TODO Is this needed?
