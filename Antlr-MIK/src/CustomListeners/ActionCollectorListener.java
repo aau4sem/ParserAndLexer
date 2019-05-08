@@ -33,8 +33,7 @@ public class ActionCollectorListener extends TacticBaseListener {
 
     /** This method will only detect function calls with the prefix/identifier: wait, change or move. */
     @Override
-    public void exitFunctionCall(Tactic.FunctionCallContext ctx) {
-
+    public void exitProcedureCall(Tactic.ProcedureCallContext ctx) {
         String identifier = ctx.identifier().getText();
 
         //Get the argumentContext of the function call, and get the last child of that, which is the attached ArgumentGatherer.
@@ -177,7 +176,7 @@ public class ActionCollectorListener extends TacticBaseListener {
 
     /** This method is used if an Argument can be either an IDENTIFIER or NUMBER.
      * @return a Number containing the parsed value. */
-    private Number evalIdentifierOrNumberArgument(Argument arg, int numberOfArguemnt, String functionName){
+    private Number evalIdentifierOrNumberArgument(Argument arg, int numberOfArguments, String functionName){
         Number num;
 
         if(arg.getType() == Argument.ArguemntType.IDENTIFIER){
@@ -192,7 +191,7 @@ public class ActionCollectorListener extends TacticBaseListener {
 
         //Did it parse?
         if(num == null) // Was the value of type integer or float
-            throw new IllegalArgumentType(numberOfArguemnt + 1, functionName, "integer or float");
+            throw new IllegalArgumentType(numberOfArguments + 1, functionName, "integer or float");
 
         return num;
     }
