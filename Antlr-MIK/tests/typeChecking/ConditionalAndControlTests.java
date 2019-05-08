@@ -8,7 +8,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ConditionalAndControlParsing {
+public class ConditionalAndControlTests {
 
     private static VariableCollectorListener vlc;
 

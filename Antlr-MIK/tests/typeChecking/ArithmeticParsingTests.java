@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ArithmeticParsing {
+public class ArithmeticParsingTests {
 
     private static VariableCollectorListener vlc;
 
