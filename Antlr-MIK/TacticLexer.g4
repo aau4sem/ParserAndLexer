@@ -28,7 +28,6 @@ DOT         :       '.';
 STRING_MARK :       '"';
 STRING      :       'string';
 VOID        :       'void';
-RETURN      :       'return';
 
 
 // Literals
@@ -40,10 +39,10 @@ NUMBER          : DIGIT+;
 ASSIGN          : '='  ;
 ADDITION        : '+'  ;
 SUBTRACTION     : '-'  ;
-DIVISION        : '/'  ; // This currently has to have spaces on both sides. Ask Mikkel why..
+DIVISION        : '/'  ;
 MULTIPLY        : '*' ;
 MODULO          : '%' ;
-ENDSTNT         : ';'  ;
+ENDSTMT         : ';'  ;
 BOOL_EQUAL      : '==' ;
 BOOL_N_EQUAL    : '!=' ;
 BOOL_COND_AND   : '&&' ;

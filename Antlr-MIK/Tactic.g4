@@ -7,9 +7,9 @@ parser grammar Tactic;
 
 options { tokenVocab = TacticLexer; }
 
-prog    : ((procedureDef | dcl) ENDSTNT)* (stmt ENDSTNT)*;
-stmt    : arithExpr | identifier | dotStmt | dotAssignment | arrayAssign | procedureCall | condStmt | whileStmt | assignment;
-dcl     : intDcl | boolDcl | arrayDcl | stringDcl | gpDcl | floatDcl | vecDcl;
+prog    : (dcl ENDSTMT)* (stmt ENDSTMT)* ENDSTMT;
+stmt    : arithExpr | dotStmt | dotAssignment | arrayAssign | procedureCall | condStmt | whileStmt | assignment;
+dcl     : intDcl | boolDcl | arrayDcl | stringDcl | gpDcl | floatDcl | vecDcl | procedureDef;
 
 integer         : NUMBER | DIGIT ;
 floatVal        : (NUMBER | DIGIT) DOT (NUMBER | DIGIT);
@@ -23,7 +23,7 @@ type            : INTEGER | FLOAT | VEC | BOOL | STRING | GAMEPIECE ;
 
 procedureCall    : identifier LPAREN arguments? RPAREN;
 procedureDef     : identifier LPAREN (type identifier (SEPERATOR type identifier)*)? RPAREN procedureBlock;
-procedureBlock   : LCURLY (stmt ENDSTNT)* RCURLY;
+procedureBlock   : LCURLY (stmt ENDSTMT)* RCURLY;
 
 dotStmt         : identifier ((DOT identifier(LBRACKET number? RBRACKET)*))+ ;
 dotAssignment   : dotStmt ASSIGN value;
@@ -63,7 +63,7 @@ arguments       : value | arguments SEPERATOR arguments ;
 
 //Control structures
 condStmt        : ifStmt elseStmt? ;
-block           : LCURLY (stmt ENDSTNT)* RCURLY ;
+block           : LCURLY (stmt ENDSTMT)* RCURLY ;
 ifStmt          : IF LPAREN (boolStmt) RPAREN  block ;
 elseStmt        : ELSE block ;
 
