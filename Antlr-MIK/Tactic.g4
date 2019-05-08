@@ -22,7 +22,7 @@ vec             : LPAREN number SEPERATOR number (SEPERATOR number)? RPAREN;
 type            : INTEGER | FLOAT | VEC | BOOL | STRING | GAMEPIECE ;
 
 procedureCall    : identifier LPAREN arguments? RPAREN;
-procedureDef     : identifier LPAREN (type identifier (SEPERATOR type identifier)*)? RPAREN procedureBlock;
+procedureDef     : identifier LPAREN (type(LBRACKET RBRACKET)* identifier (SEPERATOR type (LBRACKET RBRACKET)* identifier)*)? RPAREN procedureBlock;
 procedureBlock   : LCURLY (stmt ENDSTMT)* RCURLY;
 
 dotStmt         : identifier ((DOT identifier(LBRACKET number? RBRACKET)*))+ ;
@@ -37,7 +37,7 @@ stringDcl   : STRING identifier;
 gpDcl       : GAMEPIECE identifier;
 arrayDcl    : type (LBRACKET integer RBRACKET)+ identifier;
 
-assignment  : identifier (LBRACKET integer RBRACKET)* ASSIGN (value | arithExpr | procedureCall | boolStmt | vecExpr | (identifier (LBRACKET integer RBRACKET)*) | dotStmt);
+assignment  : (identifier | dotStmt) (LBRACKET integer RBRACKET)* ASSIGN (value | arithExpr | boolStmt | vecExpr | (identifier (LBRACKET integer RBRACKET)*) | dotStmt);
 
 //Datastructure operations
 arrayExpr   : boolStmt | arithExpr | gpDcl | identifier | dotStmt | arrayDcl | value | vec | floatDcl | vecExpr ;
