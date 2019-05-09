@@ -272,11 +272,9 @@ public class VariableCollectorListener extends TacticBaseListener {
         this.isInProcedureDefinition = false;
     }
 
-
-
-
     @Override
     public void exitProcedureCall(Tactic.ProcedureCallContext ctx) {
+        this.currentScope = VariableScopeData.ScopeType.PROCEDURE_SCOPE;
 
         String identifier = ctx.identifier().getText();
 
@@ -291,6 +289,8 @@ public class VariableCollectorListener extends TacticBaseListener {
             this.currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
             this.procedureScope.resetProcedureIdentifier();
         }
+
+        this.currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
     }
 
     // DECLARATIONS ----------------------------------------------------
