@@ -37,103 +37,105 @@ public class ActionCollectorListener extends TacticBaseListener {
         //System.out.println(ctx.children.get(0).getText());
         String identifier = ctx.identifier().getText();
 
-        //Get the argumentContext of the function call, and get the last child of that, which is the attached ArgumentGatherer.
-        ArgumentGatherer ag = (ArgumentGatherer)((Tactic.ArgumentsContext) ctx.children.get(2)).children.get(ctx.children.get(2).getChildCount() -1);
-        ArrayList<Argument> arguments = ag.getConvertedArgumentsList();
+        if(identifier.compareTo("change") == 0 || identifier.compareTo("move") == 0 ||identifier.compareTo("wait") == 0){
+            //Get the argumentContext of the function call, and get the last child of that, which is the attached ArgumentGatherer.
+            ArgumentGatherer ag = (ArgumentGatherer)((Tactic.ArgumentsContext) ctx.children.get(2)).children.get(ctx.children.get(2).getChildCount() -1);
+            ArrayList<Argument> arguments = ag.getConvertedArgumentsList();
 
-        if(identifier.compareTo("change") == 0){
-            //Parameters: GP, string, string, number
+            if(identifier.compareTo("change") == 0){
+                //Parameters: GP, string, string, number
 
-            if(ag.getNumberOfArguments() != 4)
-                throw new IllegalNumberOfArguments(4, identifier, ag.getNumberOfArguments());
+                if(ag.getNumberOfArguments() != 4)
+                    throw new IllegalNumberOfArguments(4, identifier, ag.getNumberOfArguments());
 
-            //INITIAL TYPE CHECKING --------------------------------------------
-            typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArgumentType.IDENTIFIER);
+                //INITIAL TYPE CHECKING --------------------------------------------
+                typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArgumentType.IDENTIFIER);
 
-            if(TypeCheckerHelper.parseGamePiecePropertyType(arguments.get(1).getValue()) == null)
-                throw new IllegalArgumentType(2, identifier, Argument.ArgumentType.GAMEPIECE_PROPERTY);
+                if(TypeCheckerHelper.parseGamePiecePropertyType(arguments.get(1).getValue()) == null)
+                    throw new IllegalArgumentType(2, identifier, Argument.ArgumentType.GAMEPIECE_PROPERTY);
 
-            typeCheckArgument(arguments.get(2), 3, identifier, Argument.ArgumentType.STRING,
-                    Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.NUMBER, Argument.ArgumentType.VECTOR);
+                typeCheckArgument(arguments.get(2), 3, identifier, Argument.ArgumentType.STRING,
+                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.NUMBER, Argument.ArgumentType.VECTOR);
 
-            typeCheckArgument(arguments.get(3), 4, identifier,
-                    Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.NUMBER);
+                typeCheckArgument(arguments.get(3), 4, identifier,
+                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.NUMBER);
 
-            //VALUE EVALUATION --------------------------------------------
-            //FIRST ARGUMENT
-            VariableContainer variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
-            GamePiece variableFirstArg = TypeCheckerHelper.parseGamePiece(variableConFirstArg.getValue());
+                //VALUE EVALUATION --------------------------------------------
+                //FIRST ARGUMENT
+                VariableContainer variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
+                GamePiece variableFirstArg = TypeCheckerHelper.parseGamePiece(variableConFirstArg.getValue());
 
-            if(variableFirstArg == null) //Was the parsed variable a GP?
-                throw new IllegalArgumentType(1, identifier, "GamePiece");
+                if(variableFirstArg == null) //Was the parsed variable a GP?
+                    throw new IllegalArgumentType(1, identifier, "GamePiece");
 
-            //SECOND ARGUMENT //Make sure that the value matches the property
-            GamePiece.GamePiecePropertyType secondArg = TypeCheckerHelper.parseGamePiecePropertyType(arguments.get(1).getValue());
+                //SECOND ARGUMENT //Make sure that the value matches the property
+                GamePiece.GamePiecePropertyType secondArg = TypeCheckerHelper.parseGamePiecePropertyType(arguments.get(1).getValue());
 
-            //THIRD ARGUMENT
-            String thirdArg = arguments.get(2).getValue();
+                //THIRD ARGUMENT
+                String thirdArg = arguments.get(2).getValue();
 
-            //FOURTH ARGUMENT
-            Number fourthArg = evalIdentifierOrNumberArgument(arguments.get(3), 3, identifier);
+                //FOURTH ARGUMENT
+                Number fourthArg = evalIdentifierOrNumberArgument(arguments.get(3), 3, identifier);
 
-            //Collect the function //This function is used because of the third argument - it can be multiple types
-            addChangeActionCall(variableFirstArg, secondArg, thirdArg, fourthArg);
+                //Collect the function //This function is used because of the third argument - it can be multiple types
+                addChangeActionCall(variableFirstArg, secondArg, thirdArg, fourthArg);
 
-        }else if(identifier.compareTo("move") == 0) {
-            //Parameters: GP, vector, number
+            }else if(identifier.compareTo("move") == 0) {
+                //Parameters: GP, vector, number
 
-            if(ag.getNumberOfArguments() != 3)
-                throw new IllegalNumberOfArguments(3, identifier, ag.getNumberOfArguments());
+                if(ag.getNumberOfArguments() != 3)
+                    throw new IllegalNumberOfArguments(3, identifier, ag.getNumberOfArguments());
 
-            typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArgumentType.IDENTIFIER);
+                typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArgumentType.IDENTIFIER);
 
-            typeCheckArgument(arguments.get(1), 2, identifier, Argument.ArgumentType.VECTOR);
+                typeCheckArgument(arguments.get(1), 2, identifier, Argument.ArgumentType.VECTOR);
 
-            typeCheckArgument(arguments.get(2), 3, identifier,
-                    Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.NUMBER);
+                typeCheckArgument(arguments.get(2), 3, identifier,
+                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.NUMBER);
 
-            //VALUE EVALUATION --------------------------------------------
-            //FIRST ARGUMENT
-            VariableContainer variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
-            GamePiece variableFirstArg = TypeCheckerHelper.parseGamePiece(variableConFirstArg.getValue());
+                //VALUE EVALUATION --------------------------------------------
+                //FIRST ARGUMENT
+                VariableContainer variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
+                GamePiece variableFirstArg = TypeCheckerHelper.parseGamePiece(variableConFirstArg.getValue());
 
-            if(variableFirstArg == null) //Was the parsed variable a GP?
-                throw new IllegalArgumentType(1, identifier, "GamePiece");
+                if(variableFirstArg == null) //Was the parsed variable a GP?
+                    throw new IllegalArgumentType(1, identifier, "GamePiece");
 
-            //SECOND ARGUMENT
-            Vector variableSecondArgVec = TypeCheckerHelper.parseVector(arguments.get(1).getValue());
+                //SECOND ARGUMENT
+                Vector variableSecondArgVec = TypeCheckerHelper.parseVector(arguments.get(1).getValue());
 
-            //THIRD ARGUMENT
-            Number variableThirdArgNum = evalIdentifierOrNumberArgument(arguments.get(2), 2, identifier);
+                //THIRD ARGUMENT
+                Number variableThirdArgNum = evalIdentifierOrNumberArgument(arguments.get(2), 2, identifier);
 
-            //Collect the function
-            actionFunctions.add(new BuildInFuctionMove(variableFirstArg, variableSecondArgVec, variableThirdArgNum));
+                //Collect the function
+                actionFunctions.add(new BuildInFuctionMove(variableFirstArg, variableSecondArgVec, variableThirdArgNum));
 
-        }else if(identifier.compareTo("wait") == 0){
-            //Parameters: GP, number
+            }else if(identifier.compareTo("wait") == 0){
+                //Parameters: GP, number
 
-            if(ag.getNumberOfArguments() != 2)
-                throw new IllegalNumberOfArguments(2, identifier, ag.getNumberOfArguments());
+                if(ag.getNumberOfArguments() != 2)
+                    throw new IllegalNumberOfArguments(2, identifier, ag.getNumberOfArguments());
 
-            //INITIAL TYPE CHECKING --------------------------------------------
-            typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArgumentType.IDENTIFIER);
+                //INITIAL TYPE CHECKING --------------------------------------------
+                typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArgumentType.IDENTIFIER);
 
-            typeCheckArgument(arguments.get(1), 2, identifier,
-                    Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.NUMBER);
+                typeCheckArgument(arguments.get(1), 2, identifier,
+                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.NUMBER);
 
-            //VALUE EVALUATION --------------------------------------------
-            //FIRST ARGUMENT
-            VariableContainer variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
-            GamePiece variableFirstArg = TypeCheckerHelper.parseGamePiece(variableConFirstArg.getValue());
+                //VALUE EVALUATION --------------------------------------------
+                //FIRST ARGUMENT
+                VariableContainer variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
+                GamePiece variableFirstArg = TypeCheckerHelper.parseGamePiece(variableConFirstArg.getValue());
 
-            if(variableFirstArg == null) //Was the parsed variable a GP?
-                throw new IllegalArgumentType(1, identifier, "GamePiece");
+                if(variableFirstArg == null) //Was the parsed variable a GP?
+                    throw new IllegalArgumentType(1, identifier, "GamePiece");
 
-            //SECOND ARGUMENT
-            Number variableSecondArgNum = evalIdentifierOrNumberArgument(arguments.get(1), 1, identifier);
+                //SECOND ARGUMENT
+                Number variableSecondArgNum = evalIdentifierOrNumberArgument(arguments.get(1), 1, identifier);
 
-            //Collect the function
-            actionFunctions.add(new BuildInFunctionWait(variableFirstArg, variableSecondArgNum));
+                //Collect the function
+                actionFunctions.add(new BuildInFunctionWait(variableFirstArg, variableSecondArgNum));
+            }
         }
     }
 
