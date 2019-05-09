@@ -204,6 +204,7 @@ public class VariableCollectorListener extends TacticBaseListener {
                 throw new IllegalArgumentException(); //Grammar has changed
 
         } else if(ctx.arithExpr() != null){ //format identifier = arithExpr
+            //TODO what if the identifier is an int, and the result is in float?
             value = String.valueOf(getArithmeticResult(ctx.arithExpr()));
         } else if(ctx.boolStmt() != null){ //format identifier = boolStmt
             value = String.valueOf(getBoolStmtResult(ctx.boolStmt()));
@@ -292,8 +293,6 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     // -----------------------------------------------------------------
 
-
-    @Override //TODO Does this work? //TODO Reworked based on the dcls from the old file
     public void exitDotAssignment(Tactic.DotAssignmentContext ctx) {
 
         String identifier = ctx.dotStmt().identifier().get(0).getText();
@@ -535,15 +534,15 @@ public class VariableCollectorListener extends TacticBaseListener {
         }else if(operatorContext.BOOL_EQUAL() != null){
             return firstBool == secondBool;
         }else if(operatorContext.BOOL_GREATER() != null){
-            return null; //firstBool > secondBool;
+            throw new IllegalArgumentException(); //firstBool > secondBool;
         }else if(operatorContext.BOOL_GREATER_OR_EQUAL() != null){
-            return null;  //firstBool >= secondBool;
+            throw new IllegalArgumentException();  //firstBool >= secondBool;
         }else if(operatorContext.BOOL_LESS() != null){
-            return null; //firstBool < secondBool;
+            throw new IllegalArgumentException(); //firstBool < secondBool;
         }else if(operatorContext.BOOL_N_EQUAL() != null){
             return firstBool != secondBool;
         }else if(operatorContext.BOOL_LESS_OR_EQUAL() != null) {
-            return null; //firstBool <= secondBool;
+            throw new IllegalArgumentException(); //firstBool <= secondBool;
         }else if(operatorContext.BOOL_COND_AND() != null){
             return firstBool && secondBool;
         }else
