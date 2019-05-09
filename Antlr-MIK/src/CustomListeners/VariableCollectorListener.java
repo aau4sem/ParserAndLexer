@@ -10,7 +10,6 @@ import model.utils.Parameter;
 import model.utils.TypeCheckerHelper;
 import model.variables.VariableContainer;
 import model.variables.VariableScopeData;
-import org.antlr.v4.runtime.CodePointBuffer;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;
@@ -38,6 +37,8 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     //All supported variable types
     public enum VariableType { INT, FLOAT, VEC, BOOL, STRING, GAMEPIECE}
+
+    public boolean isInProcedureDefinition = false; //TODO Comment
 
     // CORE METHODS -----------------------------------------------------------
 
@@ -119,6 +120,17 @@ public class VariableCollectorListener extends TacticBaseListener {
         return varCon;
     }
 
+    /** @return the procedure matching the given identifier. */
+    private Procedure getProcedureFromIdentifier(String identifier){
+
+        Procedure procedure = procedures.get(identifier);
+
+        if(procedure == null)
+            throw new IllegalArgumentException(); //The procedure being called does not exist
+
+        return procedure;
+    }
+
     // UTILITIES -----------------------------------------------------------------
 
     /** @return all GamePieces instantiated. */
@@ -136,6 +148,10 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     @Override
     public void exitAssignment(Tactic.AssignmentContext ctx) {
+
+        if(isInProcedureDefinition)
+            return;
+
         String identifier = ctx.identifier(0).getText();
         String value;
 
@@ -222,6 +238,17 @@ public class VariableCollectorListener extends TacticBaseListener {
     }
 
     @Override
+    public void exitArrayAssign(Tactic.ArrayAssignContext ctx) {
+        if(isInProcedureDefinition)
+            return;
+    }
+
+    @Override
+    public void enterProcedureDef(Tactic.ProcedureDefContext ctx) {
+        this.isInProcedureDefinition = true;
+    }
+
+    @Override
     public void exitProcedureDef(Tactic.ProcedureDefContext ctx) {
 
         ArrayList<Tactic.TypeContext> types = new ArrayList<>(ctx.type());
@@ -231,26 +258,39 @@ public class VariableCollectorListener extends TacticBaseListener {
 
         Procedure proc = new Procedure();
 
+        //Collect all arguments
         for(int i = 0; i < types.size(); i++){
             VariableCollectorListener.VariableType type = TypeCheckerHelper.parseVariableType(types.get(i).getText());
             proc.addArgument(new Parameter(type, identifiers.get(i).getText()));
         }
 
+        //Collect all statements in the procedure body
+        proc.addAllStatments(ctx.procedureBlock().stmt());
+
         procedures.put(procedureIdentifier, proc);
+
+        this.isInProcedureDefinition = false;
     }
+
+
+
 
     @Override
     public void exitProcedureCall(Tactic.ProcedureCallContext ctx) {
-        this.currentScope = VariableScopeData.ScopeType.PROCEDURE_SCOPE;
-        this.procedureScope.setProcedureIdentifier(ctx.identifier().getText());
 
-        //TODO HANDLE PROCEDURE CALL
+        String identifier = ctx.identifier().getText();
 
-        //Does the called procedure exist? TODO
+        //Is the procedure call one of the three action calls? If so, do not do anything. (This is handled in ActionCollectorListener.)
+        if(!(identifier.compareTo("change") == 0 || identifier.compareTo("move") == 0 ||identifier.compareTo("wait") == 0)){
+            this.currentScope = VariableScopeData.ScopeType.PROCEDURE_SCOPE;
+            this.procedureScope.setProcedureIdentifier(identifier);
 
+            Procedure procedure = getProcedureFromIdentifier(identifier);
+            procedure.execute(new ArrayList<>(), this); //TODO, pass arguments
 
-        this.currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
-        this.procedureScope.resetProcedureIdentifier();
+            this.currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
+            this.procedureScope.resetProcedureIdentifier();
+        }
     }
 
     // DECLARATIONS ----------------------------------------------------
@@ -294,6 +334,9 @@ public class VariableCollectorListener extends TacticBaseListener {
     // -----------------------------------------------------------------
 
     public void exitDotAssignment(Tactic.DotAssignmentContext ctx) {
+
+        if(isInProcedureDefinition)
+            return;
 
         String identifier = ctx.dotStmt().identifier().get(0).getText();
 
@@ -343,6 +386,9 @@ public class VariableCollectorListener extends TacticBaseListener {
     @Override
     public void exitArithExprParent(Tactic.ArithExprParentContext ctx) {
 
+        if(isInProcedureDefinition)
+            return;
+
         //Get all arithmeticGatherers from the children
         ArrayList<ArithmeticGatherer> ags = new ArrayList<>();
 
@@ -360,6 +406,9 @@ public class VariableCollectorListener extends TacticBaseListener {
     @Override
     public void exitArithExprParenthMiddle(Tactic.ArithExprParenthMiddleContext ctx) {
 
+        if(isInProcedureDefinition)
+            return;
+
         ArithmeticGatherer ag = new ArithmeticGatherer();
         ag.addValue("(");
         ag.addValue(((ArithmeticGatherer)ctx.arithExpr().children.get(0).getChild(ctx.arithExpr().children.get(0).getChildCount() -1)).getEquation());
@@ -371,6 +420,9 @@ public class VariableCollectorListener extends TacticBaseListener {
     @Override
     public void exitArithExprMiddle(Tactic.ArithExprMiddleContext ctx) {
 
+        if(isInProcedureDefinition)
+            return;
+
         ArithmeticGatherer ag = new ArithmeticGatherer();
         getAllArithmeticEndNodes(ag, ctx.children);
 
@@ -380,6 +432,10 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     @Override
     public void exitArithExprRight(Tactic.ArithExprRightContext ctx) {
+
+        if(isInProcedureDefinition)
+            return;
+
         ArithmeticGatherer ag = new ArithmeticGatherer();
         getAllArithmeticEndNodes(ag, ctx.children);
 
@@ -389,6 +445,10 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     @Override
     public void exitArithExprLeft(Tactic.ArithExprLeftContext ctx) {
+
+        if(isInProcedureDefinition)
+            return;
+
         ArithmeticGatherer ag = new ArithmeticGatherer();
         getAllArithmeticEndNodes(ag, ctx.children);
 
@@ -398,6 +458,10 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     @Override
     public void exitArithExprBoth(Tactic.ArithExprBothContext ctx) {
+
+        if(isInProcedureDefinition)
+            return;
+
         ArithmeticGatherer ag = new ArithmeticGatherer();
         getAllArithmeticEndNodes(ag, ctx.children);
 
@@ -434,6 +498,7 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     /** @return the result of the given BoolStmtContext. */
     private boolean getBoolStmtResult(Tactic.BoolStmtContext ctx){
+
         if(ctx.identifier() != null){
             identifierToValueCheck(ctx.identifier().getText(), VariableType.BOOL);
             VariableContainer varCon = getValueFromIdentifier(ctx.identifier().getText());
@@ -549,5 +614,29 @@ public class VariableCollectorListener extends TacticBaseListener {
             throw new IllegalArgumentException(); //Grammar has changed
 
         throw new IllegalArgumentException(); //Should not be reached
+    }
+
+    @Override
+    public void exitDotStmt(Tactic.DotStmtContext ctx) {
+        if(isInProcedureDefinition)
+            return;
+
+        //TODO
+    }
+
+    @Override
+    public void exitCondStmt(Tactic.CondStmtContext ctx) {
+        if(isInProcedureDefinition)
+            return;
+
+        //TODO
+    }
+
+    @Override
+    public void exitWhileStmt(Tactic.WhileStmtContext ctx) {
+        if(isInProcedureDefinition)
+            return;
+
+        //TODO
     }
 }

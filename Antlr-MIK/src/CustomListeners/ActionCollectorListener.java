@@ -34,6 +34,10 @@ public class ActionCollectorListener extends TacticBaseListener {
     /** This method will only detect function calls with the prefix/identifier: wait, change or move. */
     @Override
     public void exitProcedureCall(Tactic.ProcedureCallContext ctx) {
+
+        if(variableCollectorListener.isInProcedureDefinition)
+            return;
+
         //System.out.println(ctx.children.get(0).getText());
         String identifier = ctx.identifier().getText();
 
@@ -212,6 +216,10 @@ public class ActionCollectorListener extends TacticBaseListener {
      * containing all arguments for the function call. */
     @Override
     public void exitArguments(Tactic.ArgumentsContext ctx) {
+
+        if(variableCollectorListener.isInProcedureDefinition)
+            return;
+
         if (ctx.children.size() == 1) { //This is an end note. The child is a value
             ArgumentGatherer ag = new ArgumentGatherer();
             ag.addArgument((Tactic.ValueContext) ctx.children.get(0));
