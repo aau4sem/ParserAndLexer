@@ -1,5 +1,6 @@
 package typeChecking;
 
+import customListeners.ActionCollectorListener;
 import customListeners.VariableCollectorListener;
 import gen.Tactic;
 import gen.TacticLexer;
@@ -11,6 +12,7 @@ import org.junit.Test;
 public class ProcedureTests {
 
     private static VariableCollectorListener vlc;
+    private static ActionCollectorListener acl;
 
     @Test
     public void assignment01(){
@@ -67,7 +69,9 @@ public class ProcedureTests {
         TacticLexer lexer = new TacticLexer(new ANTLRInputStream(input));
         Tactic parser = new Tactic(new CommonTokenStream(lexer));
         vlc = new VariableCollectorListener();
+        acl = new ActionCollectorListener(vlc);
         parser.addParseListener(vlc);
+        parser.addParseListener(acl);
         parser.prog();
         Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
     }
