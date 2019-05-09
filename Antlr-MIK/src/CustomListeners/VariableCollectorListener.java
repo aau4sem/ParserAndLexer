@@ -5,6 +5,7 @@ import gen.TacticBaseListener;
 import model.Procedure;
 import model.dataTypes.GamePiece;
 import model.dataTypes.Number;
+import model.utils.ArgumentGatherer;
 import model.utils.ArithmeticGatherer;
 import model.utils.Parameter;
 import model.utils.TypeCheckerHelper;
@@ -44,7 +45,7 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     /** Used to add variables to the current scope.
      * @param varCon variable container, containing the value and information of the variable. */
-    private void addVariableToScope(VariableContainer varCon){
+    public void addVariableToScope(VariableContainer varCon){
         if(currentScope == VariableScopeData.ScopeType.MAIN_SCOPE){
             mainScope.addVariable(varCon);
         }else{
@@ -52,14 +53,27 @@ public class VariableCollectorListener extends TacticBaseListener {
         }
     }
 
-    /** used to overwrite a value of a variable in the current scope.
+    /** Used to overwrite a value of a variables.
      * @param val the new value that will be used to overwrite the old one.
      * @param identifier the identifier of the variable to overwrite. */
-    private void overwriteValueOfVariable(String identifier, String val){
-        if(currentScope == VariableScopeData.ScopeType.MAIN_SCOPE)
-            mainScope.overwriteValueOfVariable(identifier, val);
-        else
-            procedureScope.overwriteValueOfVariable(identifier, val);
+    public void overwriteValueOfVariable(String identifier, String val){
+
+        if(currentScope == VariableScopeData.ScopeType.PROCEDURE_SCOPE){
+            VariableContainer varCon = procedureScope.getVariable(identifier);
+
+            if(varCon != null){
+                procedureScope.overwriteValueOfVariable(identifier, val);
+                return;
+            }
+        }
+
+        VariableContainer varCon = mainScope.getVariable(identifier);
+
+        if(varCon == null){
+            throw new IllegalArgumentException(); //Variable has not been declared
+        }
+
+        mainScope.overwriteValueOfVariable(identifier, val);
     }
 
     /** Used to get variables from the current scope. If the current scope
@@ -67,7 +81,7 @@ public class VariableCollectorListener extends TacticBaseListener {
      * scope, it will then search the main scope.
      * @param identifier the identifier of the requested variable.
      * @return the value of the variable. */
-    private VariableContainer getValueFromScope(String identifier){
+    public VariableContainer getValueFromScope(String identifier){
 
         VariableContainer varCon;
 
@@ -243,6 +257,8 @@ public class VariableCollectorListener extends TacticBaseListener {
             return;
     }
 
+    // PROCEDURES -------------------------------------------------------------------------
+
     @Override
     public void enterProcedureDef(Tactic.ProcedureDefContext ctx) {
         this.isInProcedureDefinition = true;
@@ -267,6 +283,8 @@ public class VariableCollectorListener extends TacticBaseListener {
         //Collect all statements in the procedure body
         proc.addAllStatments(ctx.procedureBlock().stmt());
 
+        //TODO Is some of the arguments named the same?
+
         procedures.put(procedureIdentifier, proc);
 
         this.isInProcedureDefinition = false;
@@ -274,7 +292,6 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     @Override
     public void exitProcedureCall(Tactic.ProcedureCallContext ctx) {
-        this.currentScope = VariableScopeData.ScopeType.PROCEDURE_SCOPE;
 
         String identifier = ctx.identifier().getText();
 
@@ -284,13 +301,20 @@ public class VariableCollectorListener extends TacticBaseListener {
             this.procedureScope.setProcedureIdentifier(identifier);
 
             Procedure procedure = getProcedureFromIdentifier(identifier);
-            procedure.execute(new ArrayList<>(), this); //TODO, pass arguments
+
+            //Does the procedure have arguments
+            if(ctx.children.size() > 3){
+                if(!(ctx.children.get(2).getChild(3) instanceof ArgumentGatherer))
+                    throw new IllegalArgumentException(); //The arguments has not been collected.
+
+                ArgumentGatherer ag = (ArgumentGatherer)ctx.children.get(2).getChild(3);
+                procedure.execute(ag.getConvertedArgumentsList(), this, identifier);
+            }else
+                procedure.execute(new ArrayList<>(), this, identifier);
 
             this.currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
             this.procedureScope.resetProcedureIdentifier();
         }
-
-        this.currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
     }
 
     // DECLARATIONS ----------------------------------------------------
