@@ -10,6 +10,7 @@ import model.utils.Parameter;
 import model.utils.TypeCheckerHelper;
 import model.variables.VariableContainer;
 import model.variables.VariableScopeData;
+import org.antlr.v4.runtime.CodePointBuffer;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     //Two variableScopeData to keep track of variable declarations in the main and function scope
     private VariableScopeData mainScope = new VariableScopeData(VariableScopeData.ScopeType.MAIN_SCOPE);
-    private VariableScopeData procedureScope = new VariableScopeData(VariableScopeData.ScopeType.PROCEDURE_SCOPE); //TODO Should be used to store the parameters when entering a procedure call?
+    private VariableScopeData procedureScope = new VariableScopeData(VariableScopeData.ScopeType.PROCEDURE_SCOPE);
 
     //Keeps track of which scope the parsing/tree walk currently is in
     private VariableScopeData.ScopeType currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
@@ -132,9 +133,6 @@ public class VariableCollectorListener extends TacticBaseListener {
     }
 
     // OVERWRITES ----------------------------------------------------
-
-    //TODO ASSIGNMENT FROM VariableCollectorListener
-
 
     @Override
     public void exitAssignment(Tactic.AssignmentContext ctx) {
@@ -435,8 +433,8 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     // BOOL STMT ----------------------------------------------------------------------
 
+    /** @return the result of the given BoolStmtContext. */
     private boolean getBoolStmtResult(Tactic.BoolStmtContext ctx){
-
         if(ctx.identifier() != null){
             identifierToValueCheck(ctx.identifier().getText(), VariableType.BOOL);
             VariableContainer varCon = getValueFromIdentifier(ctx.identifier().getText());
@@ -451,7 +449,7 @@ public class VariableCollectorListener extends TacticBaseListener {
             if(firstValue.bool() != null && secondValue != null){ //Both booleans
                 boolean firstBool = TypeCheckerHelper.parseBool(firstValue.bool().getText());
                 boolean secondBool = TypeCheckerHelper.parseBool(secondValue.bool().getText());
-                return calculateBoolOperation(firstBool, secondBool, ctx.boolOperaters());
+                return performBoolOperationOnBool(firstBool, secondBool, ctx.boolOperaters());
             }else if(firstValue.vec() != null || secondValue.vec() != null){
                 throw new IllegalArgumentException(); //BoolStmt contains vectors.
             }else if(firstValue.string() != null && secondValue.string() != null){
@@ -461,38 +459,93 @@ public class VariableCollectorListener extends TacticBaseListener {
 
                     //At this point both values have on of the two types: Number or Identifier.
 
-                    throw new IllegalArgumentException(); //Not implemented //TODO
+                    Number firstNum;
+                    Number secondNum;
 
+                    if(firstValue.number() != null){
+                        firstNum = TypeCheckerHelper.parseNumber(firstValue.number().getText());
+                    }else{ //The first value is an identifier
+                        //Resolve identifier and check if it exists
+                        VariableContainer varCon = getValueFromIdentifier(firstValue.identifier().getText());
+                        if(varCon == null)
+                            throw new IllegalArgumentException(); //In the boolstmt, the first identifier does not exist.
 
+                        //Resolve value to number and check if it was a number
+                        firstNum = TypeCheckerHelper.parseNumber(varCon.getValue());
+                        if(firstNum == null)
+                            throw new IllegalArgumentException(); //In the boolstmt, the first identifier is not a number or has not yet been assigned.
+                    }
 
-                }else
+                    if(secondValue.number() != null){
+                        secondNum = TypeCheckerHelper.parseNumber(secondValue.number().getText());
+                    }else{ //The second value is an identifier
+                        //Resolve identifier and check if it exists
+                        VariableContainer varCon = getValueFromIdentifier(secondValue.identifier().getText());
+                        if(varCon == null)
+                            throw new IllegalArgumentException(); //In the boolstmt, the first identifier does not exist.
+
+                        //Resolve value to number and check if it was a number
+                        secondNum = TypeCheckerHelper.parseNumber(varCon.getValue());
+                        if(secondNum == null)
+                            throw new IllegalArgumentException(); //In the boolstmt, the first identifier is not a number or has not yet been assigned.
+                    }
+
+                    return performBoolOperationOnNumbers(firstNum, secondNum, ctx.boolOperaters());
+                }else{
                     throw new IllegalArgumentException(); //Not supported operation
-
-            }else
+                }
+            }else{
                 throw new IllegalArgumentException(); //Not supported operation
-
-        }else
+            }
+        }else{
             throw new IllegalArgumentException(); //Grammar has changed
+        }
     }
 
-    private Boolean calculateBoolOperation(boolean firstBool, boolean secondBool, Tactic.BoolOperatersContext operaterContext){
+    /** Takes two numbers and an operator: ==, <, >, <=, >=, !=, performs the operations and returns the result. */
+    private Boolean performBoolOperationOnNumbers(Number firstNum, Number secondNum, Tactic.BoolOperatersContext operatersContext){
 
-        if(operaterContext.BOOL_COND_AND() != null){
+        float firstVal = (firstNum.getIntValue() != null) ? firstNum.getIntValue() : firstNum.getFloatValue();
+        float secondVal = (secondNum.getIntValue() != null) ? secondNum.getIntValue() : secondNum.getFloatValue();
 
-        }else if(operaterContext.BOOL_COND_OR() != null){
+        if(operatersContext.BOOL_EQUAL() != null){
+            return firstVal == secondVal; // ==
+        }else if(operatersContext.BOOL_LESS() != null){
+            return firstVal < secondVal; // <
+        }else if(operatersContext.BOOL_GREATER() != null){
+            return firstVal > secondVal; // >
+        }else if(operatersContext.BOOL_LESS_OR_EQUAL() != null){
+            return firstVal <= secondVal; // <=
+        }else if(operatersContext.BOOL_GREATER_OR_EQUAL() != null){
+            return firstVal >= secondVal; // >=
+        }else if(operatersContext.BOOL_N_EQUAL() != null){
+            return firstVal != secondVal; // !=
+        }else {
+            throw new IllegalArgumentException(); //Illegal operators on numbers.
+        }
+    }
+
+    /** Takes two booleans and an operator: ==, &&, ||, != , performs the operations and returns the result. */
+    private Boolean performBoolOperationOnBool(boolean firstBool, boolean secondBool, Tactic.BoolOperatersContext operatorContext){
+
+        if(operatorContext.BOOL_COND_AND() != null){
+
+        }else if(operatorContext.BOOL_COND_OR() != null){
             return firstBool || secondBool;
-        }else if(operaterContext.BOOL_EQUAL() != null){
+        }else if(operatorContext.BOOL_EQUAL() != null){
             return firstBool == secondBool;
-        }else if(operaterContext.BOOL_GREATER() != null){
+        }else if(operatorContext.BOOL_GREATER() != null){
             return null; //firstBool > secondBool;
-        }else if(operaterContext.BOOL_GREATER_OR_EQUAL() != null){
+        }else if(operatorContext.BOOL_GREATER_OR_EQUAL() != null){
             return null;  //firstBool >= secondBool;
-        }else if(operaterContext.BOOL_LESS() != null){
+        }else if(operatorContext.BOOL_LESS() != null){
             return null; //firstBool < secondBool;
-        }else if(operaterContext.BOOL_N_EQUAL() != null){
+        }else if(operatorContext.BOOL_N_EQUAL() != null){
             return firstBool != secondBool;
-        }else if(operaterContext.BOOL_LESS_OR_EQUAL() != null){
+        }else if(operatorContext.BOOL_LESS_OR_EQUAL() != null) {
             return null; //firstBool <= secondBool;
+        }else if(operatorContext.BOOL_COND_AND() != null){
+            return firstBool && secondBool;
         }else
             throw new IllegalArgumentException(); //Grammar has changed
 
