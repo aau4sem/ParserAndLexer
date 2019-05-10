@@ -26,7 +26,7 @@ public class Procedure {
 
     /** Executes the procedure.
      * @param vcl used for accessing variables in the main scope. */
-    public void execute(ArrayList<Argument> givenArgumentValues, VariableCollectorListener vcl, String procedureName){ //TODO
+    public void execute(ArrayList<VariableContainer> givenArgumentValues, VariableCollectorListener vcl, String procedureName){ //TODO
         //TODO USE ALL THE OVERWRITTEN METHODS ALREADY CREATED!!!
 
         //Does the number of given arguments match the number of parameters
