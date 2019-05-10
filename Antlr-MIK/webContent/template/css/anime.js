@@ -41,7 +41,7 @@ var cache = {
   springs: {}
 };
 
-// Utils
+// utils
 
 function minMax(val, min, max) {
   return Math.min(Math.max(val, min), max);

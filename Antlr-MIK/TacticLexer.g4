@@ -51,6 +51,7 @@ BOOL_LESS       : '<' ;
 BOOL_GREATER            : '>' ;
 BOOL_LESS_OR_EQUAL      : '<=' ;
 BOOL_GREATER_OR_EQUAL   : '>=' ;
+BOOL_NEGATION   : '!';
 
 // Whitespace and comments
 WS              : [ \t\r\n]+    -> channel(HIDDEN);

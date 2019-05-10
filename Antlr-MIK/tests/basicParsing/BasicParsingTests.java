@@ -350,7 +350,7 @@ public class BasicParsingTests {
 
     @Test
     public void assignment_float08() {
-        lexer = new TacticLexer(new ANTLRInputStream("temp_bool = 2.0 >  2.0;;"));
+        lexer = new TacticLexer(new ANTLRInputStream("temp_bool = 2.0 > 2.0;;"));
     }
 
     @Test
@@ -559,12 +559,12 @@ public class BasicParsingTests {
 
     @Test
     public void procedure_declaration02() {
-        lexer = new TacticLexer(new ANTLRInputStream("procedure_test2(){ 2+2;};;"));
+        lexer = new TacticLexer(new ANTLRInputStream("procedure_test2(){ a = 2+2;};;"));
     }
 
     @Test
     public void procedure_declaration03() {
-        lexer = new TacticLexer(new ANTLRInputStream("procedure_test3(int a, float b){ b*a;};;"));
+        lexer = new TacticLexer(new ANTLRInputStream("procedure_test3(int a, float b){ c=b*a;};;"));
     }
 
     @Test

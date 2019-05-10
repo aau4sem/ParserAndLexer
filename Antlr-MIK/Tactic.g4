@@ -8,7 +8,7 @@ parser grammar Tactic;
 options { tokenVocab = TacticLexer; }
 
 prog    : (dcl ENDSTMT)* (stmt ENDSTMT)* ENDSTMT;
-stmt    : arithExpr | dotStmt | dotAssignment | arrayAssign | procedureCall | condStmt | whileStmt | assignment;
+stmt    : dotStmt | dotAssignment | arrayAssign | procedureCall | condStmt | whileStmt | assignment;
 dcl     : intDcl | boolDcl | arrayDcl | stringDcl | gpDcl | floatDcl | vecDcl | procedureDef;
 
 integer         : NUMBER | DIGIT ;
@@ -70,7 +70,7 @@ elseStmt        : ELSE block ;
 whileStmt       : WHILE LPAREN boolStmt RPAREN block ;
 
 //Conditional
-boolStmt        : (value boolOperaters value | bool | identifier);
+boolStmt        : (BOOL_NEGATION? value boolOperaters  BOOL_NEGATION? value | BOOL_NEGATION? bool | identifier);
 bool            : (TRUE | FALSE) ;
 boolOperaters   : (BOOL_EQUAL | BOOL_N_EQUAL | BOOL_COND_AND | BOOL_COND_OR
                 | BOOL_LESS | BOOL_GREATER | BOOL_LESS_OR_EQUAL | BOOL_GREATER_OR_EQUAL) ;
