@@ -45,6 +45,8 @@ public class Procedure {
             vcl.addVariableToScope(new VariableContainer(parameters.get(i).getIdentifier(), givenArgumentValues.get(0).getValue(), parameters.get(i).getType()));
         }
 
+        throw new IllegalArgumentException(); //TODO MISTAKE: when an identifier is passed, it can change name!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
         //Run all statements
         for(Tactic.StmtContext ctx : statements){
 

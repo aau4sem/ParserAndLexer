@@ -304,10 +304,10 @@ public class VariableCollectorListener extends TacticBaseListener {
 
             //Does the procedure have arguments
             if(ctx.children.size() > 3){
-                if(!(ctx.children.get(2).getChild(3) instanceof ArgumentGatherer))
+                if(!(ctx.children.get(2).getChild(ctx.children.get(2).getChildCount() -1) instanceof ArgumentGatherer))
                     throw new IllegalArgumentException(); //The arguments has not been collected.
 
-                ArgumentGatherer ag = (ArgumentGatherer)ctx.children.get(2).getChild(3);
+                ArgumentGatherer ag = (ArgumentGatherer)ctx.children.get(2).getChild(ctx.children.get(2).getChildCount() -1);
                 procedure.execute(ag.getConvertedArgumentsList(), this, identifier);
             }else
                 procedure.execute(new ArrayList<>(), this, identifier);
