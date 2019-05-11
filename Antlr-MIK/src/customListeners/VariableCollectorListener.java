@@ -234,8 +234,8 @@ public class VariableCollectorListener extends TacticBaseListener {
                 throw new IllegalArgumentException(); //Grammar has changed
 
         } else if(ctx.arithExpr() != null){ //format identifier = arithExpr
-            //TODO what if the identifier is an int, and the result is in float?
-            value = String.valueOf(getArithmeticResult(ctx.arithExpr()));
+            String result = String.valueOf(getArithmeticResult(ctx.arithExpr()));
+            value = String.valueOf(TypeCheckerHelper.trimFloatToInt(result)); //If the type the result is saved in, is of type integer, decimals will be cut off
         } else if(ctx.boolStmt() != null){ //format identifier = boolStmt
             value = String.valueOf(getBoolStmtResult(ctx.boolStmt()));
         } else if(ctx.vecExpr() != null){ //format identifier = vecExpr (subtraction or addition)
