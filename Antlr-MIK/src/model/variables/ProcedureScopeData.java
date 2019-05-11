@@ -43,14 +43,14 @@ public class ProcedureScopeData {
             Argument argumentMatchingIdentifier = givenArguments.get(currentProcedure.getNumberOfParameterFromIdentifier(identifier));
 
             //Is the given argument matching that parameter an identifier
-            if(argumentMatchingIdentifier.getType() == Argument.ArgumentType.IDENTIFIER){
+            if(argumentMatchingIdentifier.getType() == Argument.ArgumentType.IDENTIFIER) {
                 //Return variable from main scope matching the resolved identifier
                 return mainScope.getVariable(argumentMatchingIdentifier.getValue());
+            }else if(argumentMatchingIdentifier.getType() == Argument.ArgumentType.GAMEPIECE_PROPERTY){
+                throw new IllegalArgumentException(); //Should not happen
             }else{
                 //Return the matching argument as a variable container, with the type of the parameter
-                //TODO For this to work: rework Argument to use the same type as Parameter!!
-                //return new VariableContainer(identifier, argumentMatchingIdentifier.getValue(), argumentMatchingIdentifier.getType());
-                throw new IllegalArgumentException(); //NOT YET IMPLEMENTED
+                return new VariableContainer(identifier, argumentMatchingIdentifier.getValue(), argumentMatchingIdentifier.getMatchingVariableType());
             }
         }else
             return null;

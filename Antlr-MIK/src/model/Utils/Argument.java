@@ -1,5 +1,7 @@
 package model.utils;
 
+import customListeners.VariableCollectorListener;
+
 public class Argument {
 
     public enum ArgumentType { IDENTIFIER, INTEGER, FLOAT, BOOL, STRING, VECTOR, GAMEPIECE_PROPERTY}
@@ -18,5 +20,17 @@ public class Argument {
 
     public ArgumentType getType() {
         return type;
+    }
+
+    public VariableCollectorListener.VariableType getMatchingVariableType(){
+        switch (type){
+            case STRING: return VariableCollectorListener.VariableType.STRING;
+            case BOOL: return VariableCollectorListener.VariableType.BOOL;
+            case VECTOR: return VariableCollectorListener.VariableType.VEC;
+            case FLOAT: return VariableCollectorListener.VariableType.FLOAT;
+            case INTEGER: return VariableCollectorListener.VariableType.INT;
+        }
+
+        throw new IllegalArgumentException(); //Identifier and GamePiece_Property cannot be converted
     }
 }

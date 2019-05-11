@@ -61,7 +61,7 @@ public class ProcedureTests {
         Integer a = Integer.parseInt(vlc.getValueFromIdentifier("a").getValue());
 
         Assert.assertNotNull(a);
-        Assert.assertEquals(10, a.intValue());
+        Assert.assertEquals(5, a.intValue());
     }
 
     /** Parses the given input and the results can be found in the field. */
