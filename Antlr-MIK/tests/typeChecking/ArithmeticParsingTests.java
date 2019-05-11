@@ -36,7 +36,7 @@ public class ArithmeticParsingTests {
 
     @Test
     public void mixedCalculation03(){
-        parse("int x; x = 2; int i = (5 + 5) * x;;");
+        parse("int x; int i; x = 2; i = (5 + 5) * x;;");
 
         Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
 
@@ -136,7 +136,7 @@ public class ArithmeticParsingTests {
 
     @Test
     public void mod01(){
-        parse("int x; x = 4 mod 3;;");
+        parse("int x; x = 4 % 3;;");
 
         Integer x = Integer.parseInt(vlc.getValueFromIdentifier("x").getValue());
 
