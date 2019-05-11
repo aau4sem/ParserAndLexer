@@ -64,6 +64,38 @@ public class ProcedureTests {
         Assert.assertEquals(5, a.intValue());
     }
 
+    @Test
+    public void assignment06(){
+        parse("test(int a){a = 10;}; int a; a = 8; test(7); test(7);;");
+
+        Integer a = Integer.parseInt(vlc.getValueFromIdentifier("a").getValue());
+
+        Assert.assertNotNull(a);
+        Assert.assertEquals(8, a.intValue());
+    }
+
+    @Test
+    public void baseTest01(){
+        parse("test(){}; int a; a = 8; test();;");
+
+        Integer a = Integer.parseInt(vlc.getValueFromIdentifier("a").getValue());
+
+        Assert.assertNotNull(a);
+        Assert.assertEquals(8, a.intValue());
+    }
+
+    @Test
+    public void baseTest02(){
+        parse("timesTwo(int x){x = x * 2;}; int a; a = 1; timesTwo(a); timesTwo(a);;");
+
+        Integer a = Integer.parseInt(vlc.getValueFromIdentifier("a").getValue());
+
+        Assert.assertNotNull(a);
+        Assert.assertEquals(4, a.intValue());
+    }
+
+
+
     /** Parses the given input and the results can be found in the field. */
     public static void parse(String input){
         TacticLexer lexer = new TacticLexer(new ANTLRInputStream(input));
