@@ -9,6 +9,7 @@ import model.utils.ArgumentGatherer;
 import model.utils.ArithmeticGatherer;
 import model.utils.Parameter;
 import model.utils.TypeCheckerHelper;
+import model.variables.ProcedureScopeData;
 import model.variables.VariableContainer;
 import model.variables.VariableScopeData;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -28,7 +29,8 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     //Two variableScopeData to keep track of variable declarations in the main and function scope
     private VariableScopeData mainScope = new VariableScopeData(VariableScopeData.ScopeType.MAIN_SCOPE);
-    private VariableScopeData procedureScope = new VariableScopeData(VariableScopeData.ScopeType.PROCEDURE_SCOPE);
+    //private VariableScopeData procedureScope = new VariableScopeData(VariableScopeData.ScopeType.PROCEDURE_SCOPE);
+    private ProcedureScopeData procedureScope = new ProcedureScopeData(mainScope);
 
     //Keeps track of which scope the parsing/tree walk currently is in
     private VariableScopeData.ScopeType currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
@@ -48,8 +50,6 @@ public class VariableCollectorListener extends TacticBaseListener {
     public void addVariableToScope(VariableContainer varCon){
         if(currentScope == VariableScopeData.ScopeType.MAIN_SCOPE){
             mainScope.addVariable(varCon);
-        }else{
-            procedureScope.addVariable(varCon);
         }
     }
 
@@ -272,7 +272,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         String procedureIdentifier = identifiers.get(0).getText();
         identifiers.remove(0);
 
-        Procedure proc = new Procedure();
+        Procedure proc = new Procedure(procedureIdentifier, this);
 
         //Collect all arguments
         for(int i = 0; i < types.size(); i++){
@@ -298,22 +298,26 @@ public class VariableCollectorListener extends TacticBaseListener {
         //Is the procedure call one of the three action calls? If so, do not do anything. (This is handled in ActionCollectorListener.)
         if(!(identifier.compareTo("change") == 0 || identifier.compareTo("move") == 0 ||identifier.compareTo("wait") == 0)){
             this.currentScope = VariableScopeData.ScopeType.PROCEDURE_SCOPE;
-            this.procedureScope.setProcedureIdentifier(identifier);
 
             Procedure procedure = getProcedureFromIdentifier(identifier);
 
+
             //Does the procedure have arguments
-            if(ctx.children.size() > 3){
-                if(!(ctx.children.get(2).getChild(ctx.children.get(2).getChildCount() -1) instanceof ArgumentGatherer))
+            if(ctx.children.size() > 3) {
+                if (!(ctx.children.get(2).getChild(ctx.children.get(2).getChildCount() - 1) instanceof ArgumentGatherer))
                     throw new IllegalArgumentException(); //The arguments has not been collected.
 
-                ArgumentGatherer ag = (ArgumentGatherer)ctx.children.get(2).getChild(ctx.children.get(2).getChildCount() -1);
-                procedure.execute(ag.getConvertedArgumentsList(), this, identifier);
-            }else
-                procedure.execute(new ArrayList<>(), this, identifier);
+                ArgumentGatherer ag = (ArgumentGatherer) ctx.children.get(2).getChild(ctx.children.get(2).getChildCount() - 1);
+                procedureScope.setGivenArguments(ag.getConvertedArgumentsList());
+                //procedure.execute(ag.getConvertedArgumentsList(), this, identifier);
+            }
+
+
+            this.procedureScope.setCurrentProcedure(procedure);
+            this.procedureScope.execute();
 
             this.currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
-            this.procedureScope.resetProcedureIdentifier();
+            this.procedureScope.reset();
         }
     }
 
