@@ -47,15 +47,15 @@ public class Procedure {
             }else if(ctx.children.get(0) instanceof Tactic.CondStmtContext){
                 throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
             }else if(ctx.children.get(0) instanceof Tactic.ProcedureCallContext){
+                vcl.exitProcedureCall((Tactic.ProcedureCallContext)ctx.children.get(0)); //TODO The current implementation does not support procedure calls inside other procedures.
                 throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
             }else if(ctx.children.get(0) instanceof Tactic.ArrayAssignContext){
                 throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
             }else if(ctx.children.get(0) instanceof Tactic.DotAssignmentContext){
-                throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
+                vcl.exitDotAssignment((Tactic.DotAssignmentContext)ctx.children.get(0));
+                //throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
             }else if(ctx.children.get(0) instanceof Tactic.DotStmtContext){
-                throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
-            }else if(ctx.children.get(0) instanceof Tactic.ArithExprContext){
-                throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
+                throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED //TODO This should not be in the grammar.
             }else
                 throw new IllegalArgumentException(); //A context was not handled or grammar has changed
         }

@@ -1,5 +1,6 @@
 package model.variables;
 
+import customListeners.VariableCollectorListener;
 import exceptions.IllegalNumberOfArguments;
 import model.Procedure;
 import model.utils.Argument;
