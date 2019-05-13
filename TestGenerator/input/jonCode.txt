@@ -1,0 +1,121 @@
+int temp_int;
+float temp_float;
+bool temp_bool;
+string string_temp;
+vector temp_vector;
+GamePiece temp_GamePiece;
+
+float int_to_float_test1;
+int float_to_int_test2;
+
+int[10] arr_int_test;
+float[10] arr_float_test;
+bool[10] arr_bool_test;
+vector[10] arr_vector_test;
+GamePiece[10] arr_gp_test;
+
+int[2][2] mul_arr_test;
+
+procedure_test1(){};
+procedure_test2(int x, string b){};
+
+// Build-in types
+// Int
+temp_int = 2;
+temp_int = temp_int + 3;
+temp_int = temp_int + temp_int;
+temp_int = temp_int - temp_int;
+temp_int = temp_int * temp_int;
+temp_int = temp_int / temp_int;
+temp_int = temp_int % temp_int;
+temp_bool = temp_int < temp_int;
+temp_bool = temp_int > temp_int;
+temp_bool = temp_int == temp_int;
+temp_int = -23;
+
+// Float
+temp_float = 2.4;
+temp_float = temp_float + 4.3;
+temp_float = temp_float + temp_float;
+temp_float = temp_float - temp_float;
+temp_float = temp_float * temp_float;
+temp_float = temp_float / temp_float;
+temp_bool = temp_float < temp_float;
+temp_bool = temp_float > temp_float;
+temp_bool = temp_float == temp_float;
+//temp_float = -2.3;
+
+// Bool
+temp_bool = true;
+temp_bool = false;
+temp_bool = temp_bool || temp_bool;
+temp_bool = temp_bool && temp_bool;
+temp_bool = temp_bool != true;
+temp_bool = temp_bool != false;
+temp_bool = temp_bool == temp_bool;
+
+//String
+string_temp = "";
+string_temp = "qwerty";
+bool_temp = string_temp == string_temp;
+
+// Vector
+temp_vector = (1, 2);
+temp_vector = (4, 3, 5);
+temp_vector = temp_vector + temp_vector;
+temp_vector = temp_vector - temp_vector;
+bool_temp = temp_vector == temp_vector;
+
+// GamePice
+temp_GamePiece.position = (1,2);
+temp_GamePiece.size = 5;
+temp_GamePiece.color = "";
+temp_GamePiece.opacity = 0.5;
+temp_GamePiece.label = "label_text";
+temp_GamePiece.shape = "";
+
+
+// Array
+mul_arr_test[0][0] = 1;
+mul_arr_test[0][1] = 2;
+mul_arr_test[1][0] = 3;
+mul_arr_test[1][1] = 4;
+
+
+// Typecasting
+int_to_float_test1 = 5;
+float_to_int_test2 = 5.4;
+// need more
+
+
+// Conditionals
+if (true)
+	{
+		// codeblock
+	}
+else
+	{
+		// codeblock
+	};
+
+
+
+// While
+while (true)
+	{
+		// codeblock
+	};
+
+
+// Procedures
+procedure_test1();
+procedure_test2(5, "test");
+
+
+// Actions
+
+// Move
+move(temp_GamePiece, temp_vector, temp_int);
+
+// Change
+change(temp_GamePiece, temp_string, temp_string, temp_int);
