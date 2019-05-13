@@ -59,10 +59,11 @@ public class ActionCollectorListener extends TacticBaseListener {
                     throw new IllegalArgumentType(2, identifier, Argument.ArgumentType.GAMEPIECE_PROPERTY);
 
                 typeCheckArgument(arguments.get(2), 3, identifier, Argument.ArgumentType.STRING,
-                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.NUMBER, Argument.ArgumentType.VECTOR);
+                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.INTEGER, Argument.ArgumentType.FLOAT,
+                        Argument.ArgumentType.VECTOR);
 
                 typeCheckArgument(arguments.get(3), 4, identifier,
-                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.NUMBER);
+                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.INTEGER, Argument.ArgumentType.FLOAT);
 
                 //VALUE EVALUATION --------------------------------------------
                 //FIRST ARGUMENT
@@ -95,7 +96,7 @@ public class ActionCollectorListener extends TacticBaseListener {
                 typeCheckArgument(arguments.get(1), 2, identifier, Argument.ArgumentType.VECTOR);
 
                 typeCheckArgument(arguments.get(2), 3, identifier,
-                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.NUMBER);
+                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.FLOAT, Argument.ArgumentType.INTEGER);
 
                 //VALUE EVALUATION --------------------------------------------
                 //FIRST ARGUMENT
@@ -124,7 +125,7 @@ public class ActionCollectorListener extends TacticBaseListener {
                 typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArgumentType.IDENTIFIER);
 
                 typeCheckArgument(arguments.get(1), 2, identifier,
-                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.NUMBER);
+                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.FLOAT, Argument.ArgumentType.INTEGER);
 
                 //VALUE EVALUATION --------------------------------------------
                 //FIRST ARGUMENT

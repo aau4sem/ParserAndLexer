@@ -5,9 +5,11 @@ import gen.TacticBaseListener;
 import model.Procedure;
 import model.dataTypes.GamePiece;
 import model.dataTypes.Number;
+import model.utils.ArgumentGatherer;
 import model.utils.ArithmeticGatherer;
 import model.utils.Parameter;
 import model.utils.TypeCheckerHelper;
+import model.variables.ProcedureScopeData;
 import model.variables.VariableContainer;
 import model.variables.VariableScopeData;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -27,7 +29,8 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     //Two variableScopeData to keep track of variable declarations in the main and function scope
     private VariableScopeData mainScope = new VariableScopeData(VariableScopeData.ScopeType.MAIN_SCOPE);
-    private VariableScopeData procedureScope = new VariableScopeData(VariableScopeData.ScopeType.PROCEDURE_SCOPE);
+    //private VariableScopeData procedureScope = new VariableScopeData(VariableScopeData.ScopeType.PROCEDURE_SCOPE);
+    private ProcedureScopeData procedureScope = new ProcedureScopeData(mainScope);
 
     //Keeps track of which scope the parsing/tree walk currently is in
     private VariableScopeData.ScopeType currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
@@ -44,22 +47,31 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     /** Used to add variables to the current scope.
      * @param varCon variable container, containing the value and information of the variable. */
-    private void addVariableToScope(VariableContainer varCon){
-        if(currentScope == VariableScopeData.ScopeType.MAIN_SCOPE){
-            mainScope.addVariable(varCon);
-        }else{
-            procedureScope.addVariable(varCon);
-        }
+    public void addVariableToScope(VariableContainer varCon){
+        mainScope.addVariable(varCon);
     }
 
-    /** used to overwrite a value of a variable in the current scope.
+    /** Used to overwrite a value of a variables.
      * @param val the new value that will be used to overwrite the old one.
      * @param identifier the identifier of the variable to overwrite. */
-    private void overwriteValueOfVariable(String identifier, String val){
-        if(currentScope == VariableScopeData.ScopeType.MAIN_SCOPE)
-            mainScope.overwriteValueOfVariable(identifier, val);
-        else
-            procedureScope.overwriteValueOfVariable(identifier, val);
+    public void overwriteValueOfVariable(String identifier, String val){
+
+        if(currentScope == VariableScopeData.ScopeType.PROCEDURE_SCOPE){
+            VariableContainer varCon = procedureScope.getVariable(identifier);
+
+            if(varCon != null){
+                procedureScope.overwriteValueOfVariable(identifier, val);
+                return;
+            }
+        }
+
+        VariableContainer varCon = mainScope.getVariable(identifier);
+
+        if(varCon == null){
+            throw new IllegalArgumentException(); //Variable has not been declared
+        }
+
+        mainScope.overwriteValueOfVariable(identifier, val);
     }
 
     /** Used to get variables from the current scope. If the current scope
@@ -67,7 +79,7 @@ public class VariableCollectorListener extends TacticBaseListener {
      * scope, it will then search the main scope.
      * @param identifier the identifier of the requested variable.
      * @return the value of the variable. */
-    private VariableContainer getValueFromScope(String identifier){
+    public VariableContainer getValueFromScope(String identifier){
 
         VariableContainer varCon;
 
@@ -220,10 +232,10 @@ public class VariableCollectorListener extends TacticBaseListener {
                 throw new IllegalArgumentException(); //Grammar has changed
 
         } else if(ctx.arithExpr() != null){ //format identifier = arithExpr
-            //TODO what if the identifier is an int, and the result is in float?
-            value = String.valueOf(getArithmeticResult(ctx.arithExpr()));
-        } else if(ctx.boolExpr() != null){ //format identifier = boolStmt
-            value = String.valueOf(getBoolStmtResult(ctx.boolExpr()));
+            String result = String.valueOf(getArithmeticResult(ctx.arithExpr()));
+            value = String.valueOf(TypeCheckerHelper.trimFloatToInt(result)); //If the type the result is saved in, is of type integer, decimals will be cut off
+        //} else if(ctx.boolStmt() != null){ //format identifier = boolStmt //TODO Change in grammar has made this invalid, Mathias is working on solution
+        //    value = String.valueOf(getBoolStmtResult(ctx.boolStmt())); //TODO Change in grammar has made this invalid, Mathias is working on solution
         } else if(ctx.vecExpr() != null){ //format identifier = vecExpr (subtraction or addition)
             throw new IllegalArgumentException(); //TODO Not yet implemented
         } else if(ctx.identifier().size() == 2){ //format identifier = (identifier (LBRACKET integer RBRACKET)+) | dotStmt)
@@ -243,6 +255,8 @@ public class VariableCollectorListener extends TacticBaseListener {
             return;
     }
 
+    // PROCEDURES -------------------------------------------------------------------------
+
     @Override
     public void enterProcedureDef(Tactic.ProcedureDefContext ctx) {
         this.isInProcedureDefinition = true;
@@ -256,7 +270,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         String procedureIdentifier = identifiers.get(0).getText();
         identifiers.remove(0);
 
-        Procedure proc = new Procedure();
+        Procedure proc = new Procedure(procedureIdentifier, this);
 
         //Collect all arguments
         for(int i = 0; i < types.size(); i++){
@@ -267,6 +281,8 @@ public class VariableCollectorListener extends TacticBaseListener {
         //Collect all statements in the procedure body
         proc.addAllStatments(ctx.procedureBlock().stmt());
 
+        //TODO Is some of the arguments named the same?
+
         procedures.put(procedureIdentifier, proc);
 
         this.isInProcedureDefinition = false;
@@ -274,23 +290,33 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     @Override
     public void exitProcedureCall(Tactic.ProcedureCallContext ctx) {
-        this.currentScope = VariableScopeData.ScopeType.PROCEDURE_SCOPE;
 
         String identifier = ctx.identifier().getText();
 
         //Is the procedure call one of the three action calls? If so, do not do anything. (This is handled in ActionCollectorListener.)
         if(!(identifier.compareTo("change") == 0 || identifier.compareTo("move") == 0 ||identifier.compareTo("wait") == 0)){
             this.currentScope = VariableScopeData.ScopeType.PROCEDURE_SCOPE;
-            this.procedureScope.setProcedureIdentifier(identifier);
 
             Procedure procedure = getProcedureFromIdentifier(identifier);
-            procedure.execute(new ArrayList<>(), this); //TODO, pass arguments
+
+
+            //Does the procedure have arguments
+            if(ctx.children.size() > 3) {
+                if (!(ctx.children.get(2).getChild(ctx.children.get(2).getChildCount() - 1) instanceof ArgumentGatherer))
+                    throw new IllegalArgumentException(); //The arguments has not been collected.
+
+                ArgumentGatherer ag = (ArgumentGatherer) ctx.children.get(2).getChild(ctx.children.get(2).getChildCount() - 1);
+                procedureScope.setGivenArguments(ag.getConvertedArgumentsList());
+                //procedure.execute(ag.getConvertedArgumentsList(), this, identifier);
+            }
+
+
+            this.procedureScope.setCurrentProcedure(procedure);
+            this.procedureScope.execute();
 
             this.currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
-            this.procedureScope.resetProcedureIdentifier();
+            this.procedureScope.reset();
         }
-
-        this.currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
     }
 
     // DECLARATIONS ----------------------------------------------------
@@ -362,12 +388,12 @@ public class VariableCollectorListener extends TacticBaseListener {
 
             //Change the property in the GP (also removed citation-marks if needed)
             String newPropertyValue = TypeCheckerHelper.parseString(ctx.value().getText()); //Trim citations
-            GamePiece gp = TypeCheckerHelper.parseGamePiece(getValueFromScope(identifier).getValue());
+            GamePiece gp = TypeCheckerHelper.parseGamePiece(variableBeingDotted.getValue());
             gp.changeProperty(gpPropType, newPropertyValue);
 
             //Save the changed GamePiece
             String changedGpValue = gp.getGamePieceString();
-            addVariableToScope(new VariableContainer(identifier, changedGpValue, VariableCollectorListener.VariableType.GAMEPIECE));
+            addVariableToScope(new VariableContainer(variableBeingDotted.getIdentifier(), changedGpValue, VariableCollectorListener.VariableType.GAMEPIECE));
         }
     }
 
@@ -498,7 +524,6 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     /** @return the result of the given BoolStmtContext. */
     private boolean getBoolStmtResult(Tactic.BoolExprContext ctx){
-
         if(ctx.identifier() != null){
             identifierToValueCheck(ctx.identifier().getText(), VariableType.BOOL);
             VariableContainer varCon = getValueFromIdentifier(ctx.identifier().getText());

@@ -16,7 +16,7 @@ public class BoardListenerTests {
         lexer = new TacticLexer(new ANTLRInputStream(
                 "board_level[0] = \"TestZero\";" +
                 "board_level[4] = \"TestFour\";" +
-                "board_level[1] = \"TestOne\";"));
+                "board_level[1] = \"TestOne\";;"));
         parser = new Tactic(new CommonTokenStream(lexer));
         BoardListener bl = new BoardListener();
         parser.addParseListener(bl);

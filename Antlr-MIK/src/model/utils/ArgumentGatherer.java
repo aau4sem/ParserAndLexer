@@ -44,7 +44,12 @@ public class ArgumentGatherer implements TerminalNode {
 
             //Find the type of the argument
             if(vc.number() != null){ //The argument is a number
-                arg = new Argument(vc.number().getText(), Argument.ArgumentType.NUMBER);
+                if(vc.number().floatVal() != null)
+                    arg = new Argument(vc.number().floatVal().getText(), Argument.ArgumentType.FLOAT);
+                else if(vc.number().integer() != null)
+                    arg = new Argument(vc.number().integer().getText(), Argument.ArgumentType.INTEGER);
+                else
+                    throw new IllegalArgumentException(); //Grammar has changed
             }else if(vc.identifier() != null){ //The argument is an identifier
                 arg = new Argument(vc.identifier().getText(), Argument.ArgumentType.IDENTIFIER);
             }else if(vc.string() != null){ //The argument is a string

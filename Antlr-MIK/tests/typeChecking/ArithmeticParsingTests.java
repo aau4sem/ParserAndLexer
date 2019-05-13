@@ -36,7 +36,7 @@ public class ArithmeticParsingTests {
 
     @Test
     public void mixedCalculation03(){
-        parse("int x; x = 2; int i = (5 + 5) * x;;");
+        parse("int x; int i; x = 2; i = (5 + 5) * x;;");
 
         Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
 
@@ -136,7 +136,7 @@ public class ArithmeticParsingTests {
 
     @Test
     public void mod01(){
-        parse("int x; x = 4 mod 3;;");
+        parse("int x; x = 4 % 3;;");
 
         Integer x = Integer.parseInt(vlc.getValueFromIdentifier("x").getValue());
 
@@ -160,6 +160,42 @@ public class ArithmeticParsingTests {
 
         //Does it have the right value?
         Assert.assertEquals(-16, TypeCheckerHelper.parseInt(varCon.getValue()).intValue());
+    }
+
+    @Test
+    public void selfAddition01(){
+        TacticLexer lexer = new TacticLexer(new ANTLRInputStream("int i; i = 2; i = i * 2;;"));
+        Tactic parser = new Tactic(new CommonTokenStream(lexer));
+        VariableCollectorListener vcl = new VariableCollectorListener();
+        parser.addParseListener(vcl);
+        parser.prog();
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("i");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right value?
+        Assert.assertEquals(4, TypeCheckerHelper.parseInt(varCon.getValue()).intValue());
+    }
+
+    @Test
+    public void selfAddition02(){
+        TacticLexer lexer = new TacticLexer(new ANTLRInputStream("int i; i = 2; i = i * 2.3;;"));
+        Tactic parser = new Tactic(new CommonTokenStream(lexer));
+        VariableCollectorListener vcl = new VariableCollectorListener();
+        parser.addParseListener(vcl);
+        parser.prog();
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("i");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right value?
+        Assert.assertEquals(4, TypeCheckerHelper.parseInt(varCon.getValue()).intValue());
     }
 
     /** Parses the given input and the results can be found in the field. */
