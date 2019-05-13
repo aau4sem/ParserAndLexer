@@ -282,27 +282,23 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     // CONDITIONALS ---------------------------------------------------------------------
 
+
+    @Override
+    public void exitBoolExpr(Tactic.BoolExprContext ctx) {
+        if(isWalkingConditional){
+
+            boolean evaluation = getBoolStmtResult(ctx);
+
+            if(evaluation){
+                mayRunIfBlock = true;
+            }else
+                mayRunElseBlocK = true;
+        }
+    }
+
     @Override
     public void enterCondStmt(Tactic.CondStmtContext ctx) {
         isWalkingConditional = true;
-
-
-        boolean evaluation; // = getBoolStmtResult(ctx.ifStmt().boolExpr());
-
-        //TODO THIS SECTION IS TEMP AND SHOULD BE REPLACE WITH THE ABOVE: getBoolStmtResult
-        if(ctx.ifStmt().boolExpr().bool().TRUE() != null)
-            evaluation = true;
-        else
-            evaluation = false;
-
-
-        if(evaluation){ //RUN IF STATEMENT
-            mayRunIfBlock = true;
-        }
-
-        if(!evaluation && ctx.elseStmt() != null){ //RUN ELSE STATEMENT
-            mayRunElseBlocK = true;
-        }
     }
 
     @Override

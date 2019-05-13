@@ -54,7 +54,7 @@ public class ConditionalAndControlTests {
 
     @Test
     public void ifelse02(){
-        parse("int i; i = 5; if(false){i = 6;}else{i = 10};;");
+        parse("int i; i = 5; if(false){i = 6;}else{i = 10;};;");
 
         Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
 
