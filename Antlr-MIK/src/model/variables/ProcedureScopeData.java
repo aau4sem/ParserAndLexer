@@ -1,6 +1,5 @@
 package model.variables;
 
-import customListeners.VariableCollectorListener;
 import exceptions.IllegalNumberOfArguments;
 import model.Procedure;
 import model.utils.Argument;
@@ -10,7 +9,7 @@ import java.util.ArrayList;
 public class ProcedureScopeData {
 
     private VariableScopeData mainScope;
-    private Procedure currentProcedure = null;
+    private Procedure currentProcedure = null; //TODO Always the last on in the activeProcedures array
     private ArrayList<Argument> givenArguments = new ArrayList<>();
 
     public ProcedureScopeData(VariableScopeData mainScope) {
@@ -25,18 +24,6 @@ public class ProcedureScopeData {
     /** Used to get a variable from this scope. Returns null
      * if the quested variable does not exist.  */
     public VariableContainer getVariable(String identifier){
-
-        /*
-        //Is the given identifier matching one of the parameters?
-            //Yes, is the given argument matching that parameter an identifier
-                //Yes, return the variable from the mainscope
-                return mainScope.getVariable(identifier);
-                //No, return the matching argument as a variable container, with the type of the parameter
-            //No, return null;
-            return null;*/
-
-
-
         //Is the given identifier matching one of the parameters?
         if(currentProcedure.isIdentifierMatchingAParamter(identifier)){
 

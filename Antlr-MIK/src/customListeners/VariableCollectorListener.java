@@ -30,7 +30,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     //Two variableScopeData to keep track of variable declarations in the main and function scope
     private VariableScopeData mainScope = new VariableScopeData(VariableScopeData.ScopeType.MAIN_SCOPE);
     //private VariableScopeData procedureScope = new VariableScopeData(VariableScopeData.ScopeType.PROCEDURE_SCOPE);
-    private ProcedureScopeData procedureScope = new ProcedureScopeData(mainScope);
+    //private ProcedureScopeData procedureScope = new ProcedureScopeData(mainScope);
 
     //Keeps track of which scope the parsing/tree walk currently is in
     private VariableScopeData.ScopeType currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
@@ -42,6 +42,17 @@ public class VariableCollectorListener extends TacticBaseListener {
     public enum VariableType { INT, FLOAT, VEC, BOOL, STRING, GAMEPIECE}
 
     public boolean isInProcedureDefinition = false; //TODO Comment
+
+    //Handling procedure calls inside procedures section
+    private ArrayList<ProcedureScopeData> activeProcedures = new ArrayList<>();
+
+    private void addRunningProcedure(ProcedureScopeData proc){
+        this.activeProcedures.add(proc);
+    }
+
+    private void removeFinishedProcedure(){
+        this.activeProcedures.remove(activeProcedures.size()-1);
+    }
 
     // CORE METHODS -----------------------------------------------------------
 
