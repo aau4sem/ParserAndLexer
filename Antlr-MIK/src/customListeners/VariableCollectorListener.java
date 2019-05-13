@@ -46,8 +46,8 @@ public class VariableCollectorListener extends TacticBaseListener {
     private boolean isWalkingConditional = false;
     private boolean isInIfBlock = false;
     private boolean isInElseBlock = false;
-    private boolean mayRunIfBlock = false;
-    private boolean mayRunElseBlocK = false;
+    public boolean mayRunIfBlock = false;
+    public boolean mayRunElseBlocK = false;
 
     // CORE METHODS -----------------------------------------------------------
 
@@ -285,6 +285,10 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     @Override
     public void exitBoolExpr(Tactic.BoolExprContext ctx) {
+
+        if(isInProcedureDefinition)
+            return;
+
         if(isWalkingConditional){
 
             boolean evaluation = getBoolStmtResult(ctx);

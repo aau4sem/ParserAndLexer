@@ -55,8 +55,10 @@ public class ArgumentGatherer implements TerminalNode {
             }else if(vc.string() != null){ //The argument is a string
                 //The substring is taken to avoid saving the "" around the string
                 arg = new Argument(vc.string().getText().substring(1, vc.string().getText().length()-1), Argument.ArgumentType.STRING);
-            }else if(vc.vec() != null){ //The argument is a vector
+            }else if(vc.vec() != null) { //The argument is a vector
                 arg = new Argument(vc.vec().getText(), Argument.ArgumentType.VECTOR);
+            }else if(vc.bool() != null){
+                arg = new Argument(vc.bool().getText(), Argument.ArgumentType.BOOL);
             }else{
                 throw new IllegalArgumentException();
             }

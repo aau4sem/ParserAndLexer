@@ -29,34 +29,51 @@ public class Procedure {
     }
 
     /** Executes the procedure. */
-    public void execute(){ //TODO
+    public void execute(){
+
+        //Run all statements
+        runStmts(statements);
+    }
+
+    private void runCondStmt(Tactic.CondStmtContext ctx){
+
+        vcl.enterCondStmt(ctx);
+
+        //TODO WHICH IS TO RUN, IF OR ELSE???
+
+        //vcl.
 
 
-        //Add the parameters to the current scope //TODO Not needed when using new ProcedureScopeData
-        //for(int i = 0; i < parameters.size(); i++){
-        //    vcl.addVariableToScope(new VariableContainer(parameters.get(i).getIdentifier(), givenArgumentValues.get(0).getValue(), parameters.get(i).getType()));
-        //}
+        List<Tactic.StmtContext> condStatments = ctx.ifStmt().block().stmt();
 
-        //Run all statements //TODO USE ALL THE OVERWRITTEN METHODS ALREADY CREATED!!!
-        for(Tactic.StmtContext ctx : statements){
+        //throw new IllegalArgumentException(); //TODO BUG HERE
 
-            if(ctx.children.get(0) instanceof Tactic.AssignmentContext){
-                vcl.exitAssignment((Tactic.AssignmentContext)ctx.children.get(0));
-            }else if(ctx.children.get(0) instanceof Tactic.WhileStmtContext){
+
+        runStmts(condStatments);
+
+        vcl.exitCondStmt(ctx);
+    }
+
+    private void runStmts(List<Tactic.StmtContext> stmts){
+        for(Tactic.StmtContext ctx : stmts) {
+
+            if (ctx.children.get(0) instanceof Tactic.AssignmentContext) {
+                vcl.exitAssignment((Tactic.AssignmentContext) ctx.children.get(0));
+            } else if (ctx.children.get(0) instanceof Tactic.WhileStmtContext) {
                 throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
-            }else if(ctx.children.get(0) instanceof Tactic.CondStmtContext){
+            } else if (ctx.children.get(0) instanceof Tactic.CondStmtContext) {
+                runCondStmt((Tactic.CondStmtContext) ctx.children.get(0));
+            } else if (ctx.children.get(0) instanceof Tactic.ProcedureCallContext) {
+                vcl.exitProcedureCall((Tactic.ProcedureCallContext) ctx.children.get(0)); //TODO The current implementation does not support procedure calls inside other procedures.
                 throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
-            }else if(ctx.children.get(0) instanceof Tactic.ProcedureCallContext){
-                vcl.exitProcedureCall((Tactic.ProcedureCallContext)ctx.children.get(0)); //TODO The current implementation does not support procedure calls inside other procedures.
+            } else if (ctx.children.get(0) instanceof Tactic.ArrayAssignContext) {
                 throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
-            }else if(ctx.children.get(0) instanceof Tactic.ArrayAssignContext){
-                throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
-            }else if(ctx.children.get(0) instanceof Tactic.DotAssignmentContext){
-                vcl.exitDotAssignment((Tactic.DotAssignmentContext)ctx.children.get(0));
+            } else if (ctx.children.get(0) instanceof Tactic.DotAssignmentContext) {
+                vcl.exitDotAssignment((Tactic.DotAssignmentContext) ctx.children.get(0));
                 //throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
-            }else if(ctx.children.get(0) instanceof Tactic.DotStmtContext){
+            } else if (ctx.children.get(0) instanceof Tactic.DotStmtContext) {
                 throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED //TODO This should not be in the grammar.
-            }else
+            } else
                 throw new IllegalArgumentException(); //A context was not handled or grammar has changed
         }
     }
