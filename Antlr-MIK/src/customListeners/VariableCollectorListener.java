@@ -48,9 +48,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     /** Used to add variables to the current scope.
      * @param varCon variable container, containing the value and information of the variable. */
     public void addVariableToScope(VariableContainer varCon){
-        if(currentScope == VariableScopeData.ScopeType.MAIN_SCOPE){
-            mainScope.addVariable(varCon);
-        }
+        mainScope.addVariable(varCon);
     }
 
     /** Used to overwrite a value of a variables.
@@ -390,12 +388,12 @@ public class VariableCollectorListener extends TacticBaseListener {
 
             //Change the property in the GP (also removed citation-marks if needed)
             String newPropertyValue = TypeCheckerHelper.parseString(ctx.value().getText()); //Trim citations
-            GamePiece gp = TypeCheckerHelper.parseGamePiece(getValueFromScope(identifier).getValue());
+            GamePiece gp = TypeCheckerHelper.parseGamePiece(variableBeingDotted.getValue());
             gp.changeProperty(gpPropType, newPropertyValue);
 
             //Save the changed GamePiece
             String changedGpValue = gp.getGamePieceString();
-            addVariableToScope(new VariableContainer(identifier, changedGpValue, VariableCollectorListener.VariableType.GAMEPIECE));
+            addVariableToScope(new VariableContainer(variableBeingDotted.getIdentifier(), changedGpValue, VariableCollectorListener.VariableType.GAMEPIECE));
         }
     }
 
