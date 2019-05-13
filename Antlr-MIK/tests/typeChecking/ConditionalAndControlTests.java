@@ -23,14 +23,45 @@ public class ConditionalAndControlTests {
     }
 
     @Test
-    public void ifThenElse01(){
-        parse("testTODO");
+    public void if01(){
+        parse("int i; i = 5; if(true){i = 6;};;");
+
+        Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(6, i.intValue());
+    }
+
+    @Test
+    public void if02(){
+        parse("int i; i = 5; if(false){i = 6;};;");
 
         Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
 
         Assert.assertNotNull(i);
         Assert.assertEquals(5, i.intValue());
     }
+
+    @Test
+    public void ifelse01(){
+        parse("int i; i = 5; if(true){i = 6;}else{i = 10;};;");
+
+        Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(6, i.intValue());
+    }
+
+    @Test
+    public void ifelse02(){
+        parse("int i; i = 5; if(false){i = 6;}else{i = 10};;");
+
+        Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(10, i.intValue());
+    }
+
 
 
     /** Parses the given input and the results can be found in the field. */

@@ -43,6 +43,12 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     public boolean isInProcedureDefinition = false; //TODO Comment
 
+    private boolean isWalkingConditional = false;
+    private boolean isInIfBlock = false;
+    private boolean isInElseBlock = false;
+    private boolean mayRunIfBlock = false;
+    private boolean mayRunElseBlocK = false;
+
     // CORE METHODS -----------------------------------------------------------
 
     /** Used to add variables to the current scope.
@@ -156,12 +162,31 @@ public class VariableCollectorListener extends TacticBaseListener {
         return allGamePieces;
     }
 
+    /** Used in overwrites of stmt's, to check if a stmt is allowed to run on the current place in the tree-walk. */
+    public boolean mayThisStmtRun(){
+
+        if(isInProcedureDefinition)
+            return false;
+
+        if(isWalkingConditional){
+
+            if(isInElseBlock && !mayRunElseBlocK)
+                return false;
+
+            if(isInIfBlock && !mayRunIfBlock)
+                return false;
+        }
+
+
+        return true;
+    }
+
     // OVERWRITES ----------------------------------------------------
 
     @Override
     public void exitAssignment(Tactic.AssignmentContext ctx) {
 
-        if(isInProcedureDefinition)
+        if(!mayThisStmtRun())
             return;
 
         String identifier = ctx.identifier(0).getText();
@@ -251,8 +276,60 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     @Override
     public void exitArrayAssign(Tactic.ArrayAssignContext ctx) {
-        if(isInProcedureDefinition)
+        if(!mayThisStmtRun())
             return;
+    }
+
+    // CONDITIONALS ---------------------------------------------------------------------
+
+    @Override
+    public void enterCondStmt(Tactic.CondStmtContext ctx) {
+        isWalkingConditional = true;
+
+
+        boolean evaluation; // = getBoolStmtResult(ctx.ifStmt().boolExpr());
+
+        //TODO THIS SECTION IS TEMP AND SHOULD BE REPLACE WITH THE ABOVE: getBoolStmtResult
+        if(ctx.ifStmt().boolExpr().bool().TRUE() != null)
+            evaluation = true;
+        else
+            evaluation = false;
+
+
+        if(evaluation){ //RUN IF STATEMENT
+            mayRunIfBlock = true;
+        }
+
+        if(!evaluation && ctx.elseStmt() != null){ //RUN ELSE STATEMENT
+            mayRunElseBlocK = true;
+        }
+    }
+
+    @Override
+    public void exitCondStmt(Tactic.CondStmtContext ctx) {
+        mayRunIfBlock = false;
+        mayRunElseBlocK = false;
+        isWalkingConditional = false;
+    }
+
+    @Override
+    public void enterIfStmt(Tactic.IfStmtContext ctx) {
+        isInIfBlock = true;
+    }
+
+    @Override
+    public void exitIfStmt(Tactic.IfStmtContext ctx) {
+        isInIfBlock = false;
+    }
+
+    @Override
+    public void enterElseStmt(Tactic.ElseStmtContext ctx) {
+        isInElseBlock = true;
+    }
+
+    @Override
+    public void exitElseStmt(Tactic.ElseStmtContext ctx) {
+        isInElseBlock = false;
     }
 
     // PROCEDURES -------------------------------------------------------------------------
@@ -361,7 +438,7 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     public void exitDotAssignment(Tactic.DotAssignmentContext ctx) {
 
-        if(isInProcedureDefinition)
+        if(!mayThisStmtRun())
             return;
 
         String identifier = ctx.dotStmt().identifier().get(0).getText();
@@ -412,7 +489,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     @Override
     public void exitArithExprParent(Tactic.ArithExprParentContext ctx) {
 
-        if(isInProcedureDefinition)
+        if(!mayThisStmtRun())
             return;
 
         //Get all arithmeticGatherers from the children
@@ -432,7 +509,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     @Override
     public void exitArithExprParenthMiddle(Tactic.ArithExprParenthMiddleContext ctx) {
 
-        if(isInProcedureDefinition)
+        if(!mayThisStmtRun())
             return;
 
         ArithmeticGatherer ag = new ArithmeticGatherer();
@@ -446,7 +523,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     @Override
     public void exitArithExprMiddle(Tactic.ArithExprMiddleContext ctx) {
 
-        if(isInProcedureDefinition)
+        if(!mayThisStmtRun())
             return;
 
         ArithmeticGatherer ag = new ArithmeticGatherer();
@@ -459,7 +536,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     @Override
     public void exitArithExprRight(Tactic.ArithExprRightContext ctx) {
 
-        if(isInProcedureDefinition)
+        if(!mayThisStmtRun())
             return;
 
         ArithmeticGatherer ag = new ArithmeticGatherer();
@@ -472,7 +549,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     @Override
     public void exitArithExprLeft(Tactic.ArithExprLeftContext ctx) {
 
-        if(isInProcedureDefinition)
+        if(!mayThisStmtRun())
             return;
 
         ArithmeticGatherer ag = new ArithmeticGatherer();
@@ -485,7 +562,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     @Override
     public void exitArithExprBoth(Tactic.ArithExprBothContext ctx) {
 
-        if(isInProcedureDefinition)
+        if(!mayThisStmtRun())
             return;
 
         ArithmeticGatherer ag = new ArithmeticGatherer();
@@ -645,15 +722,7 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     @Override
     public void exitDotStmt(Tactic.DotStmtContext ctx) {
-        if(isInProcedureDefinition)
-            return;
-
-        //TODO
-    }
-
-    @Override
-    public void exitCondStmt(Tactic.CondStmtContext ctx) {
-        if(isInProcedureDefinition)
+        if(!mayThisStmtRun())
             return;
 
         //TODO
@@ -661,7 +730,7 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     @Override
     public void exitWhileStmt(Tactic.WhileStmtContext ctx) {
-        if(isInProcedureDefinition)
+        if(!mayThisStmtRun())
             return;
 
         //TODO

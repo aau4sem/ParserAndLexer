@@ -76,4 +76,8 @@ public class BoardListener extends TacticBaseListener {
     public String[] getBoardPaths() {
         return boardPaths;
     }
+
+    @Override
+    public void enterCondStmt(Tactic.CondStmtContext ctx) {
+    }
 }

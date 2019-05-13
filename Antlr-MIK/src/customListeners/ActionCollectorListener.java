@@ -35,7 +35,7 @@ public class ActionCollectorListener extends TacticBaseListener {
     @Override
     public void exitProcedureCall(Tactic.ProcedureCallContext ctx) {
 
-        if(variableCollectorListener.isInProcedureDefinition)
+        if(!variableCollectorListener.mayThisStmtRun())
             return;
 
         //System.out.println(ctx.children.get(0).getText());
@@ -218,8 +218,9 @@ public class ActionCollectorListener extends TacticBaseListener {
     @Override
     public void exitArguments(Tactic.ArgumentsContext ctx) {
 
-        if(variableCollectorListener.isInProcedureDefinition)
+        if(!variableCollectorListener.mayThisStmtRun())
             return;
+
 
         if (ctx.children.size() == 1) { //This is an end note. The child is a value
             ArgumentGatherer ag = new ArgumentGatherer();
@@ -245,5 +246,9 @@ public class ActionCollectorListener extends TacticBaseListener {
 
     public ArrayList<BuildInFunction> getActionFunctions() {
         return actionFunctions;
+    }
+
+    @Override
+    public void enterCondStmt(Tactic.CondStmtContext ctx) {
     }
 }
