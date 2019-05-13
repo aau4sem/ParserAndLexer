@@ -222,8 +222,8 @@ public class VariableCollectorListener extends TacticBaseListener {
         } else if(ctx.arithExpr() != null){ //format identifier = arithExpr
             //TODO what if the identifier is an int, and the result is in float?
             value = String.valueOf(getArithmeticResult(ctx.arithExpr()));
-        } else if(ctx.boolStmt() != null){ //format identifier = boolStmt
-            value = String.valueOf(getBoolStmtResult(ctx.boolStmt()));
+        } else if(ctx.boolExpr() != null){ //format identifier = boolStmt
+            value = String.valueOf(getBoolStmtResult(ctx.boolExpr()));
         } else if(ctx.vecExpr() != null){ //format identifier = vecExpr (subtraction or addition)
             throw new IllegalArgumentException(); //TODO Not yet implemented
         } else if(ctx.identifier().size() == 2){ //format identifier = (identifier (LBRACKET integer RBRACKET)+) | dotStmt)
@@ -497,7 +497,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     // BOOL STMT ----------------------------------------------------------------------
 
     /** @return the result of the given BoolStmtContext. */
-    private boolean getBoolStmtResult(Tactic.BoolStmtContext ctx){
+    private boolean getBoolStmtResult(Tactic.BoolExprContext ctx){
 
         if(ctx.identifier() != null){
             identifierToValueCheck(ctx.identifier().getText(), VariableType.BOOL);
