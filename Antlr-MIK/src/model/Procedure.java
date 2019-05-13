@@ -6,6 +6,7 @@ import gen.Tactic;
 import model.utils.Argument;
 import model.utils.Parameter;
 import model.variables.VariableContainer;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,23 +40,40 @@ public class Procedure {
 
         vcl.enterCondStmt(ctx);
 
-        //TODO WHICH IS TO RUN, IF OR ELSE???
+        boolean evaluatedBool = vcl.getBoolStmtResult(ctx.ifStmt().boolExpr());
 
-        //vcl.
+        List<Tactic.StmtContext> condStmts = new ArrayList<>();
 
+        if(evaluatedBool){
+            condStmts = ctx.ifStmt().block().stmt();
+        }else{
+            if(ctx.elseStmt() != null)
+                condStmts = ctx.elseStmt().block().stmt();
+        }
 
-        List<Tactic.StmtContext> condStatments = ctx.ifStmt().block().stmt();
+        if(condStmts.size() == 0)
+            return; //No statements to run
 
-        //throw new IllegalArgumentException(); //TODO BUG HERE
-
-
-        runStmts(condStatments);
+        runStmts(condStmts);
 
         vcl.exitCondStmt(ctx);
     }
 
     private void runStmts(List<Tactic.StmtContext> stmts){
         for(Tactic.StmtContext ctx : stmts) {
+
+            //TODO Does the stmt have arithmetics? If yes, start gathering
+            if(ctx.children.get(0) instanceof Tactic.AssignmentContext){
+                if(((Tactic.AssignmentContext)ctx.children.get(0)).arithExpr() != null){
+
+                    //TODO Manual work the children and call needed methods????
+                    manualArithExprWalker(((Tactic.AssignmentContext)ctx.children.get(0)).arithExpr());
+
+                }
+
+            }
+
+
 
             if (ctx.children.get(0) instanceof Tactic.AssignmentContext) {
                 vcl.exitAssignment((Tactic.AssignmentContext) ctx.children.get(0));
@@ -76,6 +94,62 @@ public class Procedure {
             } else
                 throw new IllegalArgumentException(); //A context was not handled or grammar has changed
         }
+    }
+
+    private void manualArithExprWalker(Tactic.ArithExprContext ctx){
+
+        if(ctx.arithExprParent() != null){
+            manualArithExprParentWalker(ctx.arithExprParent());
+            vcl.exitArithExprParent(ctx.arithExprParent());
+        }
+
+        if(ctx.arithExprMiddle() != null){
+            manualArithExprMiddleWalker(ctx.arithExprMiddle());
+            vcl.exitArithExprMiddle(ctx.arithExprMiddle());
+        }
+    }
+
+    private void manualArithExprParentWalker(Tactic.ArithExprParentContext ctx){
+        if(ctx.arithExprRight() != null){
+            manualArithExprRightWalker(ctx.arithExprRight());
+            vcl.exitArithExprRight(ctx.arithExprRight());
+        }
+
+        for(Tactic.ArithExprParenthMiddleContext aemc : ctx.arithExprParenthMiddle()){
+            manualArithExprParenthMiddleWalker(aemc);
+            vcl.exitArithExprParenthMiddle(aemc);
+
+        }
+
+        for(Tactic.ArithExprBothContext aebc : ctx.arithExprBoth()){
+            manualArithExprBothWalker(aebc);
+            vcl.exitArithExprBoth(aebc);
+        }
+
+        if(ctx.arithExprLeft() != null){
+            manualArithExprLeftWalker(ctx.arithExprLeft());
+            vcl.exitArithExprLeft(ctx.arithExprLeft());
+        }
+    }
+
+    private void manualArithExprMiddleWalker(Tactic.ArithExprMiddleContext ctx){
+        vcl.exitArithExprMiddle(ctx);
+    }
+
+    private void manualArithExprParenthMiddleWalker(Tactic.ArithExprParenthMiddleContext ctx){
+        manualArithExprWalker(ctx.arithExpr());
+    }
+
+    private void manualArithExprLeftWalker(Tactic.ArithExprLeftContext ctx){
+        vcl.exitArithExprLeft(ctx);
+    }
+
+    private void manualArithExprRightWalker(Tactic.ArithExprRightContext ctx){
+        vcl.exitArithExprRight(ctx);
+    }
+
+    private void manualArithExprBothWalker(Tactic.ArithExprBothContext ctx){
+        vcl.exitArithExprBoth(ctx);
     }
 
     /** @return true if the given identifier matches one of this procedures parameters. */

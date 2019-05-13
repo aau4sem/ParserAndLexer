@@ -600,7 +600,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     // BOOL STMT ----------------------------------------------------------------------
 
     /** @return the result of the given BoolStmtContext. */
-    private boolean getBoolStmtResult(Tactic.BoolExprContext ctx){
+    public boolean getBoolStmtResult(Tactic.BoolExprContext ctx){
         if(ctx.identifier() != null){
             identifierToValueCheck(ctx.identifier().getText(), VariableType.BOOL);
             VariableContainer varCon = getValueFromIdentifier(ctx.identifier().getText());
