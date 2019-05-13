@@ -1,8 +1,10 @@
 package codeGeneration;
 
 import model.dataTypes.GamePiece;
+import model.utils.buildInFunction.BuildInFunction;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,13 +19,15 @@ public class CodeGenerator {
     private String outputDirectoryPath;
 
     private ArrayList<GamePiece> gamePieces;
+    private ArrayList<BuildInFunction> actionCalls;
     private ArrayList<String> gamePieceNames;
     private ArrayList<String> boardPaths;
 
     private String fileSeparator = System.getProperty("file.separator");
 
-    public CodeGenerator(ArrayList<GamePiece> gamePieces, ArrayList<String> boardPaths) {
+    public CodeGenerator(ArrayList<GamePiece> gamePieces, ArrayList<BuildInFunction> actionCalls, ArrayList<String> boardPaths) {
         this.gamePieces = gamePieces;
+        this.actionCalls = actionCalls;
         this.gamePieceNames = getAllGamePieceNames(gamePieces);
         this.boardPaths = boardPaths;
 
@@ -62,7 +66,7 @@ public class CodeGenerator {
 
         //animations.js
         ArrayList<String> animationLines =  generateStringForAnimationsAnimationList(gamePieces);
-        ArrayList<String> functionLines = generateStringsForAnimationFunctions(gamePieces);
+        ArrayList<String> functionLines = generateStringsForAnimationFunctions(gamePieces, actionCalls);
         ArrayList<String> outputAnimations = generateAnimationsFileStrings(animationLines, functionLines);
 
         //Write/create files
@@ -261,6 +265,7 @@ public class CodeGenerator {
 
             sb.append("<div class=\"");
             sb.append(gp.getName());
+            sb.append(" ").append(gp.getShape());
             //TODO TAGS //TOOD Has to be generated in the css file
             sb.append("\">");
             sb.append(gp.getLabel()); //LABEL
@@ -320,6 +325,7 @@ public class CodeGenerator {
             StringBuilder sb = new StringBuilder();
 
             sb.append(".").append(gp.getName()).append("{\n");
+            sb.append("background-color: ").append(gp.getColor()).append(";\n");
             //TODO more?
             sb.append("}\n");
 
@@ -355,7 +361,7 @@ public class CodeGenerator {
 
     /** @return a string for the function part of the animations.js file.
      * @param gamePieces a list of all GamePieces. */
-    private ArrayList<String> generateStringsForAnimationFunctions(ArrayList<GamePiece> gamePieces){
+    private ArrayList<String> generateStringsForAnimationFunctions(ArrayList<GamePiece> gamePieces, ArrayList<BuildInFunction> actionCalls){
 
         ArrayList<String> generatedStrings = new ArrayList<>();
 
@@ -366,6 +372,13 @@ public class CodeGenerator {
             sb.append("return anime({\n");
             sb.append("targets: ").append("'.").append(gp.getName()).append("',\n"); //TODO Has to be changed?
             sb.append("keyframes: [\n");
+
+            for (BuildInFunction action : actionCalls){
+                if (action.getGp().getName().compareTo(gp.getName()) == 0){
+                    sb.append("{").append(action.toKeyframe()).append("}, \n");
+                }
+            }
+
             //TODO keyframes! Format: {left: 20, top: 500, duration: 1000},
             sb.append("],\n");
             sb.append("loop: false,\n");

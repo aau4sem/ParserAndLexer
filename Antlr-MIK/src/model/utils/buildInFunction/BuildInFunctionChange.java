@@ -32,4 +32,9 @@ public class BuildInFunctionChange implements BuildInFunction {
     public Number getTime() {
         return time;
     }
+
+    public String toKeyframe() {
+        // TODO - Create this
+        return "";
+    }
 }

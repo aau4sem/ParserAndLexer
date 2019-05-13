@@ -20,4 +20,8 @@ public class BuildInFunctionWait implements BuildInFunction {
     public Number getTime() {
         return time;
     }
+
+    public String toKeyframe() {
+        return "left: " + gp.getPosition().getX() + ", top: " + gp.getPosition().getY() + ", duration: " + time.getIntValue();
+    }
 }

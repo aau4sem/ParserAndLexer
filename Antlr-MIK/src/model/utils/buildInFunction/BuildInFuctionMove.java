@@ -27,4 +27,8 @@ public class BuildInFuctionMove implements BuildInFunction {
     public Number getTime() {
         return time;
     }
+
+    public String toKeyframe() {
+        return "left: " + vector.getX() + ", top: " + vector.getY() + ", duration: " + time.getIntValue();
+    }
 }
