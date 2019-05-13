@@ -117,17 +117,6 @@ public class ProcedureTests {
         Assert.assertEquals("TestLabel", gp.getLabel());
     }
 
-    @Test //TODO This stmt might be removed from grammar
-    public void statement_dotStmt01(){
-        parse("proc(GamePiece gp){gp.label;}; GamePiece a; proc(a);;");
-
-        VariableContainer varCon = vlc.getValueFromIdentifier("a");
-        Assert.assertNotNull(varCon);
-        Assert.assertNotNull(varCon);
-        GamePiece gp = TypeCheckerHelper.parseGamePiece(varCon.getValue());
-        Assert.assertNotNull(gp);
-    }
-
     @Test
     public void statement_arrayAssignment01(){
         parse("proc(){i[0] = 2;}; int[2] i; proc(i);;");
