@@ -234,8 +234,8 @@ public class VariableCollectorListener extends TacticBaseListener {
         } else if(ctx.arithExpr() != null){ //format identifier = arithExpr
             String result = String.valueOf(getArithmeticResult(ctx.arithExpr()));
             value = String.valueOf(TypeCheckerHelper.trimFloatToInt(result)); //If the type the result is saved in, is of type integer, decimals will be cut off
-        //} else if(ctx.boolStmt() != null){ //format identifier = boolStmt //TODO Change in grammar has made this invalid, Mathias is working on solution
-        //    value = String.valueOf(getBoolStmtResult(ctx.boolStmt())); //TODO Change in grammar has made this invalid, Mathias is working on solution
+        } else if(ctx.boolExpr() != null){ //format identifier = boolStmt //TODO Change in grammar has made this invalid, Mathias is working on solution
+            value = String.valueOf(getBoolStmtResult(ctx.boolExpr())); //TODO Change in grammar has made this invalid, Mathias is working on solution
         } else if(ctx.vecExpr() != null){ //format identifier = vecExpr (subtraction or addition)
             throw new IllegalArgumentException(); //TODO Not yet implemented
         } else if(ctx.identifier().size() == 2){ //format identifier = (identifier (LBRACKET integer RBRACKET)+) | dotStmt)
