@@ -71,8 +71,7 @@ elseStmt        : ELSE block ;
 whileStmt       : WHILE LPAREN boolExpr RPAREN block ;
 
 //Conditional
-boolExpr        : bool | LPAREN boolExpr RPAREN | boolExpr boolOperaters boolExpr | value ;
-bool            : TRUE | FALSE ;
-boolOperaters   : BOOL_EQUAL | BOOL_N_EQUAL | BOOL_COND_AND | BOOL_COND_OR
-                | BOOL_LESS | BOOL_GREATER | BOOL_LESS_OR_EQUAL | BOOL_GREATER_OR_EQUAL ;
-
+boolExpr        : (value boolOperaters value | bool | identifier);
+bool            : (TRUE | FALSE) ;
+boolOperaters   : (BOOL_EQUAL | BOOL_N_EQUAL | BOOL_COND_AND | BOOL_COND_OR
+                | BOOL_LESS | BOOL_GREATER | BOOL_LESS_OR_EQUAL | BOOL_GREATER_OR_EQUAL) ;

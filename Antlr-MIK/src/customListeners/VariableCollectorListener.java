@@ -259,8 +259,8 @@ public class VariableCollectorListener extends TacticBaseListener {
         } else if(ctx.arithExpr() != null){ //format identifier = arithExpr
             String result = String.valueOf(getArithmeticResult(ctx.arithExpr()));
             value = String.valueOf(TypeCheckerHelper.trimFloatToInt(result)); //If the type the result is saved in, is of type integer, decimals will be cut off
-        //} else if(ctx.boolStmt() != null){ //format identifier = boolStmt //TODO Change in grammar has made this invalid, Mathias is working on solution
-        //    value = String.valueOf(getBoolStmtResult(ctx.boolStmt())); //TODO Change in grammar has made this invalid, Mathias is working on solution
+        } else if(ctx.boolExpr() != null){ //format identifier = boolStmt //TODO Change in grammar has made this invalid, Mathias is working on solution
+            value = String.valueOf(getBoolStmtResult(ctx.boolExpr())); //TODO Change in grammar has made this invalid, Mathias is working on solution
         } else if(ctx.vecExpr() != null){ //format identifier = vecExpr (subtraction or addition)
             throw new IllegalArgumentException(); //TODO Not yet implemented
         } else if(ctx.identifier().size() == 2){ //format identifier = (identifier (LBRACKET integer RBRACKET)+) | dotStmt)
@@ -599,10 +599,8 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     // BOOL STMT ----------------------------------------------------------------------
 
-    /** @return the result of the given BoolStmtContext. */ //TODO Change in grammar has made this invalid, Mathias is working on solution
-    /*
-    private boolean getBoolStmtResult(Tactic.BoolStmtContext ctx){
-
+    /** @return the result of the given BoolStmtContext. */
+    private boolean getBoolStmtResult(Tactic.BoolExprContext ctx){
         if(ctx.identifier() != null){
             identifierToValueCheck(ctx.identifier().getText(), VariableType.BOOL);
             VariableContainer varCon = getValueFromIdentifier(ctx.identifier().getText());
@@ -668,7 +666,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         }else{
             throw new IllegalArgumentException(); //Grammar has changed
         }
-    }*/
+    }
 
     /** Takes two numbers and an operator: ==, <, >, <=, >=, !=, performs the operations and returns the result. */
     private Boolean performBoolOperationOnNumbers(Number firstNum, Number secondNum, Tactic.BoolOperatersContext operatersContext){
