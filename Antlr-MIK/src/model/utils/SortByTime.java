@@ -6,6 +6,6 @@ import java.util.Comparator;
 
 public class SortByTime implements Comparator<BuildInFunction> {
     public int compare(BuildInFunction a, BuildInFunction b){
-        return a.getTime().getIntValue() - b.getTime().getIntValue();
+        return a.getTime() - b.getTime();
     }
 }

@@ -6,7 +6,7 @@ import model.dataTypes.Number;
 public interface BuildInFunction {
 
     public GamePiece getGp();
-    public Number getTime();
+    public Integer getTime();
     public String toKeyframe();
 
 }

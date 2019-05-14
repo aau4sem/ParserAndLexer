@@ -15,6 +15,7 @@ import model.dataTypes.GamePiece;
 import model.dataTypes.Number;
 import model.dataTypes.Vector;
 import model.variables.VariableContainer;
+import org.antlr.v4.runtime.CodePointBuffer;
 
 import java.util.ArrayList;
 
@@ -63,7 +64,7 @@ public class ActionCollectorListener extends TacticBaseListener {
                         Argument.ArgumentType.VECTOR);
 
                 typeCheckArgument(arguments.get(3), 4, identifier,
-                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.INTEGER, Argument.ArgumentType.FLOAT);
+                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.INTEGER);
 
                 //VALUE EVALUATION --------------------------------------------
                 //FIRST ARGUMENT
@@ -80,7 +81,13 @@ public class ActionCollectorListener extends TacticBaseListener {
                 String thirdArg = arguments.get(2).getValue();
 
                 //FOURTH ARGUMENT
-                Number fourthArg = evalIdentifierOrNumberArgument(arguments.get(3), 3, identifier);
+                Integer fourthArg;
+                if(arguments.get(3).getType() == Argument.ArgumentType.IDENTIFIER){
+                    VariableContainer varCon = variableCollectorListener.getValueFromIdentifier(arguments.get(3).getValue());
+                    fourthArg = TypeCheckerHelper.parseInt(varCon.getValue());
+                }else{
+                    fourthArg = TypeCheckerHelper.parseInt(arguments.get(3).getValue());
+                }
 
                 //Collect the function //This function is used because of the third argument - it can be multiple types
                 addChangeActionCall(variableFirstArg, secondArg, thirdArg, fourthArg);
@@ -96,7 +103,7 @@ public class ActionCollectorListener extends TacticBaseListener {
                 typeCheckArgument(arguments.get(1), 2, identifier, Argument.ArgumentType.VECTOR);
 
                 typeCheckArgument(arguments.get(2), 3, identifier,
-                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.FLOAT, Argument.ArgumentType.INTEGER);
+                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.INTEGER);
 
                 //VALUE EVALUATION --------------------------------------------
                 //FIRST ARGUMENT
@@ -110,7 +117,13 @@ public class ActionCollectorListener extends TacticBaseListener {
                 Vector variableSecondArgVec = TypeCheckerHelper.parseVector(arguments.get(1).getValue());
 
                 //THIRD ARGUMENT
-                Number variableThirdArgNum = evalIdentifierOrNumberArgument(arguments.get(2), 2, identifier);
+                Integer variableThirdArgNum;
+                if(arguments.get(2).getType() == Argument.ArgumentType.IDENTIFIER){
+                    VariableContainer varCon = variableCollectorListener.getValueFromIdentifier(arguments.get(2).getValue());
+                    variableThirdArgNum = TypeCheckerHelper.parseInt(varCon.getValue());
+                }else{
+                    variableThirdArgNum = TypeCheckerHelper.parseInt(arguments.get(2).getValue());
+                }
 
                 //Collect the function
                 actionFunctions.add(new BuildInFuctionMove(variableFirstArg, variableSecondArgVec, variableThirdArgNum));
@@ -125,7 +138,7 @@ public class ActionCollectorListener extends TacticBaseListener {
                 typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArgumentType.IDENTIFIER);
 
                 typeCheckArgument(arguments.get(1), 2, identifier,
-                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.FLOAT, Argument.ArgumentType.INTEGER);
+                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.INTEGER);
 
                 //VALUE EVALUATION --------------------------------------------
                 //FIRST ARGUMENT
@@ -136,7 +149,13 @@ public class ActionCollectorListener extends TacticBaseListener {
                     throw new IllegalArgumentType(1, identifier, "GamePiece");
 
                 //SECOND ARGUMENT
-                Number variableSecondArgNum = evalIdentifierOrNumberArgument(arguments.get(1), 1, identifier);
+                Integer variableSecondArgNum;
+                if(arguments.get(1).getType() == Argument.ArgumentType.IDENTIFIER){
+                    VariableContainer varCon = variableCollectorListener.getValueFromIdentifier(arguments.get(1).getValue());
+                    variableSecondArgNum = TypeCheckerHelper.parseInt(varCon.getValue());
+                }else{
+                    variableSecondArgNum = TypeCheckerHelper.parseInt(arguments.get(1).getValue());
+                }
 
                 //Collect the function
                 actionFunctions.add(new BuildInFunctionWait(variableFirstArg, variableSecondArgNum));
@@ -146,7 +165,7 @@ public class ActionCollectorListener extends TacticBaseListener {
 
     /** Used to parse the type of the third argument of the change call.
      * This can be a different types based on the property type. */
-    private void addChangeActionCall(GamePiece firstArg, GamePiece.GamePiecePropertyType secondArg, String thirdArg, Number fourthArg){
+    private void addChangeActionCall(GamePiece firstArg, GamePiece.GamePiecePropertyType secondArg, String thirdArg, Integer fourthArg){
 
         if(secondArg == GamePiece.GamePiecePropertyType.POSITION){
             if(TypeCheckerHelper.parseVector(thirdArg) == null)

@@ -8,9 +8,9 @@ public class BuildInFunctionChange implements BuildInFunction {
     private GamePiece gp;
     private GamePiece.GamePiecePropertyType gpPropperty;
     private String thridArguemnt; //TODO rename //TODO Handle when implemented in the grammar
-    private Number time;
+    private Integer time;
 
-    public BuildInFunctionChange(GamePiece gp, GamePiece.GamePiecePropertyType gpPropperty, String thridArguemnt, Number time) {
+    public BuildInFunctionChange(GamePiece gp, GamePiece.GamePiecePropertyType gpPropperty, String thridArguemnt, Integer time) {
         this.gp = gp;
         this.gpPropperty = gpPropperty;
         this.thridArguemnt = thridArguemnt;
@@ -29,7 +29,7 @@ public class BuildInFunctionChange implements BuildInFunction {
         return thridArguemnt;
     }
 
-    public Number getTime() {
+    public Integer getTime() {
         return time;
     }
 
