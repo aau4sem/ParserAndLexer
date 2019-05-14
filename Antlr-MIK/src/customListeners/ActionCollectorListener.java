@@ -95,7 +95,22 @@ public class ActionCollectorListener extends TacticBaseListener {
 
         }else if(ctx.moveAction() != null){
 
+            //SECOND ARGUMENT
+            String secondArgString = ctx.moveAction().vec().getText();
+            Vector secondArg = TypeCheckerHelper.parseVector(secondArgString);
+
+            if(secondArg == null){
+                System.out.println("The second argument of a move action call is not a valid vector.");
+                throw new IllegalArgumentException();
+            }
+
+            //Collect the argument
+            actionFunctions.add(new BuildInFunctionMove(firstArgument, secondArg, lastArg));
+
         }else if(ctx.waitAction() != null){
+
+            //Collect the argument
+            actionFunctions.add(new BuildInFunctionWait(firstArgument, lastArg));
 
         }else
             throw new IllegalArgumentException(); //Grammar has been changed
