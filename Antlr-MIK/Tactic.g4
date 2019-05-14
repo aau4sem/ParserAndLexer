@@ -11,8 +11,8 @@ prog    : (dcl ENDSTMT)* (stmt ENDSTMT)* ENDSTMT;
 stmt    : dotStmt | dotAssignment | arrayAssign | procedureCall | condStmt | whileStmt | assignment;
 dcl     : intDcl | boolDcl | arrayDcl | stringDcl | gpDcl | floatDcl | vecDcl | procedureDef;
 
-integer         : NUMBER | DIGIT ;
-floatVal        : (NUMBER | DIGIT) DOT (NUMBER | DIGIT);
+integer         : SUBTRACTION? (NUMBER | DIGIT) ;
+floatVal        : SUBTRACTION? ((NUMBER | DIGIT) DOT (NUMBER | DIGIT));
 number          : integer | floatVal ;
 word            : WORD | LETTER ;
 string          : STRINGTEXT ;
