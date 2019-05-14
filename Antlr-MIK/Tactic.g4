@@ -23,13 +23,13 @@ type            : INTEGER | FLOAT | VEC | BOOL | STRING | GAMEPIECE ;
 
 procedureCall   : identifier LPAREN arguments? RPAREN;
 procedureDef    : identifier LPAREN (type(LBRACKET RBRACKET)* identifier (SEPERATOR type (LBRACKET RBRACKET)* identifier)*)? RPAREN procedureBlock;
-procedureBlock  : LCURLY (procedureStmts ENDSTMT)* RCURLY;
-procedureStmts  : dotAssignment | arrayAssign | condStmt | whileStmt | assignment | actions;
+procedureBlock  : LCURLY (procedureStmt ENDSTMT)* RCURLY;
+procedureStmt   : dotAssignment | arrayAssign | condStmt | whileStmt | assignment | action;
 
-actions         : move | wait | change;
-move            : MOVE LPAREN identifier SEPERATOR vec SEPERATOR number RPAREN  ;
-wait            : WAIT LPAREN identifier SEPERATOR number RPAREN  ;
-change          : CHANGE LPAREN identifier SEPERATOR string SEPERATOR string SEPERATOR number RPAREN  ;
+action         : moveAction | waitAction | changeAction;
+moveAction      : MOVE LPAREN identifier SEPERATOR vec SEPERATOR number RPAREN  ;
+waitAction      : WAIT LPAREN identifier SEPERATOR number RPAREN  ;
+changeAction    : CHANGE LPAREN identifier SEPERATOR string SEPERATOR string SEPERATOR number RPAREN  ;
 
 dotStmt         : identifier ((DOT identifier(LBRACKET number? RBRACKET)*))+ ;
 dotAssignment   : dotStmt ASSIGN value;
@@ -70,7 +70,7 @@ arguments       : value | arguments SEPERATOR arguments ;
 
 //Control structures
 condStmt        : ifStmt elseStmt? ;
-block           : LCURLY (stmt ENDSTMT)* RCURLY ;
+block           : LCURLY ((stmt | action) ENDSTMT)* RCURLY ;
 ifStmt          : IF LPAREN (boolExpr) RPAREN  block ;
 elseStmt        : ELSE block ;
 

@@ -548,7 +548,7 @@ public class BasicParsingTests {
 
     @Test
     public void conditionals_while06() {
-        lexer = new TacticLexer(new ANTLRInputStream("while(true){Move(i); Change(i, x, d);};;"));
+        lexer = new TacticLexer(new ANTLRInputStream("while(true){Move(i, (2,4), 3); Change(i, \"x\", \"y\", 7);};;"));
     }
 
     // Functions -----------------------------------------------------------------------------------------------------------------
