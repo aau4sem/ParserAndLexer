@@ -27,7 +27,9 @@ WHILE       :       'while';
 DOT         :       '.';
 STRING_MARK :       '"';
 STRING      :       'string';
-VOID        :       'void';
+MOVE        :       'Move';
+WAIT        :       'Wait';
+CHANGE      :       'Change';
 
 
 // Literals
@@ -51,7 +53,6 @@ BOOL_LESS       : '<' ;
 BOOL_GREATER            : '>' ;
 BOOL_LESS_OR_EQUAL      : '<=' ;
 BOOL_GREATER_OR_EQUAL   : '>=' ;
-BOOL_NEGATION   : '!';
 
 // Whitespace and comments
 WS              : [ \t\r\n]+    -> channel(HIDDEN);

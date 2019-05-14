@@ -24,6 +24,12 @@ type            : INTEGER | FLOAT | VEC | BOOL | STRING | GAMEPIECE ;
 procedureCall   : identifier LPAREN arguments? RPAREN;
 procedureDef    : identifier LPAREN (type(LBRACKET RBRACKET)* identifier (SEPERATOR type (LBRACKET RBRACKET)* identifier)*)? RPAREN procedureBlock;
 procedureBlock  : LCURLY (stmt ENDSTMT)* RCURLY;
+procedureStmts  : dotAssignment | arrayAssign | condStmt | whileStmt | assignment;
+
+actions         : move | wait | change;
+move            : MOVE LPAREN identifier SEPERATOR vec SEPERATOR number RPAREN  ;
+wait            : WAIT LPAREN identifier SEPERATOR number RPAREN  ;
+change          : CHANGE LPAREN identifier SEPERATOR string SEPERATOR string SEPERATOR number RPAREN  ;
 
 dotStmt         : identifier ((DOT identifier(LBRACKET number? RBRACKET)*))+ ;
 dotAssignment   : dotStmt ASSIGN value;
@@ -58,7 +64,7 @@ arithAction : ADDITION | SUBTRACTION | DIVISION | MULTIPLY | MODULO ;
 vecExpr    : (vecAdd | vecSub) ((ADDITION | SUBTRACTION) (identifier | vec))* ;
 vecAdd     : (identifier | vec) ADDITION (identifier | vec) ;
 vecSub     : (identifier | vec) SUBTRACTION (identifier | vec) ;
-vecPara         : identifier | integer | arithExpr ;
+vecPara    : identifier | integer | arithExpr ;
 
 arguments       : value | arguments SEPERATOR arguments ;
 
