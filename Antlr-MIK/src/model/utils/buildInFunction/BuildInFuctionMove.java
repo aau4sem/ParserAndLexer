@@ -28,6 +28,10 @@ public class BuildInFuctionMove implements BuildInFunction {
         return time;
     }
 
+    public void setTime(Number newTime) {
+        this.time = newTime;
+    }
+
     public String toKeyframe() {
         return "left: " + vector.getX() + ", top: " + vector.getY() + ", duration: " + time.getIntValue();
     }

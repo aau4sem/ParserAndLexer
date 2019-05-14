@@ -19,7 +19,7 @@ public class GamePiece {
     }
 
     private static String defaultName = "";
-    private static Vector defaultPosition = null; //TODO Default?
+    private static Vector defaultPosition = new Vector(0,0,0); //TODO Default?
     private static Float defaultSize = 1f; //TODO Default?
     private static String defaultColor = "red";
     private static String defaultLabel = "";
