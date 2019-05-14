@@ -13,11 +13,11 @@ import java.util.List;
 public class Procedure {
 
     private ArrayList<Parameter> parameters;
-    private ArrayList<Tactic.StmtContext> statements;
+    private ArrayList<Tactic.ProcedureStmtContext> statements;
     private String prodecureName;
     private VariableCollectorListener vcl;
 
-    public Procedure(ArrayList<Parameter> parameters, ArrayList<Tactic.StmtContext> statements, String procedureName, VariableCollectorListener vcl) {
+    public Procedure(ArrayList<Parameter> parameters, ArrayList<Tactic.ProcedureStmtContext> statements, String procedureName, VariableCollectorListener vcl) {
         this.parameters = parameters;
         this.statements = statements;
         this.prodecureName = procedureName;
@@ -38,16 +38,13 @@ public class Procedure {
         //}
 
         //Run all statements //TODO USE ALL THE OVERWRITTEN METHODS ALREADY CREATED!!!
-        for(Tactic.StmtContext ctx : statements){
+        for(Tactic.ProcedureStmtContext ctx : statements){
 
             if(ctx.children.get(0) instanceof Tactic.AssignmentContext){
                 vcl.exitAssignment((Tactic.AssignmentContext)ctx.children.get(0));
             }else if(ctx.children.get(0) instanceof Tactic.WhileStmtContext){
                 throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
             }else if(ctx.children.get(0) instanceof Tactic.CondStmtContext){
-                throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
-            }else if(ctx.children.get(0) instanceof Tactic.ProcedureCallContext){
-                vcl.exitProcedureCall((Tactic.ProcedureCallContext)ctx.children.get(0)); //TODO The current implementation does not support procedure calls inside other procedures.
                 throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
             }else if(ctx.children.get(0) instanceof Tactic.ArrayAssignContext){
                 throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
@@ -87,11 +84,11 @@ public class Procedure {
         parameters.add(parameter);
     }
 
-    public void addStatement(Tactic.StmtContext statement){
+    public void addStatement(Tactic.ProcedureStmtContext statement){
         statements.add(statement);
     }
 
-    public void addAllStatments(List<Tactic.StmtContext> stmtContexts){
+    public void addAllStatments(List<Tactic.ProcedureStmtContext> stmtContexts){
         statements.addAll(stmtContexts);
     }
 
