@@ -302,30 +302,26 @@ public class VariableCollectorListener extends TacticBaseListener {
 
         String identifier = ctx.identifier().getText();
 
-        //Is the procedure call one of the three action calls? If so, do not do anything. (This is handled in ActionCollectorListener.)
-        if(!(identifier.compareTo(BuildInFunctionChange.identifier) == 0 || identifier.compareTo(BuildInFunctionMove.identifier) == 0 ||identifier.compareTo(BuildInFunctionWait.identifier) == 0)){
-            this.currentScope = VariableScopeData.ScopeType.PROCEDURE_SCOPE;
+        this.currentScope = VariableScopeData.ScopeType.PROCEDURE_SCOPE;
 
-            Procedure procedure = getProcedureFromIdentifier(identifier);
+        Procedure procedure = getProcedureFromIdentifier(identifier);
 
+        //Does the procedure have arguments
+        if(ctx.children.size() > 3) {
+            if (!(ctx.children.get(2).getChild(ctx.children.get(2).getChildCount() - 1) instanceof ArgumentGatherer))
+                throw new IllegalArgumentException(); //The arguments has not been collected.
 
-            //Does the procedure have arguments
-            if(ctx.children.size() > 3) {
-                if (!(ctx.children.get(2).getChild(ctx.children.get(2).getChildCount() - 1) instanceof ArgumentGatherer))
-                    throw new IllegalArgumentException(); //The arguments has not been collected.
-
-                ArgumentGatherer ag = (ArgumentGatherer) ctx.children.get(2).getChild(ctx.children.get(2).getChildCount() - 1);
-                procedureScope.setGivenArguments(ag.getConvertedArgumentsList());
-                //procedure.execute(ag.getConvertedArgumentsList(), this, identifier);
-            }
-
-
-            this.procedureScope.setCurrentProcedure(procedure);
-            this.procedureScope.execute();
-
-            this.currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
-            this.procedureScope.reset();
+            ArgumentGatherer ag = (ArgumentGatherer) ctx.children.get(2).getChild(ctx.children.get(2).getChildCount() - 1);
+            procedureScope.setGivenArguments(ag.getConvertedArgumentsList());
+            //procedure.execute(ag.getConvertedArgumentsList(), this, identifier);
         }
+
+
+        this.procedureScope.setCurrentProcedure(procedure);
+        this.procedureScope.execute();
+
+        this.currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
+        this.procedureScope.reset();
     }
 
     // DECLARATIONS ----------------------------------------------------
