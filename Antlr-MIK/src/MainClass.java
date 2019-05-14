@@ -47,13 +47,13 @@ public class MainClass {
             //Get list of collected action-calls
             ArrayList<BuildInFunction> actionCalls = new ArrayList<>(actionCollectorListener.getActionFunctions());
             //Get the list of paths
-            String[] boardPaths = boardListener.getBoardPaths();
+            String boardPath = boardListener.getBoardPath();
             //Get all GamePieces
             ArrayList<GamePiece> gamePieces = variableListener.getAllGamePieces();
             //TODO Get other needed data.
             
             //Instantiate and run CodeGenerator
-            CodeGenerator cg = new CodeGenerator(gamePieces, new ArrayList<>(Arrays.asList(boardPaths)));
+            CodeGenerator cg = new CodeGenerator(gamePieces, boardPath);
             cg.generateCompleteFolder();
 
         } catch (IOException ex){
