@@ -8,5 +8,6 @@ public interface BuildInFunction {
     public GamePiece getGp();
     public Integer getTime();
     public String toKeyframe();
+    public void setTime(Integer time);
 
 }

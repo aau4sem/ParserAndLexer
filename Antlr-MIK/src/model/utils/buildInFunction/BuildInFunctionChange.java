@@ -33,8 +33,19 @@ public class BuildInFunctionChange implements BuildInFunction {
         return time;
     }
 
+    public void setTime(Integer newTime) {
+        this.time = newTime;
+    }
+
     public String toKeyframe() {
-        // TODO - Create this
-        return "";
+        // TODO - Create this - Format:
+        // 'background-color': '#FFF', delay: 250
+
+        switch (this.gpPropperty){
+            case COLOR:
+                return "'background-" + this.gpPropperty.getString().toLowerCase() + "': '" + this.thridArguemnt + "'";
+        }
+
+        return null;
     }
 }

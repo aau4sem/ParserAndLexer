@@ -21,6 +21,10 @@ public class BuildInFunctionWait implements BuildInFunction {
         return time;
     }
 
+    public void setTime(Integer newTime) {
+        this.time = newTime;
+    }
+
     public String toKeyframe() {
         return "left: " + gp.getPosition().getX() + ", top: " + gp.getPosition().getY() + ", duration: " + time;
     }

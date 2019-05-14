@@ -3,6 +3,7 @@ import customListeners.ActionCollectorListener;
 import customListeners.BoardListener;
 import customListeners.VariableCollectorListener;
 import model.dataTypes.GamePiece;
+import model.utils.CalculatedCalls;
 import model.utils.SortByTime;
 import model.utils.buildInFunction.BuildInFuctionMove;
 import model.utils.buildInFunction.BuildInFunction;
@@ -50,6 +51,10 @@ public class MainClass {
             ArrayList<BuildInFunction> actionCalls = new ArrayList<>(actionCollectorListener.getActionFunctions());
             actionCalls.sort(new SortByTime());
 
+            // Code calculation
+            ArrayList<BuildInFunction> calculatedCalls = CalculatedCalls.calculate(actionCalls, gamePieces);
+
+            System.out.println("Test");
             //TODO pre-codeGeneration-calculations??? Is this needed??
 
             //CODE GENERATION -----------------------------------------------
@@ -59,7 +64,7 @@ public class MainClass {
             //TODO Get other needed data.
             
             //Instantiate and run CodeGenerator
-            CodeGenerator cg = new CodeGenerator(gamePieces, actionCalls, new ArrayList<>(Arrays.asList(boardPaths)));
+            CodeGenerator cg = new CodeGenerator(gamePieces, calculatedCalls, new ArrayList<>(Arrays.asList(boardPaths)));
             cg.generateCompleteFolder();
 
         } catch (IOException ex){

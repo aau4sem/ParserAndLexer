@@ -11,9 +11,14 @@ Player3.position = (853,612,0);
 move(Player1, (170, 361), 500);
 move(Player2, (519, 361), 500);
 
-move(Player1, (170, 150), 500);
-move(Player2, (519, 150), 500);
+change(Player2, "color", "#0000ff", 750);
 
-move(Player3, (853, 150), 1000);
+move(Player1, (170, 150), 1000);
+move(Player2, (519, 150), 1000);
+move(Player3, (860, 150), 1000);
+
+move(Player1, (170, 60), 1500);
+move(Player2, (519, 60), 1500);
+move(Player3, (860, 60), 1500);
 
 ;
