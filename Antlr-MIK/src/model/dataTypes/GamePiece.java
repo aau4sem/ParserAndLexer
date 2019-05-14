@@ -18,7 +18,7 @@ public class GamePiece {
         }
     }
 
-    private static String defaultName = "";
+    private static String defaultIdentifier = "";
     private static Vector defaultPosition = null; //TODO Default?
     private static Float defaultSize = 1f; //TODO Default?
     private static String defaultColor = null;
@@ -27,7 +27,7 @@ public class GamePiece {
     private static String defaultShape = "circle";
 
     //Does this equal makes so that if we change the below changed the above
-    private String name = defaultName;
+    private String name = defaultIdentifier; //A unique value used in parsing. This is the identifier for this object given in declaration.
     private Vector position = defaultPosition;
     private Float size = defaultSize; //Must be positive
     private String color = defaultColor; //Could also be of format: RBG
