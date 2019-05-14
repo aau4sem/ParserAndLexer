@@ -624,7 +624,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     private Boolean performBoolOperationOnBool(boolean firstBool, boolean secondBool, Tactic.BoolOperatersContext operatorContext){
 
         if(operatorContext.BOOL_COND_AND() != null){
-
+            return firstBool && secondBool;
         }else if(operatorContext.BOOL_COND_OR() != null){
             return firstBool || secondBool;
         }else if(operatorContext.BOOL_EQUAL() != null){
@@ -643,8 +643,6 @@ public class VariableCollectorListener extends TacticBaseListener {
             return firstBool && secondBool;
         }else
             throw new IllegalArgumentException(); //Grammar has changed
-
-        throw new IllegalArgumentException(); //Should not be reached
     }
 
     @Override
