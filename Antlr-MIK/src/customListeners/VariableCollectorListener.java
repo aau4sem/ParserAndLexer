@@ -164,6 +164,10 @@ public class VariableCollectorListener extends TacticBaseListener {
         if(isInProcedureDefinition)
             return;
 
+        //Do check for board path assignment
+        if(ctx.identifier(0).getText().compareTo(BoardListener.boardKeyword) == 0)
+            return;
+
         String identifier = ctx.identifier(0).getText();
         String value;
 
@@ -253,6 +257,8 @@ public class VariableCollectorListener extends TacticBaseListener {
     public void exitArrayAssign(Tactic.ArrayAssignContext ctx) {
         if(isInProcedureDefinition)
             return;
+
+
     }
 
     // PROCEDURES -------------------------------------------------------------------------

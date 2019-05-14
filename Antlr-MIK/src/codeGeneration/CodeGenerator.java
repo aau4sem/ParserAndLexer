@@ -18,14 +18,14 @@ public class CodeGenerator {
 
     private ArrayList<GamePiece> gamePieces;
     private ArrayList<String> gamePieceNames;
-    private ArrayList<String> boardPaths;
+    private String boardPath;
 
     private String fileSeparator = System.getProperty("file.separator");
 
-    public CodeGenerator(ArrayList<GamePiece> gamePieces, ArrayList<String> boardPaths) {
+    public CodeGenerator(ArrayList<GamePiece> gamePieces, String boardPath) {
         this.gamePieces = gamePieces;
         this.gamePieceNames = getAllGamePieceNames(gamePieces);
-        this.boardPaths = boardPaths;
+        this.boardPath = boardPath;
 
         //Get folder paths
         String classPath = CodeGenerator.class.getProtectionDomain().getCodeSource().getLocation().toString();
@@ -52,11 +52,11 @@ public class CodeGenerator {
         //index.html
         ArrayList<String> selectorLines = generateLinesForIndexSelector(gamePieceNames);
         ArrayList<String> objectLines = generateLinesForIndexObjects(gamePieces);
-        ArrayList<String> buttonLines = generateLinesForIndexButtons(boardPaths.size());
+        ArrayList<String> buttonLines = generateLinesForIndexButtons(1);
         ArrayList<String> outputIndexLines = generateIndexFileStrings(selectorLines, objectLines, buttonLines); //TODO: Bug: Does not replace tags
 
         //stylesheet.cs
-        ArrayList<String> boardLines = generateStringForStylesheetBoard((boardPaths.size() > 0) ? boardPaths.get(0) : "");
+        ArrayList<String> boardLines = generateStringForStylesheetBoard(boardPath);
         ArrayList<String> gamePiecesLines = generateStringsForStylesheetGamePieces(gamePieces);
         ArrayList<String> outputStylesheetLines = generateStylesheetFileStrings(boardLines, gamePiecesLines);
 
