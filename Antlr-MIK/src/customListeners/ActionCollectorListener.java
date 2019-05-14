@@ -7,7 +7,7 @@ import gen.TacticBaseListener;
 import model.utils.Argument;
 import model.utils.ArgumentGatherer;
 import model.utils.TypeCheckerHelper;
-import model.utils.buildInFunction.BuildInFuctionMove;
+import model.utils.buildInFunction.BuildInFunctionMove;
 import model.utils.buildInFunction.BuildInFunction;
 import model.utils.buildInFunction.BuildInFunctionChange;
 import model.utils.buildInFunction.BuildInFunctionWait;
@@ -41,7 +41,7 @@ public class ActionCollectorListener extends TacticBaseListener {
         //System.out.println(ctx.children.get(0).getText());
         String identifier = ctx.identifier().getText();
 
-        if(identifier.compareTo(BuildInFunctionChange.identifier) == 0 || identifier.compareTo(BuildInFuctionMove.identifier) == 0 ||identifier.compareTo(BuildInFunctionWait.identifier) == 0){
+        if(identifier.compareTo(BuildInFunctionChange.identifier) == 0 || identifier.compareTo(BuildInFunctionMove.identifier) == 0 ||identifier.compareTo(BuildInFunctionWait.identifier) == 0){
             //Get the argumentContext of the function call, and get the last child of that, which is the attached ArgumentGatherer.
             ArgumentGatherer ag = (ArgumentGatherer)((Tactic.ArgumentsContext) ctx.children.get(2)).children.get(ctx.children.get(2).getChildCount() -1);
             ArrayList<Argument> arguments = ag.getConvertedArgumentsList();
@@ -85,7 +85,7 @@ public class ActionCollectorListener extends TacticBaseListener {
                 //Collect the function //This function is used because of the third argument - it can be multiple types
                 addChangeActionCall(variableFirstArg, secondArg, thirdArg, fourthArg);
 
-            }else if(identifier.compareTo(BuildInFuctionMove.identifier) == 0) {
+            }else if(identifier.compareTo(BuildInFunctionMove.identifier) == 0) {
                 //Parameters: GP, vector, number
 
                 if(ag.getNumberOfArguments() != 3)
@@ -113,7 +113,7 @@ public class ActionCollectorListener extends TacticBaseListener {
                 Number variableThirdArgNum = evalIdentifierOrNumberArgument(arguments.get(2), 2, identifier);
 
                 //Collect the function
-                actionFunctions.add(new BuildInFuctionMove(variableFirstArg, variableSecondArgVec, variableThirdArgNum));
+                actionFunctions.add(new BuildInFunctionMove(variableFirstArg, variableSecondArgVec, variableThirdArgNum));
 
             }else if(identifier.compareTo(BuildInFunctionWait.identifier) == 0){
                 //Parameters: GP, number

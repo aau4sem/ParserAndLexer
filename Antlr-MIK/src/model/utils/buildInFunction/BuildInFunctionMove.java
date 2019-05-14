@@ -4,7 +4,7 @@ import model.dataTypes.GamePiece;
 import model.dataTypes.Vector;
 import model.dataTypes.Number;
 
-public class BuildInFuctionMove implements BuildInFunction {
+public class BuildInFunctionMove implements BuildInFunction {
 
     public static String identifier = "Move";
 
@@ -12,7 +12,7 @@ public class BuildInFuctionMove implements BuildInFunction {
     private Vector vector;
     private Number time;
 
-    public BuildInFuctionMove(GamePiece gp, Vector vector, Number time) {
+    public BuildInFunctionMove(GamePiece gp, Vector vector, Number time) {
         this.gp = gp;
         this.vector = vector;
         this.time = time;
