@@ -41,12 +41,12 @@ public class ActionCollectorListener extends TacticBaseListener {
         //System.out.println(ctx.children.get(0).getText());
         String identifier = ctx.identifier().getText();
 
-        if(identifier.compareTo("change") == 0 || identifier.compareTo("move") == 0 ||identifier.compareTo("wait") == 0){
+        if(identifier.compareTo(BuildInFunctionChange.identifier) == 0 || identifier.compareTo(BuildInFuctionMove.identifier) == 0 ||identifier.compareTo(BuildInFunctionWait.identifier) == 0){
             //Get the argumentContext of the function call, and get the last child of that, which is the attached ArgumentGatherer.
             ArgumentGatherer ag = (ArgumentGatherer)((Tactic.ArgumentsContext) ctx.children.get(2)).children.get(ctx.children.get(2).getChildCount() -1);
             ArrayList<Argument> arguments = ag.getConvertedArgumentsList();
 
-            if(identifier.compareTo("change") == 0){
+            if(identifier.compareTo(BuildInFunctionChange.identifier) == 0){
                 //Parameters: GP, string, string, number
 
                 if(ag.getNumberOfArguments() != 4)
@@ -85,7 +85,7 @@ public class ActionCollectorListener extends TacticBaseListener {
                 //Collect the function //This function is used because of the third argument - it can be multiple types
                 addChangeActionCall(variableFirstArg, secondArg, thirdArg, fourthArg);
 
-            }else if(identifier.compareTo("move") == 0) {
+            }else if(identifier.compareTo(BuildInFuctionMove.identifier) == 0) {
                 //Parameters: GP, vector, number
 
                 if(ag.getNumberOfArguments() != 3)
@@ -115,7 +115,7 @@ public class ActionCollectorListener extends TacticBaseListener {
                 //Collect the function
                 actionFunctions.add(new BuildInFuctionMove(variableFirstArg, variableSecondArgVec, variableThirdArgNum));
 
-            }else if(identifier.compareTo("wait") == 0){
+            }else if(identifier.compareTo(BuildInFunctionWait.identifier) == 0){
                 //Parameters: GP, number
 
                 if(ag.getNumberOfArguments() != 2)
@@ -150,13 +150,13 @@ public class ActionCollectorListener extends TacticBaseListener {
 
         if(secondArg == GamePiece.GamePiecePropertyType.POSITION){
             if(TypeCheckerHelper.parseVector(thirdArg) == null)
-                throw new IllegalArgumentType(3, "change", Argument.ArgumentType.VECTOR);
+                throw new IllegalArgumentType(3, BuildInFunctionChange.identifier, Argument.ArgumentType.VECTOR);
         }else if(secondArg == GamePiece.GamePiecePropertyType.SIZE){
             if(TypeCheckerHelper.parseFloat(thirdArg) == null)
-                throw new IllegalArgumentType(3, "change", "float");
+                throw new IllegalArgumentType(3, BuildInFunctionChange.identifier, "float");
         }else if(secondArg == GamePiece.GamePiecePropertyType.OPACITY){
             if(TypeCheckerHelper.parseFloat(thirdArg) == null)
-                throw new IllegalArgumentType(3, "change", "float");
+                throw new IllegalArgumentType(3, BuildInFunctionChange.identifier, "float");
         }
 
         actionFunctions.add(new BuildInFunctionChange(firstArg, secondArg, thirdArg, fourthArg));

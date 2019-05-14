@@ -5,6 +5,8 @@ import model.dataTypes.Number;
 
 public class BuildInFunctionWait implements BuildInFunction {
 
+    public static String identifier = "Wait";
+
     private GamePiece gp;
     private Number time;
 
@@ -19,5 +21,10 @@ public class BuildInFunctionWait implements BuildInFunction {
 
     public Number getTime() {
         return time;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return identifier;
     }
 }

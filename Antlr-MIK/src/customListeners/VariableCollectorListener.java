@@ -9,6 +9,9 @@ import model.utils.ArgumentGatherer;
 import model.utils.ArithmeticGatherer;
 import model.utils.Parameter;
 import model.utils.TypeCheckerHelper;
+import model.utils.buildInFunction.BuildInFuctionMove;
+import model.utils.buildInFunction.BuildInFunctionChange;
+import model.utils.buildInFunction.BuildInFunctionWait;
 import model.variables.ProcedureScopeData;
 import model.variables.VariableContainer;
 import model.variables.VariableScopeData;
@@ -300,7 +303,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         String identifier = ctx.identifier().getText();
 
         //Is the procedure call one of the three action calls? If so, do not do anything. (This is handled in ActionCollectorListener.)
-        if(!(identifier.compareTo("change") == 0 || identifier.compareTo("move") == 0 ||identifier.compareTo("wait") == 0)){
+        if(!(identifier.compareTo(BuildInFunctionChange.identifier) == 0 || identifier.compareTo(BuildInFuctionMove.identifier) == 0 ||identifier.compareTo(BuildInFunctionWait.identifier) == 0)){
             this.currentScope = VariableScopeData.ScopeType.PROCEDURE_SCOPE;
 
             Procedure procedure = getProcedureFromIdentifier(identifier);

@@ -6,6 +6,8 @@ import model.dataTypes.Number;
 
 public class BuildInFuctionMove implements BuildInFunction {
 
+    public static String identifier = "Move";
+
     private GamePiece gp;
     private Vector vector;
     private Number time;
@@ -26,5 +28,10 @@ public class BuildInFuctionMove implements BuildInFunction {
 
     public Number getTime() {
         return time;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return identifier;
     }
 }
