@@ -279,7 +279,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         }
 
         //Collect all statements in the procedure body
-        proc.addAllStatments(ctx.procedureBlock().stmt());
+        proc.addAllStatments(ctx.procedureBlock().procedureStmt());
 
         //TODO Is some of the arguments named the same?
 

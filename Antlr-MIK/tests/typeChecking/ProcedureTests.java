@@ -98,16 +98,6 @@ public class ProcedureTests {
     }
 
     @Test
-    public void statement_procedureCall01(){
-        parse("timesTwoTimesTwo(int x){x = x * 2; timesTwoTimesTwo(x);}; int a; a = 1; timesTwoTimesTwo(a);;");
-
-        Integer a = Integer.parseInt(vlc.getValueFromIdentifier("a").getValue());
-
-        Assert.assertNotNull(a);
-        Assert.assertEquals(8, a.intValue());
-    }
-
-    @Test
     public void statement_dotAssignment01(){
         parse("proc(GamePiece gp){gp.label = \"TestLabel\";}; GamePiece a; proc(a);;");
 
