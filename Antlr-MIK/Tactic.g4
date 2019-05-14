@@ -8,7 +8,7 @@ parser grammar Tactic;
 options { tokenVocab = TacticLexer; }
 
 prog    : (dcl ENDSTMT)* (stmt ENDSTMT)* ENDSTMT;
-stmt    : dotAssignment | arrayAssign | procedureCall | condStmt | whileStmt | assignment;
+stmt    : dotAssignment | arrayAssign | procedureCall | condStmt | whileStmt | assignment | action;
 dcl     : intDcl | boolDcl | arrayDcl | stringDcl | gpDcl | floatDcl | vecDcl | procedureDef;
 
 integer         : SUBTRACTION? (NUMBER | DIGIT) ;
