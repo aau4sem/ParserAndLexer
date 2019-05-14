@@ -27,9 +27,9 @@ procedureBlock  : LCURLY (procedureStmt ENDSTMT)* RCURLY;
 procedureStmt   : dotAssignment | arrayAssign | condStmt | whileStmt | assignment | action;
 
 action         : moveAction | waitAction | changeAction;
-moveAction      : MOVE LPAREN identifier SEPERATOR vec SEPERATOR number RPAREN  ;
-waitAction      : WAIT LPAREN identifier SEPERATOR number RPAREN  ;
-changeAction    : CHANGE LPAREN identifier SEPERATOR string SEPERATOR string SEPERATOR number RPAREN  ;
+moveAction      : MOVE LPAREN identifier SEPERATOR vec SEPERATOR integer RPAREN  ;
+waitAction      : WAIT LPAREN identifier SEPERATOR integer RPAREN  ;
+changeAction    : CHANGE LPAREN identifier SEPERATOR string SEPERATOR string SEPERATOR integer RPAREN  ;
 
 dotStmt         : identifier ((DOT identifier(LBRACKET number? RBRACKET)*))+ ;
 dotAssignment   : dotStmt ASSIGN value;
