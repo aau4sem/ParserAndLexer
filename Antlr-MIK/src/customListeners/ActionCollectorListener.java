@@ -31,6 +31,76 @@ public class ActionCollectorListener extends TacticBaseListener {
         this.variableCollectorListener = variableCollectorListener;
     }
 
+    @Override
+    public void exitAction(Tactic.ActionContext ctx) {
+
+
+        //FIRST ARGUMENT
+        String firstArgIdentifier;
+
+        if(ctx.changeAction() != null)
+            firstArgIdentifier = ctx.changeAction().identifier().getText();
+        else if(ctx.moveAction() != null)
+            firstArgIdentifier = ctx.moveAction().identifier().getText();
+        else if(ctx.waitAction() != null)
+            firstArgIdentifier = ctx.waitAction().identifier().getText();
+        else
+            throw new IllegalArgumentException(); //Grammar has changed
+
+        //Is the identifier evaluation to a GamePiece?
+        VariableContainer firstArgVarCon = variableCollectorListener.getValueFromIdentifier(firstArgIdentifier);
+        if(firstArgVarCon == null){
+            System.out.println("The first argument to the action call is an identifier but it is not evaluating to a GamePiece.");
+            throw new IllegalArgumentException();
+        }
+
+        GamePiece firstArgument = TypeCheckerHelper.parseGamePiece(firstArgVarCon.getValue());
+
+        //LAST ARGUMENT
+        String lastArgString;
+
+        if(ctx.changeAction() != null)
+            lastArgString = ctx.changeAction().integer().getText();
+        else if(ctx.moveAction() != null)
+            lastArgString = ctx.moveAction().integer().getText();
+        else if(ctx.waitAction() != null)
+            lastArgString = ctx.waitAction().integer().getText();
+        else
+            throw new IllegalArgumentException(); //Grammar has changed
+
+        Integer lastArg = TypeCheckerHelper.parseInt(lastArgString);
+
+        if(lastArg == null){
+            System.out.println("The last argument of the action call is not a valid integer.");
+            throw new IllegalArgumentException();
+        }
+
+        //Get the remaining of the arguments and collect action call
+        if(ctx.changeAction() != null){
+
+            //SECOND ARGUMENT
+            String secondArgString = ctx.changeAction().string(0).getText();
+            if(TypeCheckerHelper.parseGamePiecePropertyType(ctx.changeAction().string(1).getText()) == null){
+                System.out.println("The second argument of the change action call ");
+                throw new IllegalArgumentException();
+            }
+
+            GamePiece.GamePiecePropertyType secondArg = TypeCheckerHelper.parseGamePiecePropertyType(ctx.changeAction().string(1).getText());
+
+            //THIRD ARGUMENT
+            String thridArgument = ctx.changeAction().string(1).getText();
+
+            //Collect the argument
+            actionFunctions.add(new BuildInFunctionChange(firstArgument, secondArg, thridArgument, lastArg));
+
+        }else if(ctx.moveAction() != null){
+
+        }else if(ctx.waitAction() != null){
+
+        }else
+            throw new IllegalArgumentException(); //Grammar has been changed
+    }
+
     /** This method will only detect function calls with the prefix/identifier: wait, change or move. */
     @Override
     public void exitProcedureCall(Tactic.ProcedureCallContext ctx) {
@@ -38,7 +108,6 @@ public class ActionCollectorListener extends TacticBaseListener {
         if(variableCollectorListener.isInProcedureDefinition)
             return;
 
-        //System.out.println(ctx.children.get(0).getText());
         String identifier = ctx.identifier().getText();
 
         if(identifier.compareTo(BuildInFunctionChange.identifier) == 0 || identifier.compareTo(BuildInFunctionMove.identifier) == 0 ||identifier.compareTo(BuildInFunctionWait.identifier) == 0){
