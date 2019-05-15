@@ -16,7 +16,7 @@ public class VectorArithmeticTests {
 
     @Test
     public void add01(){
-        parse("int i; i = (5,5,5) + (2,2,2);;");
+        parse("vector i; i = (5,5,5) + (2,2,2);;");
 
         Vector i = TypeCheckerHelper.parseVector(vlc.getValueFromIdentifier("i").getValue());
 
@@ -28,7 +28,7 @@ public class VectorArithmeticTests {
 
     @Test
     public void add02(){
-        parse("int i; i = (5,5,5) + (2,2,2) + (3,3,3);;");
+        parse("vector i; i = (5,5,5) + (2,2,2) + (3,3,3);;");
 
         Vector i = TypeCheckerHelper.parseVector(vlc.getValueFromIdentifier("i").getValue());
 
@@ -40,7 +40,7 @@ public class VectorArithmeticTests {
 
     @Test
     public void sub01(){
-        parse("int i; i = (5,5,5) - (2,2,2);;");
+        parse("vector i; i = (5,5,5) - (2,2,2);;");
 
         Vector i = TypeCheckerHelper.parseVector(vlc.getValueFromIdentifier("i").getValue());
 
@@ -52,7 +52,7 @@ public class VectorArithmeticTests {
 
     @Test
     public void sub02(){
-        parse("int i; i = (5,5,5) - (2,2,2) - (2,2,2);;");
+        parse("vector i; i = (5,5,5) - (2,2,2) - (2,2,2);;");
 
         Vector i = TypeCheckerHelper.parseVector(vlc.getValueFromIdentifier("i").getValue());
 
@@ -64,7 +64,7 @@ public class VectorArithmeticTests {
 
     @Test
     public void sub03(){
-        parse("int i; int x; x = (1,1,1); i = (5,5,5) - x;;");
+        parse("vector i; vector x; x = (1,1,1); i = (5,5,5) - x;;");
 
         Vector i = TypeCheckerHelper.parseVector(vlc.getValueFromIdentifier("i").getValue());
 
@@ -75,8 +75,8 @@ public class VectorArithmeticTests {
     }
 
     @Test
-    public void sub05(){
-        parse("int i; int x; x = (1,1,1); i = (5,5,5) - x; i = i - x;");
+    public void sub05(){ //TODO Currently fails because i = i - x; is not parsed or check, so it is assumed to be a "normal" arithmetic expression.
+        parse("vector i; vector x; x = (1,1,1); i = (5,5,5) - x; i = i - x;;");
 
         Vector i = TypeCheckerHelper.parseVector(vlc.getValueFromIdentifier("i").getValue());
 
