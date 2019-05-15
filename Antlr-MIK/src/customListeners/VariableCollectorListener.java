@@ -397,6 +397,7 @@ public class VariableCollectorListener extends TacticBaseListener {
 
             //Change the property in the GP (also removed citation-marks if needed)
             String newPropertyValue = TypeCheckerHelper.parseString(ctx.value().getText()); //Trim citations
+            if(gpPropType == GamePiece.GamePiecePropertyType.COLOR) ActionCollectorListener.checkGamePiecePropertyColorValue(newPropertyValue);
             GamePiece gp = TypeCheckerHelper.parseGamePiece(variableBeingDotted.getValue());
             gp.changeProperty(gpPropType, newPropertyValue);
 

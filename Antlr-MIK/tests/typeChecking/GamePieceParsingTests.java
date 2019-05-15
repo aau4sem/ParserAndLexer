@@ -100,6 +100,35 @@ public class GamePieceParsingTests {
     }
 
     @Test
+    public void propertyChangeColor02(){
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.color = \"rgb(3,2,3)\";;"));
+        parser = new Tactic(new CommonTokenStream(lexer));
+        VariableCollectorListener vcl = new VariableCollectorListener();
+        parser.addParseListener(vcl);
+        parser.prog();
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("gp");
+        Assert.assertNotNull(varCon);
+
+        GamePiece gp = TypeCheckerHelper.parseGamePiece(varCon.getValue());
+        Assert.assertNotNull(gp);
+
+        Assert.assertEquals("rgb(3,2,3)", gp.getColor());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void propertyChangeColor03(){
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.color = \"rgb(3,2,3,4)\";;"));
+        parser = new Tactic(new CommonTokenStream(lexer));
+        VariableCollectorListener vcl = new VariableCollectorListener();
+        parser.addParseListener(vcl);
+        parser.prog();
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        Assert.fail();
+    }
+
+    @Test
     public void propertyChangeLabel01(){
         lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.label = \"PlayerOne\";;"));
         parser = new Tactic(new CommonTokenStream(lexer));

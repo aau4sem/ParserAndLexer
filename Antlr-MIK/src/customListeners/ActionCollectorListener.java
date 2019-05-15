@@ -78,6 +78,7 @@ public class ActionCollectorListener extends TacticBaseListener {
 
                 //THIRD ARGUMENT
                 String thirdArg = arguments.get(2).getValue();
+                checkGamePiecePropertyColorValue(thirdArg); //TODO TEST! 15/5/2019
 
                 //FOURTH ARGUMENT
                 Number fourthArg = evalIdentifierOrNumberArgument(arguments.get(3), 3, identifier);
@@ -202,6 +203,54 @@ public class ActionCollectorListener extends TacticBaseListener {
             throw new IllegalArgumentType(numberOfArguments + 1, functionName, "integer or float");
 
         return num;
+    }
+
+    public static void checkGamePiecePropertyColorValue(String val){
+        //Check if the given string is the RBG format: rgb(x,x,x)
+        val = val.toLowerCase();
+
+        if(val.substring(0, 4).compareTo("rgb(") == 0 && val.charAt(val.length() -1) == ')'){
+
+            val = val.substring(4, val.length() -1); //This cuts of: "rbg(" and ")"
+
+            String firstNumber = "";
+            String secondNumber = "";
+            String thirdNumber = "";
+            int commaCounter = 0;
+
+            for(char c : val.toCharArray()){
+
+                if(c == ','){
+                    commaCounter++;
+                    continue;
+                }
+
+                if(commaCounter == 0)
+                    firstNumber = firstNumber + c;
+                else if(commaCounter == 1)
+                    secondNumber = secondNumber + c;
+                else if(commaCounter == 2)
+                    thirdNumber = thirdNumber + c;
+            }
+
+            if(commaCounter > 2)
+                throwException("The given RBG given as the color property of a GamePiece is not of the current format: rgb(x,x,x)");
+
+            if(firstNumber.length() == 0 || secondNumber.length() == 0 || thirdNumber.length() == 0)
+                throwException("The given RBG given as the color property of a GamePiece: one of the values are missing. format: rgb(x,x,x)");
+
+            Integer firstInt = TypeCheckerHelper.parseInt(firstNumber);
+            Integer secondInt = TypeCheckerHelper.parseInt(secondNumber);
+            Integer thirdInt = TypeCheckerHelper.parseInt(thirdNumber);
+
+            if(firstInt == null || secondInt == null || thirdInt == null)
+                throwException("The given RBG given as the color property of a GamePiece: one of the values are not of the type integer. format: rgb(x,x,x)");
+        }
+    }
+
+    private static void throwException(String msg){
+        System.out.println(msg);
+        throw new IllegalArgumentException();
     }
 
     /** //TODO: Improvement: This method could be moved to a more general parserListener.
