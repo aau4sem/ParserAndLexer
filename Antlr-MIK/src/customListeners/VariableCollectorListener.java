@@ -5,6 +5,7 @@ import gen.TacticBaseListener;
 import model.Procedure;
 import model.dataTypes.GamePiece;
 import model.dataTypes.Number;
+import model.dataTypes.Vector;
 import model.utils.ArgumentGatherer;
 import model.utils.ArithmeticGatherer;
 import model.utils.Parameter;
@@ -405,6 +406,40 @@ public class VariableCollectorListener extends TacticBaseListener {
             addVariableToScope(new VariableContainer(variableBeingDotted.getIdentifier(), changedGpValue, VariableCollectorListener.VariableType.GAMEPIECE));
         }
     }
+
+    //VECTOR ARITHMETIC
+    /** @return the result of the given VecExpr. */
+    private Vector getResultOfVectorArithmetic(Tactic.VecExprContext ctx){
+
+        Vector resultVector = null;
+        String operator = null;
+
+
+        for(ParseTree child : ctx.children){
+            if(child instanceof Tactic.VecContext){
+                if(resultVector != null){
+
+                    Vector currentVector = TypeCheckerHelper.parseVector(child.getText());
+
+                    if(operator.compareTo("+") == 0){ //Addition
+                        resultVector.addVector(currentVector);
+                    }else if(operator.compareTo("-") == 0){ //Subtraction
+                        resultVector.subVector(currentVector);
+                    }else
+                        throw new IllegalArgumentException(); //Grammar has changed. New vector operations.
+
+
+                } else //First vector
+                    resultVector = TypeCheckerHelper.parseVector(child.getText());
+
+            }else if(child instanceof Tactic.VecOperatorContext){
+                operator = child.getText();
+            }
+        }
+
+        return resultVector;
+    }
+
 
     // ARITHMETIC EXPRESSIONS ------------------------------
 
