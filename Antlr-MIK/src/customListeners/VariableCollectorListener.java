@@ -45,6 +45,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     public enum VariableType { INT, FLOAT, VEC, BOOL, STRING, GAMEPIECE}
 
     public boolean isInProcedureDefinition = false; //TODO Comment
+    public boolean isInWhileStmt = false;
 
     // CORE METHODS -----------------------------------------------------------
 
@@ -167,6 +168,9 @@ public class VariableCollectorListener extends TacticBaseListener {
         if(isInProcedureDefinition)
             return;
 
+        if(isInWhileStmt)
+            return;
+
         //Do check for board path assignment
         if(ctx.identifier(0).getText().compareTo(BoardListener.boardKeyword) == 0)
             return;
@@ -261,7 +265,10 @@ public class VariableCollectorListener extends TacticBaseListener {
         if(isInProcedureDefinition)
             return;
 
+        if(isInWhileStmt)
+            return;
 
+        //TODO
     }
 
     // PROCEDURES -------------------------------------------------------------------------
@@ -299,6 +306,9 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     @Override
     public void exitProcedureCall(Tactic.ProcedureCallContext ctx) {
+
+        if(isInWhileStmt)
+            return;
 
         String identifier = ctx.identifier().getText();
 
@@ -371,6 +381,9 @@ public class VariableCollectorListener extends TacticBaseListener {
     public void exitDotAssignment(Tactic.DotAssignmentContext ctx) {
 
         if(isInProcedureDefinition)
+            return;
+
+        if(isInWhileStmt)
             return;
 
         String identifier = ctx.dotStmt().identifier().get(0).getText();
@@ -661,7 +674,15 @@ public class VariableCollectorListener extends TacticBaseListener {
         if(isInProcedureDefinition)
             return;
 
+        if(isInWhileStmt)
+            return;
+
         //TODO
+    }
+
+    @Override
+    public void enterWhileStmt(Tactic.WhileStmtContext ctx) {
+        isInWhileStmt = true;
     }
 
     @Override
@@ -669,6 +690,25 @@ public class VariableCollectorListener extends TacticBaseListener {
         if(isInProcedureDefinition)
             return;
 
-        //TODO
+        //Setup phase
+        boolean conditional = getBoolStmtResult(ctx.boolExpr()); //Evaluate boolExpr
+        //Is evaluate boolExpr true? Then collect statements
+        List<Tactic.StmtContext> statements = new ArrayList<>();
+        if(conditional && ctx.block().stmt() != null)
+            statements = ctx.block().stmt();
+
+        //Should we run stmts?
+        while(conditional){
+            for(Tactic.StmtContext stmt : statements){
+
+                //TODO EXECUTE STATEMENTS
+
+
+            }
+
+            conditional = getBoolStmtResult(ctx.boolExpr());
+        }
+
+        isInWhileStmt = false;
     }
 }

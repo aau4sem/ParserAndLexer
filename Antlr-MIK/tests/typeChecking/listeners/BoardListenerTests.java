@@ -1,6 +1,7 @@
 package typeChecking.listeners;
 
 import customListeners.BoardListener;
+import customListeners.VariableCollectorListener;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.*;
@@ -15,7 +16,7 @@ public class BoardListenerTests {
     public void overallTest01(){
         lexer = new TacticLexer(new ANTLRInputStream("Board = \"TestZero\";;"));
         parser = new Tactic(new CommonTokenStream(lexer));
-        BoardListener bl = new BoardListener();
+        BoardListener bl = new BoardListener(new VariableCollectorListener());
         parser.addParseListener(bl);
         parser.prog();
 
@@ -27,7 +28,7 @@ public class BoardListenerTests {
     public void overallTest02(){
         lexer = new TacticLexer(new ANTLRInputStream(";"));
         parser = new Tactic(new CommonTokenStream(lexer));
-        BoardListener bl = new BoardListener();
+        BoardListener bl = new BoardListener(new VariableCollectorListener());
         parser.addParseListener(bl);
         parser.prog();
 

@@ -23,6 +23,37 @@ public class ConditionalAndControlTests {
     }
 
     @Test
+    public void while02(){
+        parse("int i; i = 5; while(true){ i = 6;};;");
+
+        Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(6, i.intValue());
+    }
+
+    @Test
+    public void while03(){
+        parse("int i; i = 5; while(false){ i = 6;};;");
+
+        Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(5, i.intValue());
+    }
+
+    @Test
+    public void while04(){
+        parse("int i; i = 0; while(i < 10){ i = 2; i = i + 2; i = 10;};;");
+
+        Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(10, i.intValue());
+    }
+
+
+    @Test
     public void ifThenElse01(){
         parse("testTODO");
 

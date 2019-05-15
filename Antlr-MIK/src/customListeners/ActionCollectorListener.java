@@ -38,6 +38,9 @@ public class ActionCollectorListener extends TacticBaseListener {
         if(variableCollectorListener.isInProcedureDefinition)
             return;
 
+        if(variableCollectorListener.isInWhileStmt)
+            return;
+
         //System.out.println(ctx.children.get(0).getText());
         String identifier = ctx.identifier().getText();
 
