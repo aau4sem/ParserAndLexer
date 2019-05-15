@@ -1,7 +1,9 @@
 package codeGeneration;
 
 import model.dataTypes.GamePiece;
+import model.utils.buildInFunction.BuildInFuctionMove;
 import model.utils.buildInFunction.BuildInFunction;
+import model.utils.buildInFunction.BuildInFunctionChange;
 
 import java.io.*;
 import java.lang.reflect.Array;
@@ -376,12 +378,37 @@ public class CodeGenerator {
             sb.append("keyframes: [\n");
 
             for (BuildInFunction action : actionCalls){
-                if (action.getGp().getName().compareTo(gp.getName()) == 0){
-                    sb.append("{").append(action.toKeyframe()).append("}, \n");
+                if (action instanceof BuildInFuctionMove){
+                    if (action.getGp().getName().compareTo(gp.getName()) == 0){
+                        sb.append("{").append(action.toKeyframe()).append("}, \n");
+                    }
                 }
             }
 
-            //TODO keyframes! Format: {left: 20, top: 500, duration: 1000},
+            sb.append("],\n");
+            sb.append("scale: [\n");
+
+            for (BuildInFunction action : actionCalls){
+                if (action instanceof BuildInFunctionChange && (((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.SIZE)){
+                    if (action.getGp().getName().compareTo(gp.getName()) == 0){
+                        sb.append("{").append(action.toKeyframe()).append("}, \n");
+                    }
+                }
+            }
+
+            sb.append("{}\n");
+            sb.append("],\n");
+            sb.append("backgroundColor: [\n");
+
+            for (BuildInFunction action : actionCalls){
+                if (action instanceof BuildInFunctionChange && (((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.COLOR)){
+                    if (action.getGp().getName().compareTo(gp.getName()) == 0){
+                        sb.append("{").append(action.toKeyframe()).append("}, \n");
+                    }
+                }
+            }
+
+            sb.append("{}\n");
             sb.append("],\n");
             sb.append("loop: false,\n");
             sb.append("easing: 'linear',\n");

@@ -40,12 +40,15 @@ public class BuildInFunctionChange implements BuildInFunction {
     public String toKeyframe() {
         // TODO - Create this - Format:
         // 'background-color': '#FFF', delay: 250
-
-        switch (this.gpPropperty){
+        // value: 'rgb(0,0,255)', duration: 1, delay: 750
+/*
+        switch (this.gpPropperty) {
             case COLOR:
-                return "'background-" + this.gpPropperty.getString().toLowerCase() + "': '" + this.thridArguemnt + "'";
+                return "value: '" + getThridArguemnt() + "', duration: 1, delay: " + getTime();
+            case SIZE:
+                return "value: '" + getThridArguemnt() + "', duration: 1, delay: " + getTime();
         }
-
-        return null;
+        */
+        return "value: '" + getThridArguemnt() + "', duration: 1, delay: " + getTime();
     }
 }
