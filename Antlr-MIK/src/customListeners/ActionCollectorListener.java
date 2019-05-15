@@ -38,7 +38,7 @@ public class ActionCollectorListener extends TacticBaseListener {
         if(variableCollectorListener.isInProcedureDefinition)
             return;
 
-        if(variableCollectorListener.isInWhileStmt)
+        if(variableCollectorListener.isTraversingWhileStmt)
             return;
 
         //System.out.println(ctx.children.get(0).getText());

@@ -45,7 +45,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     public enum VariableType { INT, FLOAT, VEC, BOOL, STRING, GAMEPIECE}
 
     public boolean isInProcedureDefinition = false; //TODO Comment
-    public boolean isInWhileStmt = false;
+    public boolean isTraversingWhileStmt = false;
 
     // CORE METHODS -----------------------------------------------------------
 
@@ -168,7 +168,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         if(isInProcedureDefinition)
             return;
 
-        if(isInWhileStmt)
+        if(isTraversingWhileStmt)
             return;
 
         //Do check for board path assignment
@@ -265,7 +265,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         if(isInProcedureDefinition)
             return;
 
-        if(isInWhileStmt)
+        if(isTraversingWhileStmt)
             return;
 
         //TODO
@@ -307,7 +307,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     @Override
     public void exitProcedureCall(Tactic.ProcedureCallContext ctx) {
 
-        if(isInWhileStmt)
+        if(isTraversingWhileStmt)
             return;
 
         String identifier = ctx.identifier().getText();
@@ -383,7 +383,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         if(isInProcedureDefinition)
             return;
 
-        if(isInWhileStmt)
+        if(isTraversingWhileStmt)
             return;
 
         String identifier = ctx.dotStmt().identifier().get(0).getText();
@@ -674,7 +674,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         if(isInProcedureDefinition)
             return;
 
-        if(isInWhileStmt)
+        if(isTraversingWhileStmt)
             return;
 
         //TODO
@@ -682,13 +682,15 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     @Override
     public void enterWhileStmt(Tactic.WhileStmtContext ctx) {
-        isInWhileStmt = true;
+        isTraversingWhileStmt = true;
     }
 
     @Override
     public void exitWhileStmt(Tactic.WhileStmtContext ctx) {
         if(isInProcedureDefinition)
             return;
+
+        isTraversingWhileStmt = false;
 
         //Setup phase
         boolean conditional = getBoolStmtResult(ctx.boolExpr()); //Evaluate boolExpr
@@ -699,16 +701,28 @@ public class VariableCollectorListener extends TacticBaseListener {
 
         //Should we run stmts?
         while(conditional){
+
+            //Run all statements
             for(Tactic.StmtContext stmt : statements){
-
-                //TODO EXECUTE STATEMENTS
-
-
+                if(stmt.dotAssignment() != null){
+                    this.exitDotAssignment(stmt.dotAssignment());
+                }else if(stmt.arrayAssign() != null){
+                    this.exitArrayAssign(stmt.arrayAssign());
+                }else if(stmt.procedureCall() != null){
+                    this.exitProcedureCall(stmt.procedureCall());
+                }else if(stmt.condStmt() != null){
+                    this.exitCondStmt(stmt.condStmt());
+                }else if(stmt.whileStmt() != null){
+                    this.exitWhileStmt(stmt.whileStmt());
+                }else if(stmt.assignment() != null){
+                    //TODO BoardListenr method
+                    this.exitAssignment(stmt.assignment());
+                }else if(stmt.action() != null){
+                    //TODO ActionCollectorListener, method call
+                }
             }
 
             conditional = getBoolStmtResult(ctx.boolExpr());
         }
-
-        isInWhileStmt = false;
     }
 }
