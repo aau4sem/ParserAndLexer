@@ -43,11 +43,11 @@ stringDcl   : STRING identifier;
 gpDcl       : GAMEPIECE identifier;
 arrayDcl    : type (LBRACKET integer RBRACKET)+ identifier;
 
-assignment  : (identifier | dotStmt) (LBRACKET integer RBRACKET)* ASSIGN (value | arithExpr | boolExpr | vecExpr | (identifier (LBRACKET integer RBRACKET)*) | dotStmt);
+assignment  : (identifier | dotStmt) (LBRACKET integer RBRACKET)* ASSIGN assignmentRight ;
+assignmentRight : (value | arithExpr | boolExpr | vecExpr | (identifier (LBRACKET integer RBRACKET)*) | dotStmt) ;
 
 //Datastructure operations
-arrayExpr   : (value | arithExpr | boolExpr | vecExpr | (identifier (LBRACKET integer RBRACKET)*) | dotStmt) ;
-arrayAssign : identifier (((LBRACKET number RBRACKET)+ ASSIGN arrayExpr) | (LBRACKET RBRACKET ASSIGN LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY));
+arrayAssign : identifier (((LBRACKET integer RBRACKET)+ ASSIGN assignmentRight) | (LBRACKET RBRACKET ASSIGN LCURLY (assignmentRight(SEPERATOR assignmentRight)*) RCURLY));
 
 //Arithmetic operations
 arithExpr : arithExprParent | arithExprMiddle ;
