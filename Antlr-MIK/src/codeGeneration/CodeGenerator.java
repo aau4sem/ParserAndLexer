@@ -265,13 +265,14 @@ public class CodeGenerator {
         for(GamePiece gp : gamePieces){
             StringBuilder sb = new StringBuilder();
 
-            sb.append("<div class=\"");
+            sb.append("<div class=\"GamePiece ");
             sb.append(gp.getName());
             sb.append(" ").append(gp.getShape());
             //TODO TAGS //TOOD Has to be generated in the css file
             sb.append("\">");
+            sb.append("<p class=\"label\">");
             sb.append(gp.getLabel()); //LABEL
-            sb.append("</div>");
+            sb.append("</p></div>");
 
             generatedLines.add(sb.toString());
         }
