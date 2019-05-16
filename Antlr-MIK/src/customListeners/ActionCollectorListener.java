@@ -81,18 +81,22 @@ public class ActionCollectorListener extends TacticBaseListener {
 
             //SECOND ARGUMENT
             String secondArgString = ctx.changeAction().string(0).getText();
-            if(TypeCheckerHelper.parseGamePiecePropertyType(ctx.changeAction().string(1).getText()) == null){
+            secondArgString = TypeCheckerHelper.parseString(secondArgString);
+            if(TypeCheckerHelper.parseGamePiecePropertyType(secondArgString) == null){
                 System.out.println("The second argument of the change action call ");
                 throw new IllegalArgumentException();
             }
 
-            GamePiece.GamePiecePropertyType secondArg = TypeCheckerHelper.parseGamePiecePropertyType(ctx.changeAction().string(1).getText());
+            //String secondArgString = ctx.changeAction().string(1).getText();
+            //secondArgString = TypeCheckerHelper.parseString(secondArgString);
+            GamePiece.GamePiecePropertyType secondArg = TypeCheckerHelper.parseGamePiecePropertyType(secondArgString);
 
             //THIRD ARGUMENT
-            String thridArgument = ctx.changeAction().string(1).getText();
+            String thirdArgument = ctx.changeAction().string(1).getText();
+            thirdArgument = TypeCheckerHelper.parseString(thirdArgument);
 
             //Collect the argument
-            actionFunctions.add(new BuildInFunctionChange(firstArgument, secondArg, thridArgument, lastArg));
+            actionFunctions.add(new BuildInFunctionChange(firstArgument, secondArg, thirdArgument, lastArg));
 
         }else if(ctx.moveAction() != null){
 
