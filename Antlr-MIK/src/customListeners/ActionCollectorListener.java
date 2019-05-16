@@ -348,6 +348,9 @@ public class ActionCollectorListener extends TacticBaseListener {
         //Check if the given string is the RBG format: rgb(x,x,x)
         val = val.toLowerCase();
 
+        if(val.length() < 5)
+            return;
+
         if(val.substring(0, 4).compareTo("rgb(") == 0 && val.charAt(val.length() -1) == ')'){
 
             val = val.substring(4, val.length() -1); //This cuts of: "rbg(" and ")"
