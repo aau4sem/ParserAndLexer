@@ -200,11 +200,10 @@ public class VariableCollectorListener extends TacticBaseListener {
             return;
 
         //Do check for board path assignment
-        if(ctx.identifier(0).getText().compareTo(BoardListener.boardKeyword) == 0)
+        if(ctx.identifier().getText().compareTo(BoardListener.boardKeyword) == 0)
             return;
 
-        String identifier = ctx.identifier(0).getText();
-        String value;
+        String identifier = ctx.identifier().getText();
 
         //Check the identifier on the left side of the assignment
         VariableContainer varConToOverwrite = getValueFromIdentifier(identifier);
@@ -214,10 +213,16 @@ public class VariableCollectorListener extends TacticBaseListener {
             throw new IllegalArgumentException();
         }
 
-        VariableType typeLeftIdentifier = varConToOverwrite.getType();
+        String value = getValueOfRightSideAssignment(ctx.assignmentRight(), varConToOverwrite.getType());
 
+        overwriteValueOfVariable(identifier, value);
+    }
 
-        //TODO Check if it is an array assignment
+    private String getValueOfRightSideAssignment(Tactic.AssignmentRightContext ctx, VariableType desiredType){
+
+        String value;
+
+        VariableType typeLeftIdentifier = desiredType;
 
         if(ctx.value() != null){ //format: identifier = value
 
@@ -277,7 +282,7 @@ public class VariableCollectorListener extends TacticBaseListener {
             value = String.valueOf(getBoolStmtResult(ctx.boolExpr())); //TODO Change in grammar has made this invalid, Mathias is working on solution
         } else if(ctx.vecExpr() != null){ //format identifier = vecExpr (subtraction or addition)
             value = getResultOfVectorArithmetic(ctx.vecExpr()).toString();
-        } else if(ctx.identifier().size() == 2){ //format identifier = (identifier (LBRACKET integer RBRACKET)+) | dotStmt)
+        } else if(ctx.identifier() != null){ //format identifier = (identifier (LBRACKET integer RBRACKET)+) | dotStmt)
             throw new IllegalArgumentException(); //TODO Not yet implemented
         } else
             throw new IllegalArgumentException(); //Grammar has changed
@@ -285,7 +290,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         if(value == null)
             throw new IllegalArgumentException(); //This should not be throw! If so, then the above code is not properly written.
 
-        overwriteValueOfVariable(identifier, value);
+        return value;
     }
 
     @Override
@@ -296,14 +301,94 @@ public class VariableCollectorListener extends TacticBaseListener {
         //TODO Might be on the format: []{x,x,x,,x};
 
         String identifier = ctx.identifier().getText();
+        int index = TypeCheckerHelper.parseInt(ctx.integer(0).getText());
 
         VariableContainer varConToOverwrite = getArrayValueFromScope(identifier);
 
         if(varConToOverwrite == null){
             System.out.println("In the array assignment: the variable being assigned either does not exist or is not an array.");
+            throw new IllegalArgumentException();
         }
 
-        throw new IllegalArgumentException(); //TODO copy code or use code from regular assignment
+        String value = getValueOfRightSideAssignment(ctx.assignmentRight(0), varConToOverwrite.getType());
+        String newValue;
+
+        if(varConToOverwrite.getType() == VariableType.INT){
+
+            Integer[] array = TypeCheckerHelper.parseIntegerArray(varConToOverwrite.getValue());
+
+            if(index >= array.length){
+                System.out.println("The index for the array assignment is greater than the number of elements in the array.");
+                throw new IllegalArgumentException();
+            }
+
+            array[index] = TypeCheckerHelper.parseInt(value);
+
+            newValue = new Array(array, VariableType.BOOL).toString();
+        } else if(varConToOverwrite.getType() == VariableType.FLOAT){
+
+            Float[] array = TypeCheckerHelper.parseFloatArray(varConToOverwrite.getValue());
+
+            if(index >= array.length){
+                System.out.println("The index for the array assignment is greater than the number of elements in the array.");
+                throw new IllegalArgumentException();
+            }
+
+            array[index] = TypeCheckerHelper.parseFloat(value);
+
+            newValue = new Array(array, VariableType.BOOL).toString();
+        } else if(varConToOverwrite.getType() == VariableType.VEC){
+
+            Vector[] array = TypeCheckerHelper.parseVectorArray(varConToOverwrite.getValue());
+
+            if(index >= array.length){
+                System.out.println("The index for the array assignment is greater than the number of elements in the array.");
+                throw new IllegalArgumentException();
+            }
+
+            array[index] = TypeCheckerHelper.parseVector(value);
+
+            newValue = new Array(array, VariableType.BOOL).toString();
+        } else if(varConToOverwrite.getType() == VariableType.BOOL){
+
+            Boolean[] array = TypeCheckerHelper.parseBooleanArray(varConToOverwrite.getValue());
+
+            if(index >= array.length){
+                System.out.println("The index for the array assignment is greater than the number of elements in the array.");
+                throw new IllegalArgumentException();
+            }
+
+            array[index] = TypeCheckerHelper.parseBool(value);
+
+            newValue = new Array(array, VariableType.BOOL).toString();
+        } else if(varConToOverwrite.getType() == VariableType.STRING){
+
+            String[] array = TypeCheckerHelper.parseStringArray(varConToOverwrite.getValue());
+
+            if(index >= array.length){
+                System.out.println("The index for the array assignment is greater than the number of elements in the array.");
+                throw new IllegalArgumentException();
+            }
+
+            array[index] = TypeCheckerHelper.parseString(value);
+
+            newValue = new Array(array, VariableType.STRING).toString();
+        } else if(varConToOverwrite.getType() == VariableType.GAMEPIECE){
+
+            GamePiece[] array = TypeCheckerHelper.parseGamePieceArray(varConToOverwrite.getValue());
+
+            if(index >= array.length){
+                System.out.println("The index for the array assignment is greater than the number of elements in the array.");
+                throw new IllegalArgumentException();
+            }
+
+            array[index] = TypeCheckerHelper.parseGamePiece(value);
+
+            newValue = new Array(array, VariableType.GAMEPIECE).toString();
+        }else
+            throw new IllegalArgumentException(); //Grammar has changed
+
+        overwriteValueOfVariable(identifier, newValue);
     }
 
 
