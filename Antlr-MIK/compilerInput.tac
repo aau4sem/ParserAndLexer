@@ -1,7 +1,5 @@
-int i;
-float x;
-
-i = 5;
-x = 5.3;
+int[2] test;
+float[2] test;
+GamePiece[0] test;
 
 ;
