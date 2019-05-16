@@ -5,9 +5,9 @@ import model.dataTypes.Number;
 
 public interface BuildInFunction {
 
-    public GamePiece getGp();
-    public Integer getTime();
-    public String toKeyframe();
-    public void setTime(Integer time);
-
+    GamePiece getGp();
+    Integer getTime();
+    String toKeyframe();
+    void setTime(Integer time);
+    String getIdentifier();
 }

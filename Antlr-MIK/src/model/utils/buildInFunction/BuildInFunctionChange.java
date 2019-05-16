@@ -5,6 +5,8 @@ import model.dataTypes.Number;
 
 public class BuildInFunctionChange implements BuildInFunction {
 
+    public static String identifier = "Change";
+
     private GamePiece gp;
     private GamePiece.GamePiecePropertyType gpPropperty;
     private String thridArguemnt; //TODO rename //TODO Handle when implemented in the grammar
@@ -50,5 +52,9 @@ public class BuildInFunctionChange implements BuildInFunction {
         }
         */
         return "value: '" + getThridArguemnt() + "', duration: 1, delay: " + getTime();
+    }
+
+    public String getIdentifier() {
+        return identifier;
     }
 }

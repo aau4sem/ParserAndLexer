@@ -5,7 +5,6 @@ import customListeners.VariableCollectorListener;
 import model.dataTypes.GamePiece;
 import model.utils.CalculatedCalls;
 import model.utils.SortByTime;
-import model.utils.buildInFunction.BuildInFuctionMove;
 import model.utils.buildInFunction.BuildInFunction;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CharStream;
@@ -59,12 +58,12 @@ public class MainClass {
 
             //CODE GENERATION -----------------------------------------------
             //Get the list of paths
-            String[] boardPaths = boardListener.getBoardPaths();
 
+            String boardPath = boardListener.getBoardPath();
             //TODO Get other needed data.
             
             //Instantiate and run CodeGenerator
-            CodeGenerator cg = new CodeGenerator(gamePieces, calculatedCalls, new ArrayList<>(Arrays.asList(boardPaths)));
+            CodeGenerator cg = new CodeGenerator(gamePieces, boardPath, calculatedCalls);
             cg.generateCompleteFolder();
 
         } catch (IOException ex){

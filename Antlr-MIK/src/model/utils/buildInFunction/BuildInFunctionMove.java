@@ -4,13 +4,15 @@ import model.dataTypes.GamePiece;
 import model.dataTypes.Vector;
 import model.dataTypes.Number;
 
-public class BuildInFuctionMove implements BuildInFunction {
+public class BuildInFunctionMove implements BuildInFunction {
+
+    public static String identifier = "Move";
 
     private GamePiece gp;
     private Vector vector;
     private Integer time;
 
-    public BuildInFuctionMove(GamePiece gp, Vector vector, Integer time) {
+    public BuildInFunctionMove(GamePiece gp, Vector vector, Integer time) {
         this.gp = gp;
         this.vector = vector;
         this.time = time;
@@ -33,6 +35,10 @@ public class BuildInFuctionMove implements BuildInFunction {
     }
 
     public String toKeyframe() {
-        return "left: " + vector.getX() + ", top: " + vector.getY() + ", duration: " + time;
+            return "left: " + vector.getX() + ", top: " + vector.getY() + ", duration: " + time;
+        }
+
+    public String getIdentifier() {
+        return identifier;
     }
 }

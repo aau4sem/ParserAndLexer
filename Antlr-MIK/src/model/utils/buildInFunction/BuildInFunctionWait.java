@@ -5,6 +5,8 @@ import model.dataTypes.Number;
 
 public class BuildInFunctionWait implements BuildInFunction {
 
+    public static String identifier = "Wait";
+
     private GamePiece gp;
     private Integer time;
 
@@ -27,5 +29,9 @@ public class BuildInFunctionWait implements BuildInFunction {
 
     public String toKeyframe() {
         return "left: " + gp.getPosition().getX() + ", top: " + gp.getPosition().getY() + ", duration: " + time;
+    }
+
+    public String getIdentifier() {
+        return identifier;
     }
 }

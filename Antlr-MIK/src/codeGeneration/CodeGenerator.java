@@ -1,9 +1,9 @@
 package codeGeneration;
 
 import model.dataTypes.GamePiece;
-import model.utils.buildInFunction.BuildInFuctionMove;
 import model.utils.buildInFunction.BuildInFunction;
 import model.utils.buildInFunction.BuildInFunctionChange;
+import model.utils.buildInFunction.BuildInFunctionMove;
 
 import java.io.*;
 import java.lang.reflect.Array;
@@ -23,15 +23,15 @@ public class CodeGenerator {
     private ArrayList<GamePiece> gamePieces;
     private ArrayList<BuildInFunction> actionCalls;
     private ArrayList<String> gamePieceNames;
-    private ArrayList<String> boardPaths;
+    private String boardPath;
 
     private String fileSeparator = System.getProperty("file.separator");
 
-    public CodeGenerator(ArrayList<GamePiece> gamePieces, ArrayList<BuildInFunction> actionCalls, ArrayList<String> boardPaths) {
+    public CodeGenerator(ArrayList<GamePiece> gamePieces, String boardPath, ArrayList<BuildInFunction> actionCalls) {
         this.gamePieces = gamePieces;
         this.actionCalls = actionCalls;
         this.gamePieceNames = getAllGamePieceNames(gamePieces);
-        this.boardPaths = boardPaths;
+        this.boardPath = boardPath;
 
         //Get folder paths
         String classPath = CodeGenerator.class.getProtectionDomain().getCodeSource().getLocation().toString();
@@ -58,11 +58,11 @@ public class CodeGenerator {
         //index.html
         ArrayList<String> selectorLines = generateLinesForIndexSelector(gamePieceNames);
         ArrayList<String> objectLines = generateLinesForIndexObjects(gamePieces);
-        ArrayList<String> buttonLines = generateLinesForIndexButtons(boardPaths.size());
+        ArrayList<String> buttonLines = generateLinesForIndexButtons(1);
         ArrayList<String> outputIndexLines = generateIndexFileStrings(selectorLines, objectLines, buttonLines); //TODO: Bug: Does not replace tags
 
         //stylesheet.cs
-        ArrayList<String> boardLines = generateStringForStylesheetBoard((boardPaths.size() > 0) ? boardPaths.get(0) : "");
+        ArrayList<String> boardLines = generateStringForStylesheetBoard(boardPath);
         ArrayList<String> gamePiecesLines = generateStringsForStylesheetGamePieces(gamePieces);
         ArrayList<String> outputStylesheetLines = generateStylesheetFileStrings(boardLines, gamePiecesLines);
 
@@ -379,7 +379,7 @@ public class CodeGenerator {
             sb.append("keyframes: [\n");
 
             for (BuildInFunction action : actionCalls){
-                if (action instanceof BuildInFuctionMove){
+                if (action instanceof BuildInFunctionMove){
                     if (action.getGp().getName().compareTo(gp.getName()) == 0){
                         sb.append("{").append(action.toKeyframe()).append("}, \n");
                     }

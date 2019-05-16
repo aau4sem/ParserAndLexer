@@ -1,9 +1,9 @@
 package model.utils;
 
 import model.dataTypes.GamePiece;
-import model.utils.buildInFunction.BuildInFuctionMove;
 import model.utils.buildInFunction.BuildInFunction;
 import model.utils.buildInFunction.BuildInFunctionChange;
+import model.utils.buildInFunction.BuildInFunctionMove;
 
 import java.util.ArrayList;
 
@@ -29,11 +29,11 @@ public class CalculatedCalls {
             for (BuildInFunction action : temp){
                 int changeTime = action.getTime();
 
-                if (action instanceof BuildInFuctionMove){
+                if (action instanceof BuildInFunctionMove){
                     if (isPrevious(previousMove)){
                         changeTime = action.getTime() - previousMove.getTime();
                     }
-                    calculatedCalls.add(new BuildInFuctionMove(action.getGp(), ((BuildInFuctionMove) action).getVector(), changeTime));
+                    calculatedCalls.add(new BuildInFunctionMove(action.getGp(), ((BuildInFunctionMove) action).getVector(), changeTime));
                     previousMove = action;
                 }
 

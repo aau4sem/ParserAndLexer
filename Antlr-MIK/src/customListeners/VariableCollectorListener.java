@@ -5,10 +5,14 @@ import gen.TacticBaseListener;
 import model.Procedure;
 import model.dataTypes.GamePiece;
 import model.dataTypes.Number;
+import model.dataTypes.Vector;
 import model.utils.ArgumentGatherer;
 import model.utils.ArithmeticGatherer;
 import model.utils.Parameter;
 import model.utils.TypeCheckerHelper;
+import model.utils.buildInFunction.BuildInFunctionMove;
+import model.utils.buildInFunction.BuildInFunctionChange;
+import model.utils.buildInFunction.BuildInFunctionWait;
 import model.variables.ProcedureScopeData;
 import model.variables.VariableContainer;
 import model.variables.VariableScopeData;
@@ -164,6 +168,10 @@ public class VariableCollectorListener extends TacticBaseListener {
         if(isInProcedureDefinition)
             return;
 
+        //Do check for board path assignment
+        if(ctx.identifier(0).getText().compareTo(BoardListener.boardKeyword) == 0)
+            return;
+
         String identifier = ctx.identifier(0).getText();
         String value;
 
@@ -237,7 +245,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         } else if(ctx.boolExpr() != null){ //format identifier = boolStmt //TODO Change in grammar has made this invalid, Mathias is working on solution
             value = String.valueOf(getBoolStmtResult(ctx.boolExpr())); //TODO Change in grammar has made this invalid, Mathias is working on solution
         } else if(ctx.vecExpr() != null){ //format identifier = vecExpr (subtraction or addition)
-            throw new IllegalArgumentException(); //TODO Not yet implemented
+            value = getResultOfVectorArithmetic(ctx.vecExpr()).toString();
         } else if(ctx.identifier().size() == 2){ //format identifier = (identifier (LBRACKET integer RBRACKET)+) | dotStmt)
             throw new IllegalArgumentException(); //TODO Not yet implemented
         } else
@@ -253,6 +261,8 @@ public class VariableCollectorListener extends TacticBaseListener {
     public void exitArrayAssign(Tactic.ArrayAssignContext ctx) {
         if(isInProcedureDefinition)
             return;
+
+
     }
 
     // PROCEDURES -------------------------------------------------------------------------
@@ -279,7 +289,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         }
 
         //Collect all statements in the procedure body
-        proc.addAllStatments(ctx.procedureBlock().stmt());
+        proc.addAllStatments(ctx.procedureBlock().procedureStmt());
 
         //TODO Is some of the arguments named the same?
 
@@ -294,7 +304,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         String identifier = ctx.identifier().getText();
 
         //Is the procedure call one of the three action calls? If so, do not do anything. (This is handled in ActionCollectorListener.)
-        if(!(identifier.compareTo("change") == 0 || identifier.compareTo("move") == 0 ||identifier.compareTo("wait") == 0)){
+        if(!(identifier.compareTo(BuildInFunctionChange.identifier) == 0 || identifier.compareTo(BuildInFunctionMove.identifier) == 0 ||identifier.compareTo(BuildInFunctionWait.identifier) == 0)){
             this.currentScope = VariableScopeData.ScopeType.PROCEDURE_SCOPE;
 
             Procedure procedure = getProcedureFromIdentifier(identifier);
@@ -395,6 +405,57 @@ public class VariableCollectorListener extends TacticBaseListener {
             String changedGpValue = gp.getGamePieceString();
             addVariableToScope(new VariableContainer(variableBeingDotted.getIdentifier(), changedGpValue, VariableCollectorListener.VariableType.GAMEPIECE));
         }
+    }
+
+    //VECTOR ARITHMETIC
+    /** @return the result of the given VecExpr. */
+    private Vector getResultOfVectorArithmetic(Tactic.VecExprContext ctx){
+
+        Vector resultVector = null;
+        String operator = null;
+
+
+        for(ParseTree child : ctx.children){
+            if(child instanceof Tactic.VecContext){
+                if(resultVector != null){
+                    Vector currentVector = TypeCheckerHelper.parseVector(child.getText());
+                    resultVector = getResultOfVectorOperation(resultVector, currentVector, operator);
+                } else //First vector
+                    resultVector = TypeCheckerHelper.parseVector(child.getText());
+
+            }else if(child instanceof Tactic.VecOperatorContext){
+                operator = child.getText();
+            }else if(child instanceof  Tactic.IdentifierContext){
+
+                VariableContainer varCon = getValueFromIdentifier(child.getText());
+
+                if(varCon == null){
+                    System.out.println("The identifier has not been declared.");
+                    throw new IllegalArgumentException();
+                }
+
+                if(varCon.getType() != VariableType.VEC){
+                    System.out.println("The variable has been declared but is not of type vector.");
+                    throw new IllegalArgumentException();
+                }
+
+                Vector currentVector = TypeCheckerHelper.parseVector(varCon.getValue());
+                resultVector = getResultOfVectorOperation(resultVector, currentVector, operator);
+            }
+        }
+
+        return resultVector;
+    }
+
+    private Vector getResultOfVectorOperation(Vector one, Vector two, String operator){
+        if(operator.compareTo("+") == 0){ //Addition
+            one.addVector(two);
+        }else if(operator.compareTo("-") == 0){ //Subtraction
+            one.subVector(two);
+        }else
+            throw new IllegalArgumentException(); //Grammar has changed. New vector operations.
+
+        return one;
     }
 
     // ARITHMETIC EXPRESSIONS ------------------------------
@@ -618,7 +679,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     private Boolean performBoolOperationOnBool(boolean firstBool, boolean secondBool, Tactic.BoolOperatersContext operatorContext){
 
         if(operatorContext.BOOL_COND_AND() != null){
-
+            return firstBool && secondBool;
         }else if(operatorContext.BOOL_COND_OR() != null){
             return firstBool || secondBool;
         }else if(operatorContext.BOOL_EQUAL() != null){
@@ -637,8 +698,6 @@ public class VariableCollectorListener extends TacticBaseListener {
             return firstBool && secondBool;
         }else
             throw new IllegalArgumentException(); //Grammar has changed
-
-        throw new IllegalArgumentException(); //Should not be reached
     }
 
     @Override

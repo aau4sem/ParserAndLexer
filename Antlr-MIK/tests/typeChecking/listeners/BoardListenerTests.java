@@ -13,20 +13,25 @@ public class BoardListenerTests {
 
     @Test
     public void overallTest01(){
-        lexer = new TacticLexer(new ANTLRInputStream(
-                "board_level[0] = \"TestZero\";" +
-                "board_level[4] = \"TestFour\";" +
-                "board_level[1] = \"TestOne\";;"));
+        lexer = new TacticLexer(new ANTLRInputStream("Board = \"TestZero\";;"));
         parser = new Tactic(new CommonTokenStream(lexer));
         BoardListener bl = new BoardListener();
         parser.addParseListener(bl);
         parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
 
-        Assert.assertEquals(5, bl.getBoardPaths().length);
-        Assert.assertEquals("TestZero", bl.getBoardPaths()[0]);
-        Assert.assertEquals("TestOne", bl.getBoardPaths()[1]);
-        Assert.assertEquals("TestFour", bl.getBoardPaths()[4]);
-        Assert.assertNull(bl.getBoardPaths()[2]);
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        Assert.assertEquals("TestZero", bl.getBoardPath());
+    }
+
+    @Test
+    public void overallTest02(){
+        lexer = new TacticLexer(new ANTLRInputStream(";"));
+        parser = new Tactic(new CommonTokenStream(lexer));
+        BoardListener bl = new BoardListener();
+        parser.addParseListener(bl);
+        parser.prog();
+
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        Assert.assertEquals("", bl.getBoardPath());
     }
 }

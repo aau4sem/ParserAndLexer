@@ -226,7 +226,7 @@ public class BasicParsingTests {
         lexer = new TacticLexer(new ANTLRInputStream("test(){while(true){i = 5;};};;"));
     }
 
-    @Test
+    /*@Test
     public void declaration_procedure21(){
         lexer = new TacticLexer(new ANTLRInputStream("test(){Move();};;"));
     }
@@ -249,7 +249,7 @@ public class BasicParsingTests {
     @Test
     public void declaration_procedure25(){
         lexer = new TacticLexer(new ANTLRInputStream("test(){anotherProcedure(x, y, z);};;"));
-    }
+    }*/
 
     //Assignment -----------------------------------------------------------------------------------------------------------------
 
@@ -388,10 +388,10 @@ public class BasicParsingTests {
         lexer = new TacticLexer(new ANTLRInputStream("bool_and_test = false && false;;"));
     }
 
-    @Test
+    /*@Test
     public void assignment_bool05() {
         lexer = new TacticLexer(new ANTLRInputStream("bool_not_test = !true;;"));
-    }
+    }*/
 
     @Test
     public void assignment_bool06() {
@@ -548,7 +548,7 @@ public class BasicParsingTests {
 
     @Test
     public void conditionals_while06() {
-        lexer = new TacticLexer(new ANTLRInputStream("while(true){Move(i); Change(i, x, d);};;"));
+        lexer = new TacticLexer(new ANTLRInputStream("while(true){Move(i, (2,4), 3); Change(i, \"x\", \"y\", 7);};;"));
     }
 
     // Functions -----------------------------------------------------------------------------------------------------------------
