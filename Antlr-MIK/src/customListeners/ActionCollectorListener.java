@@ -102,7 +102,8 @@ public class ActionCollectorListener extends TacticBaseListener {
 
             }else if(thirdArgValueContext.number() != null){
                 if(thirdArgValueContext.number().integer() != null){
-                    thirdArgVarCon = new VariableContainer(null, thirdArgValueContext.number().integer().getText(), VariableCollectorListener.VariableType.INT);
+                    float temp = Float.parseFloat(thirdArgValueContext.number().integer().getText()); //Casting the value to float
+                    thirdArgVarCon = new VariableContainer(null, String.valueOf(temp), VariableCollectorListener.VariableType.FLOAT);
                 }else if(thirdArgValueContext.number().floatVal() != null){
                     thirdArgVarCon = new VariableContainer(null, thirdArgValueContext.number().floatVal().getText(), VariableCollectorListener.VariableType.FLOAT);
                 }else
