@@ -8,9 +8,9 @@ public class BuildInFunctionWait implements BuildInFunction {
     public static String identifier = "Wait";
 
     private GamePiece gp;
-    private Number time;
+    private Integer time;
 
-    public BuildInFunctionWait(GamePiece gp, Number time) {
+    public BuildInFunctionWait(GamePiece gp, Integer time) {
         this.gp = gp;
         this.time = time;
     }
@@ -19,11 +19,18 @@ public class BuildInFunctionWait implements BuildInFunction {
         return gp;
     }
 
-    public Number getTime() {
+    public Integer getTime() {
         return time;
     }
 
-    @Override
+    public void setTime(Integer newTime) {
+        this.time = newTime;
+    }
+
+    public String toKeyframe() {
+        return "left: " + gp.getPosition().getX() + ", top: " + gp.getPosition().getY() + ", duration: " + time;
+    }
+
     public String getIdentifier() {
         return identifier;
     }

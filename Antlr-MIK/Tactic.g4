@@ -27,9 +27,9 @@ procedureBlock  : LCURLY (procedureStmt ENDSTMT)* RCURLY;
 procedureStmt   : dotAssignment | arrayAssign | condStmt | whileStmt | assignment | action;
 
 action         : moveAction | waitAction | changeAction;
-moveAction      : MOVE LPAREN identifier SEPERATOR vec SEPERATOR number RPAREN  ;
-waitAction      : WAIT LPAREN identifier SEPERATOR number RPAREN  ;
-changeAction    : CHANGE LPAREN identifier SEPERATOR string SEPERATOR string SEPERATOR number RPAREN  ;
+moveAction      : MOVE LPAREN identifier SEPERATOR vec SEPERATOR integer RPAREN  ;
+waitAction      : WAIT LPAREN identifier SEPERATOR integer RPAREN  ;
+changeAction    : CHANGE LPAREN identifier SEPERATOR string SEPERATOR value SEPERATOR integer RPAREN  ;
 
 dotStmt         : identifier ((DOT identifier(LBRACKET number? RBRACKET)*))+ ;
 dotAssignment   : dotStmt ASSIGN value;
@@ -60,10 +60,8 @@ arithExprMiddle : (identifier | number) (arithAction (identifier | number))+; //
 arithExprBoth : arithAction ((identifier | number) arithAction)* ;
 arithAction : ADDITION | SUBTRACTION | DIVISION | MULTIPLY | MODULO ;
 
-
-vecExpr    : (vecAdd | vecSub) ((ADDITION | SUBTRACTION) (identifier | vec))* ;
-vecAdd     : (identifier | vec) ADDITION (identifier | vec) ;
-vecSub     : (identifier | vec) SUBTRACTION (identifier | vec) ;
+vecExpr    : (identifier | vec) (vecOperator (identifier | vec))+ ;
+vecOperator: ADDITION | SUBTRACTION ;
 vecPara    : identifier | integer | arithExpr ;
 
 arguments       : value | arguments SEPERATOR arguments ;
