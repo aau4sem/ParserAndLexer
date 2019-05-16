@@ -134,9 +134,9 @@ public class VariableCollectorListener extends TacticBaseListener {
      * @param identifier the identifier for the value to check.
      * @param requestedType the type the value should have.
      * @return a variableContainer holding the value matching the given identifier. */
-    public VariableContainer identifierToValueCheck(String identifier, VariableCollectorListener.VariableType requestedType, Boolean shouldBeAnArray){
+    public VariableContainer identifierToValueCheck(String identifier, VariableCollectorListener.VariableType requestedType){
 
-        VariableContainer varCon = getValueFromScope(identifier, null);
+        VariableContainer varCon = getValueFromScope(identifier);
 
         if(varCon == null){
             System.out.println("The requested variable has not been declared.");
@@ -151,20 +151,6 @@ public class VariableCollectorListener extends TacticBaseListener {
         if(varCon.getType() != requestedType){
             System.out.println("The requested variable does exist, is assigned, but is not of the right type."); //TODO This should never happen: we check the value before assigning it.
             throw new IllegalArgumentException();
-        }
-
-        if(shouldBeAnArray != null){
-            if(varCon.isArray()){
-                if(!shouldBeAnArray){
-                    System.out.println("The requested variable does exist, is assigned, is the right type, but is an array.");
-                    throw new IllegalArgumentException();
-                }
-            }else{
-                if(shouldBeAnArray) {
-                    System.out.println("The requested variable does exist, is assigned, is the right type, but is not an array.");
-                    throw new IllegalArgumentException();
-                }
-            }
         }
 
         return varCon;
@@ -210,10 +196,10 @@ public class VariableCollectorListener extends TacticBaseListener {
         String value;
 
         //Check the identifier on the left side of the assignment
-        VariableContainer varConToOverwrite = getValueFromIdentifier(identifier, false);
+        VariableContainer varConToOverwrite = getValueFromIdentifier(identifier);
 
         if(varConToOverwrite == null){
-            System.out.println("The variable to overwrite has not been declared or is an array!");
+            System.out.println("The variable to overwrite has not been declared!");
             throw new IllegalArgumentException();
         }
 
@@ -228,17 +214,10 @@ public class VariableCollectorListener extends TacticBaseListener {
             Tactic.ValueContext valueContext = ctx.value(); //format: identifier | number | bool | string | vec;
             if (valueContext.identifier() != null){ //format: identifier
 
-                VariableContainer varConRight = getValueFromIdentifier(valueContext.identifier().getText(), null);
+                VariableContainer varConRight = getValueFromIdentifier(valueContext.identifier().getText());
 
                 if(varConRight == null){
                     System.out.println("The identifier on the right side of equals is not found.");
-                    throw new IllegalArgumentException();
-                }
-
-                varConRight = getValueFromIdentifier(valueContext.identifier().getText(), false);
-
-                if(varConRight == null){
-                    System.out.println("The identifier on the right side of equals is an array.");
                     throw new IllegalArgumentException();
                 }
 
@@ -457,12 +436,7 @@ public class VariableCollectorListener extends TacticBaseListener {
             throw new IllegalArgumentException();
         }
 
-        VariableContainer variableBeingDotted = getValueFromScope(identifier, false);
-
-        if(variableBeingDotted == null){
-            System.out.println("The variable being dotted is an array.");
-            throw new IllegalArgumentException();
-        }
+        VariableContainer variableBeingDotted = getValueFromScope(identifier);
 
         //This section is triggered when DotAssignment is used on a GamePiece
         if(variableBeingDotted.getType() == VariableCollectorListener.VariableType.GAMEPIECE){
@@ -508,17 +482,10 @@ public class VariableCollectorListener extends TacticBaseListener {
                 operator = child.getText();
             }else if(child instanceof  Tactic.IdentifierContext){
 
-                VariableContainer varCon = getValueFromIdentifier(child.getText(), null);
+                VariableContainer varCon = getValueFromIdentifier(child.getText());
 
                 if(varCon == null){
                     System.out.println("The identifier has not been declared.");
-                    throw new IllegalArgumentException();
-                }
-
-                varCon = getValueFromIdentifier(child.getText(), false);
-
-                if(varCon == null){
-                    System.out.println("The identifier has been declared but is an array.");
                     throw new IllegalArgumentException();
                 }
 
@@ -654,19 +621,10 @@ public class VariableCollectorListener extends TacticBaseListener {
                 ag.addValue(node.getText());
             } else if (node instanceof Tactic.IdentifierContext) {
 
-                VariableContainer varCon = getValueFromIdentifier(node.getText(), null);
+                VariableContainer varCon = getValueFromIdentifier(node.getText());
 
-                if(varCon == null){
-                    System.out.println("The variable has not been initialized.");
-                    throw new IllegalArgumentException();
-                }
-
-                varCon = getValueFromIdentifier(node.getText(), false);
-
-                if(varCon == null){
-                    System.out.println("The variable has been initialized but is an array.");
-                    throw new IllegalArgumentException();
-                }
+                if(varCon == null)
+                    throw new IllegalArgumentException(); //The variable has not been initialized
 
                 if(varCon.getType() != VariableCollectorListener.VariableType.INT && varCon.getType() != VariableCollectorListener.VariableType.FLOAT)
                     throw new IllegalArgumentException(); //Not the correct type
@@ -683,8 +641,8 @@ public class VariableCollectorListener extends TacticBaseListener {
     /** @return the result of the given BoolStmtContext. */
     private boolean getBoolStmtResult(Tactic.BoolExprContext ctx){
         if(ctx.identifier() != null){
-            identifierToValueCheck(ctx.identifier().getText(), VariableType.BOOL, false);
-            VariableContainer varCon = getValueFromIdentifier(ctx.identifier().getText(), false);
+            identifierToValueCheck(ctx.identifier().getText(), VariableType.BOOL);
+            VariableContainer varCon = getValueFromIdentifier(ctx.identifier().getText());
             return TypeCheckerHelper.parseBool(varCon.getValue());
         }else if(ctx.bool() != null){
             return TypeCheckerHelper.parseBool(ctx.bool().getText());
