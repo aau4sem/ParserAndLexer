@@ -1,12 +1,5 @@
 package model.dataTypes;
 
-import customListeners.VariableCollectorListener;
-import gen.Tactic;
-import gen.TacticLexer;
-import model.utils.TypeCheckerHelper;
-import model.variables.VariableContainer;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -15,56 +8,56 @@ public class GamePieceTests {
     @Test
     public void getGamePieceString01(){
         GamePiece gp = new GamePiece();
-        Assert.assertEquals("name:,position:,size:1.0,color:,label:,opacity:1.0,shape:circle,", gp.getGamePieceString());
+        Assert.assertEquals("name:,position:(0,0,0),size:1.0,color:red,label:,opacity:1.0,shape:circle,", gp.getGamePieceString());
     }
 
     @Test
     public void getGamePieceString02(){
         GamePiece gp = new GamePiece();
         gp.setName("test");
-        Assert.assertEquals("name:test,position:,size:1.0,color:,label:,opacity:1.0,shape:circle,", gp.getGamePieceString());
+        Assert.assertEquals("name:test,position:(0,0,0),size:1.0,color:red,label:,opacity:1.0,shape:circle,", gp.getGamePieceString());
     }
 
     @Test
     public void getGamePieceString03(){
         GamePiece gp = new GamePiece();
         gp.setPosition(new Vector(3, 2, 1));
-        Assert.assertEquals("name:,position:(3,2,1),size:1.0,color:,label:,opacity:1.0,shape:circle,", gp.getGamePieceString());
+        Assert.assertEquals("name:,position:(3,2,1),size:1.0,color:red,label:,opacity:1.0,shape:circle,", gp.getGamePieceString());
     }
 
     @Test
     public void getGamePieceString04(){
         GamePiece gp = new GamePiece();
         gp.setSize(6.4f);
-        Assert.assertEquals("name:,position:,size:6.4,color:,label:,opacity:1.0,shape:circle,", gp.getGamePieceString());
+        Assert.assertEquals("name:,position:(0,0,0),size:6.4,color:red,label:,opacity:1.0,shape:circle,", gp.getGamePieceString());
     }
 
     @Test
     public void getGamePieceString05(){
         GamePiece gp = new GamePiece();
         gp.setColor("RED");
-        Assert.assertEquals("name:,position:,size:1.0,color:RED,label:,opacity:1.0,shape:circle,", gp.getGamePieceString());
+        Assert.assertEquals("name:,position:(0,0,0),size:1.0,color:RED,label:,opacity:1.0,shape:circle,", gp.getGamePieceString());
     }
 
     @Test
     public void getGamePieceString06(){
         GamePiece gp = new GamePiece();
         gp.setLabel("test");
-        Assert.assertEquals("name:,position:,size:1.0,color:,label:test,opacity:1.0,shape:circle,", gp.getGamePieceString());
+        Assert.assertEquals("name:,position:(0,0,0),size:1.0,color:red,label:test,opacity:1.0,shape:circle,", gp.getGamePieceString());
     }
 
     @Test
     public void getGamePieceString07(){
         GamePiece gp = new GamePiece();
         gp.setOpacity(0.3f);
-        Assert.assertEquals("name:,position:,size:1.0,color:,label:,opacity:0.3,shape:circle,", gp.getGamePieceString());
+        Assert.assertEquals("name:,position:(0,0,0),size:1.0,color:red,label:,opacity:0.3,shape:circle,", gp.getGamePieceString());
     }
 
     @Test
     public void getGamePieceString08(){
         GamePiece gp = new GamePiece();
         gp.setShape("square");
-        Assert.assertEquals("name:,position:,size:1.0,color:,label:,opacity:1.0,shape:square,", gp.getGamePieceString());
+        Assert.assertEquals("name:,position:(0,0,0),size:1.0,color:red,label:,opacity:1.0,shape:square,", gp.getGamePieceString());
     }
 
     @Test
@@ -130,9 +123,11 @@ public class GamePieceTests {
         gp.changeProperty(GamePiece.GamePiecePropertyType.OPACITY, "");
         gp.changeProperty(GamePiece.GamePiecePropertyType.SHAPE, "");
 
-        Assert.assertNull(gp.getPosition());
+        Assert.assertEquals(0, gp.getPosition().getX());
+        Assert.assertEquals(0, gp.getPosition().getY());
+        Assert.assertEquals(0, gp.getPosition().getZ());
         Assert.assertEquals(1f, gp.getSize().floatValue(), 4);
-        Assert.assertNull(gp.getColor());
+        Assert.assertEquals("red", gp.getColor());
         Assert.assertEquals("", gp.getLabel());
         Assert.assertEquals(1f, gp.getOpacity(), 4);
         Assert.assertEquals("circle", gp.getShape());
