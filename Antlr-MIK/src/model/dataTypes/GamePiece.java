@@ -1,6 +1,8 @@
 package model.dataTypes;
 
+import customListeners.VariableCollectorListener;
 import model.utils.TypeCheckerHelper;
+import model.variables.VariableContainer;
 
 public class GamePiece {
 
@@ -61,6 +63,20 @@ public class GamePiece {
             case SHAPE:     shape = value;
                             break;
         }
+    }
+
+    public static boolean doesValueMatchPropertyType(GamePiecePropertyType type, VariableContainer varCon){
+        switch (type){
+            case NAME:      return (varCon.getType() == VariableCollectorListener.VariableType.STRING);
+            case POSITION:  return (varCon.getType() == VariableCollectorListener.VariableType.VEC);
+            case SIZE:      return (varCon.getType() == VariableCollectorListener.VariableType.FLOAT);
+            case COLOR:     return (varCon.getType() == VariableCollectorListener.VariableType.STRING);
+            case LABEL:     return (varCon.getType() == VariableCollectorListener.VariableType.STRING);
+            case OPACITY:   return (varCon.getType() == VariableCollectorListener.VariableType.FLOAT);
+            case SHAPE:     return (varCon.getType() == VariableCollectorListener.VariableType.STRING);
+        }
+
+        throw new IllegalArgumentException(); //Should never happen!
     }
 
     public String getGamePieceString(){

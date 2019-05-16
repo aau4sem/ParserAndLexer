@@ -80,23 +80,54 @@ public class ActionCollectorListener extends TacticBaseListener {
         if(ctx.changeAction() != null){
 
             //SECOND ARGUMENT
-            String secondArgString = ctx.changeAction().string(0).getText();
+            String secondArgString = ctx.changeAction().string().getText();
             secondArgString = TypeCheckerHelper.parseString(secondArgString);
             if(TypeCheckerHelper.parseGamePiecePropertyType(secondArgString) == null){
                 System.out.println("The second argument of the change action call ");
                 throw new IllegalArgumentException();
             }
 
-            //String secondArgString = ctx.changeAction().string(1).getText();
-            //secondArgString = TypeCheckerHelper.parseString(secondArgString);
             GamePiece.GamePiecePropertyType secondArg = TypeCheckerHelper.parseGamePiecePropertyType(secondArgString);
 
             //THIRD ARGUMENT
-            String thirdArgument = ctx.changeAction().string(1).getText();
-            thirdArgument = TypeCheckerHelper.parseString(thirdArgument);
+            VariableContainer thirdArgVarCon;
+            Tactic.ValueContext thirdArgValueContext = ctx.changeAction().value();
+            if(thirdArgValueContext.identifier() != null){
+                thirdArgVarCon = variableCollectorListener.getValueFromIdentifier(thirdArgValueContext.identifier().getText());
+
+                if(thirdArgVarCon == null){
+                    System.out.println("The requested variable has not been declared. Change action call, third argument.");
+                    throw new IllegalArgumentException();
+                }
+
+            }else if(thirdArgValueContext.number() != null){
+                if(thirdArgValueContext.number().integer() != null){
+                    thirdArgVarCon = new VariableContainer(null, thirdArgValueContext.number().integer().getText(), VariableCollectorListener.VariableType.INT);
+                }else if(thirdArgValueContext.number().floatVal() != null){
+                    thirdArgVarCon = new VariableContainer(null, thirdArgValueContext.number().floatVal().getText(), VariableCollectorListener.VariableType.FLOAT);
+                }else
+                    throw new IllegalArgumentException(); //Grammar has changed!
+            }else if(thirdArgValueContext.bool() != null){
+                System.out.println("The third argument of the change action call cannot be of type boolean.");
+                throw new IllegalArgumentException();
+            }else if(thirdArgValueContext.vec() != null){
+                thirdArgVarCon = new VariableContainer(null, thirdArgValueContext.vec().getText(), VariableCollectorListener.VariableType.VEC);
+            }else if(thirdArgValueContext.string() != null){
+                String temp = TypeCheckerHelper.parseString(thirdArgValueContext.string().getText()); //Trim citations
+                thirdArgVarCon = new VariableContainer(null, temp, VariableCollectorListener.VariableType.STRING);
+
+            } else
+                throw new IllegalArgumentException(); //Grammar has changed!
+
+            //Check if the given third argument can be saved in the property given in the second argument
+            boolean check = GamePiece.doesValueMatchPropertyType(secondArg, thirdArgVarCon);
+            if(!check){
+                System.out.println("The given type of the third argument in the change action call does not match the given property (second argument)");
+                throw new IllegalArgumentException();
+            }
 
             //Collect the argument
-            actionFunctions.add(new BuildInFunctionChange(firstArgument, secondArg, thirdArgument, lastArg));
+            actionFunctions.add(new BuildInFunctionChange(firstArgument, secondArg, thirdArgVarCon.getValue(), lastArg));
 
         }else if(ctx.moveAction() != null){
 

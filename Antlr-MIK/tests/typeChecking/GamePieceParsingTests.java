@@ -32,9 +32,11 @@ public class GamePieceParsingTests {
         GamePiece gp = TypeCheckerHelper.parseGamePiece(varCon.getValue());
         Assert.assertNotNull(gp);
 
-        Assert.assertNull(gp.getPosition());
+        Assert.assertEquals(0,gp.getPosition().getX());
+        Assert.assertEquals(0,gp.getPosition().getY());
+        Assert.assertEquals(0,gp.getPosition().getZ());
         Assert.assertEquals(1f, gp.getSize().floatValue(), 4);
-        Assert.assertNull(gp.getColor());
+        Assert.assertEquals("red", gp.getColor());
         Assert.assertEquals("", gp.getLabel());
         Assert.assertEquals(1f, gp.getOpacity(), 4);
         Assert.assertEquals("circle", gp.getShape());
