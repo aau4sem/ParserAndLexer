@@ -111,4 +111,32 @@ public class ActionCollectorListenerTests {
 
         Assert.assertEquals(1, acl.getActionFunctions().size());
     }
+
+    @Test
+    public void change07(){
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece one; Change(one, \"color\",\"rgb(3,2,3,4)\", 2);;"));
+        parser = new Tactic(new CommonTokenStream(lexer));
+        VariableCollectorListener vcl = new VariableCollectorListener();
+        ActionCollectorListener acl = new ActionCollectorListener(vcl);
+        parser.addParseListener(vcl);
+        parser.addParseListener(acl);
+        parser.prog();
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+
+        Assert.assertEquals(1, acl.getActionFunctions().size());
+    }
+
+    @Test
+    public void change08(){
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece one; Change(one, \"color\",\"rgb(3,2,3)\", 2);;"));
+        parser = new Tactic(new CommonTokenStream(lexer));
+        VariableCollectorListener vcl = new VariableCollectorListener();
+        ActionCollectorListener acl = new ActionCollectorListener(vcl);
+        parser.addParseListener(vcl);
+        parser.addParseListener(acl);
+        parser.prog();
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+
+        Assert.assertEquals(1, acl.getActionFunctions().size());
+    }
 }

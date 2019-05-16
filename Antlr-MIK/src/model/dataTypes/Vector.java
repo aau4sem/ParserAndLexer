@@ -13,7 +13,7 @@ public class Vector {
     }
 
     public Vector(int x, int y) {
-        this(x, y, -1);
+        this(x, y, 0);
     }
 
     public int getX() {

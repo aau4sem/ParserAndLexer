@@ -32,9 +32,11 @@ public class GamePieceParsingTests {
         GamePiece gp = TypeCheckerHelper.parseGamePiece(varCon.getValue());
         Assert.assertNotNull(gp);
 
-        Assert.assertNull(gp.getPosition());
+        Assert.assertEquals(0,gp.getPosition().getX());
+        Assert.assertEquals(0,gp.getPosition().getY());
+        Assert.assertEquals(0,gp.getPosition().getZ());
         Assert.assertEquals(1f, gp.getSize().floatValue(), 4);
-        Assert.assertNull(gp.getColor());
+        Assert.assertEquals("red", gp.getColor());
         Assert.assertEquals("", gp.getLabel());
         Assert.assertEquals(1f, gp.getOpacity(), 4);
         Assert.assertEquals("circle", gp.getShape());
@@ -97,6 +99,35 @@ public class GamePieceParsingTests {
         Assert.assertNotNull(gp);
 
         Assert.assertEquals("RED", gp.getColor());
+    }
+
+    @Test
+    public void propertyChangeColor02(){
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.color = \"rgb(3,2,3)\";;"));
+        parser = new Tactic(new CommonTokenStream(lexer));
+        VariableCollectorListener vcl = new VariableCollectorListener();
+        parser.addParseListener(vcl);
+        parser.prog();
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("gp");
+        Assert.assertNotNull(varCon);
+
+        GamePiece gp = TypeCheckerHelper.parseGamePiece(varCon.getValue());
+        Assert.assertNotNull(gp);
+
+        Assert.assertEquals("rgb(3,2,3)", gp.getColor());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void propertyChangeColor03(){
+        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.color = \"rgb(3,2,3,4)\";;"));
+        parser = new Tactic(new CommonTokenStream(lexer));
+        VariableCollectorListener vcl = new VariableCollectorListener();
+        parser.addParseListener(vcl);
+        parser.prog();
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        Assert.fail();
     }
 
     @Test
