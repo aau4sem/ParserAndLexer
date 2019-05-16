@@ -29,7 +29,7 @@ procedureStmt   : dotAssignment | arrayAssign | condStmt | whileStmt | assignmen
 action         : moveAction | waitAction | changeAction;
 moveAction      : MOVE LPAREN identifier SEPERATOR vec SEPERATOR integer RPAREN  ;
 waitAction      : WAIT LPAREN identifier SEPERATOR integer RPAREN  ;
-changeAction    : CHANGE LPAREN identifier SEPERATOR string SEPERATOR string SEPERATOR integer RPAREN  ;
+changeAction    : CHANGE LPAREN identifier SEPERATOR string SEPERATOR value SEPERATOR integer RPAREN  ;
 
 dotStmt         : identifier ((DOT identifier(LBRACKET number? RBRACKET)*))+ ;
 dotAssignment   : dotStmt ASSIGN value;
