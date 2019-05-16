@@ -3,6 +3,7 @@ package typeChecking;
 import customListeners.VariableCollectorListener;
 import gen.Tactic;
 import gen.TacticLexer;
+import model.dataTypes.GamePiece;
 import model.dataTypes.Vector;
 import model.utils.TypeCheckerHelper;
 import model.variables.VariableContainer;
@@ -63,10 +64,10 @@ public class ArrayParsingTests {
         //Check default values
         Vector[] array = TypeCheckerHelper.parseVectorArray(i.getValue());
         Assert.assertEquals(4, array.length);
-        Assert.assertTrue(isVectorValuesEqual(array[0], new Vector(0,0,0)));
-        Assert.assertTrue(isVectorValuesEqual(array[1], new Vector(0,0,0)));
-        Assert.assertTrue(isVectorValuesEqual(array[2], new Vector(0,0,0)));
-        Assert.assertTrue(isVectorValuesEqual(array[3], new Vector(0,0,0)));
+        Assert.assertTrue(isVectorsValuesEqual(array[0], new Vector(0,0,0)));
+        Assert.assertTrue(isVectorsValuesEqual(array[1], new Vector(0,0,0)));
+        Assert.assertTrue(isVectorsValuesEqual(array[2], new Vector(0,0,0)));
+        Assert.assertTrue(isVectorsValuesEqual(array[3], new Vector(0,0,0)));
     }
 
     @Test
@@ -77,7 +78,14 @@ public class ArrayParsingTests {
 
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
-        //TODO Test default values
+
+        //Check default values
+        boolean[] array = TypeCheckerHelper.parseBooleanArray(i.getValue());
+        Assert.assertEquals(4, array.length);
+        Assert.assertTrue(array[0]);
+        Assert.assertTrue(array[1]);
+        Assert.assertTrue(array[2]);
+        Assert.assertTrue(array[3]);
     }
 
     @Test
@@ -88,7 +96,14 @@ public class ArrayParsingTests {
 
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
-        //TODO Test default values
+
+        //Check default values
+        String[] array = TypeCheckerHelper.parseStringArray(i.getValue());
+        Assert.assertEquals(4, array.length);
+        Assert.assertEquals(array[0], "");
+        Assert.assertEquals(array[1],"");
+        Assert.assertEquals(array[2], "");
+        Assert.assertEquals(array[3], "");
     }
 
     @Test
@@ -99,7 +114,14 @@ public class ArrayParsingTests {
 
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
-        //TODO Test default values
+
+        //Check default values
+        GamePiece[] array = TypeCheckerHelper.parseGamePieceArray(i.getValue());
+        Assert.assertEquals(4, array.length);
+        Assert.assertTrue(isGamePiecesValuesEqual(array[0], new GamePiece()));
+        Assert.assertTrue(isGamePiecesValuesEqual(array[1], new GamePiece()));
+        Assert.assertTrue(isGamePiecesValuesEqual(array[2], new GamePiece()));
+        Assert.assertTrue(isGamePiecesValuesEqual(array[3], new GamePiece()));
     }
 
     /** Parses the given input and the results can be found in the field. */
@@ -112,7 +134,27 @@ public class ArrayParsingTests {
         Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
     }
 
-    public static boolean isVectorValuesEqual(Vector one, Vector two){
+    private static boolean isGamePiecesValuesEqual(GamePiece one, GamePiece two){
+
+        boolean result = true;
+
+        if(one.getName().compareTo(two.getName()) != 0)
+            result = false;
+        else if(!isVectorsValuesEqual(one.getPosition(), two.getPosition()))
+            result = false;
+        else if(one.getSize() != two.getSize())
+            result = false;
+        else if(one.getColor().compareTo(two.getColor()) != 0)
+            result = false;
+        else if(one.getLabel().compareTo(two.getLabel()) != 0)
+            result = false;
+        else if(one.getOpacity() != two.getOpacity())
+            result = false;
+
+        return result;
+    }
+
+    public static boolean isVectorsValuesEqual(Vector one, Vector two){
 
         boolean result = true;
 

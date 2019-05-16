@@ -177,6 +177,9 @@ public class TypeCheckerHelper {
     /** @return the same string but with removed start and end parentheses. "test" -> test*/
     public static String parseString(String val){
 
+        if(val.length() == 0)
+            return "";
+
         String output = val; //Does this even copy the content?
 
         if(output.charAt(0) == '"')
@@ -235,6 +238,39 @@ public class TypeCheckerHelper {
 
         for(int i = 0; i < elements.size(); i++)
             result[i] = parseVector(elements.get(i));
+
+        return result;
+    }
+
+    public static boolean[] parseBooleanArray(String val){
+        ArrayList<String> elements = getArrayElements(val);
+
+        boolean[] result = new boolean[elements.size()];
+
+        for(int i = 0; i < elements.size(); i++)
+            result[i] = parseBool(elements.get(i));
+
+        return result;
+    }
+
+    public static String[] parseStringArray(String val){
+        ArrayList<String> elements = getArrayElements(val);
+
+        String[] result = new String[elements.size()];
+
+        for(int i = 0; i < elements.size(); i++)
+            result[i] = parseString(elements.get(i));
+
+        return result;
+    }
+
+    public static GamePiece[] parseGamePieceArray(String val){
+        ArrayList<String> elements = getArrayElements(val);
+
+        GamePiece[] result = new GamePiece[elements.size()];
+
+        for(int i = 0; i < elements.size(); i++)
+            result[i] = parseGamePiece(elements.get(i));
 
         return result;
     }
