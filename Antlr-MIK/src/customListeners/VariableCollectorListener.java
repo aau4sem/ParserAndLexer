@@ -83,9 +83,8 @@ public class VariableCollectorListener extends TacticBaseListener {
      * is procedure scope, and ff the variable is not found in the function
      * scope, it will then search the main scope.
      * @param identifier the identifier of the requested variable.
-     * @param shouldBeAnArray is the variable being searched for supposed to be an array? If null then it does not matter
      * @return the value of the variable. */
-    public VariableContainer getValueFromScope(String identifier, Boolean shouldBeAnArray){ //TODO
+    public VariableContainer getValueFromScope(String identifier){
 
         VariableContainer varCon;
 
@@ -98,35 +97,17 @@ public class VariableCollectorListener extends TacticBaseListener {
                 varCon = mainScope.getVariable(identifier);
         }
 
-        if(shouldBeAnArray == null)
-            return varCon;
-
-
-        //Check for array or not
-        if(shouldBeAnArray){
-            if(!varCon.isArray())
-                return null;
-        }else{
-            if(varCon.isArray())
-                return null;
-        }
-
         return varCon;
     }
 
     /** Used to get a value from an identifier. */
-    public VariableContainer getValueFromIdentifier(String identifier, Boolean shouldBeAnArray){
-        return getValueFromScope(identifier, shouldBeAnArray);
+    public VariableContainer getValueFromIdentifier(String identifier){
+        return getValueFromScope(identifier);
     }
 
     /** @return true if the given identifier is found in the current scope or an above scope. */
-    private boolean hasBeenInitialized(String identifier, Boolean shouldBeAnArray){
-        return getValueFromScope(identifier, shouldBeAnArray) != null;
-    }
-
-    /** @return true if the given identifier is found in the current scope or an above scope. */
-    private boolean hasBeenInitialized(String identifier){ //TODO Those who call this one, DOES IT MATTER IF IT IS AN ARRAY OR NOT???
-        return getValueFromScope(identifier, null) != null;
+    private boolean hasBeenInitialized(String identifier){
+        return getValueFromScope(identifier) != null;
     }
 
     /** Used to check if an identifier is declared, assigned and has the correct type.
