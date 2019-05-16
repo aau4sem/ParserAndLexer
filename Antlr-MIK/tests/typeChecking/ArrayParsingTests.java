@@ -26,12 +26,12 @@ public class ArrayParsingTests {
         Assert.assertTrue(i.isArray());
 
         //Check default values
-        int[] array = TypeCheckerHelper.parseIntegerArray(i.getValue());
+        Integer[] array = TypeCheckerHelper.parseIntegerArray(i.getValue());
         Assert.assertEquals(4, array.length);
-        Assert.assertEquals(1, array[0]);
-        Assert.assertEquals(1, array[1]);
-        Assert.assertEquals(1, array[2]);
-        Assert.assertEquals(1, array[3]);
+        Assert.assertEquals(1, array[0].intValue());
+        Assert.assertEquals(1, array[1].intValue());
+        Assert.assertEquals(1, array[2].intValue());
+        Assert.assertEquals(1, array[3].intValue());
     }
 
     @Test
@@ -44,7 +44,7 @@ public class ArrayParsingTests {
         Assert.assertTrue(i.isArray());
 
         //Check default values
-        float[] array = TypeCheckerHelper.parseFloatArray(i.getValue());
+        Float[] array = TypeCheckerHelper.parseFloatArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertEquals(1f, array[0], 10);
         Assert.assertEquals(1f, array[1], 10);
@@ -80,7 +80,7 @@ public class ArrayParsingTests {
         Assert.assertTrue(i.isArray());
 
         //Check default values
-        boolean[] array = TypeCheckerHelper.parseBooleanArray(i.getValue());
+        Boolean[] array = TypeCheckerHelper.parseBooleanArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertTrue(array[0]);
         Assert.assertTrue(array[1]);
@@ -126,7 +126,7 @@ public class ArrayParsingTests {
 
     @Test
     public void assignment01(){
-        parse("int[4] i; i[2] = 4;;");
+        parse("int[4] i; i[3] = 4;;");
 
         VariableContainer i = vlc.getArrayValueFromScope("i");
 
@@ -134,12 +134,12 @@ public class ArrayParsingTests {
         Assert.assertTrue(i.isArray());
 
         //Check default values
-        int[] array = TypeCheckerHelper.parseIntegerArray(i.getValue());
+        Integer[] array = TypeCheckerHelper.parseIntegerArray(i.getValue());
         Assert.assertEquals(4, array.length);
-        Assert.assertEquals(1, array[0]);
-        Assert.assertEquals(1, array[1]);
-        Assert.assertEquals(4, array[2]);
-        Assert.assertEquals(1, array[3]);
+        Assert.assertEquals(1, array[0].intValue());
+        Assert.assertEquals(1, array[1].intValue());
+        Assert.assertEquals(1, array[2].intValue());
+        Assert.assertEquals(4, array[3].intValue());
     }
 
     @Test
@@ -152,7 +152,7 @@ public class ArrayParsingTests {
         Assert.assertTrue(i.isArray());
 
         //Check default values
-        float[] array = TypeCheckerHelper.parseFloatArray(i.getValue());
+        Float[] array = TypeCheckerHelper.parseFloatArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertEquals(1f, array[0], 10);
         Assert.assertEquals(1f, array[1], 10);
@@ -188,7 +188,7 @@ public class ArrayParsingTests {
         Assert.assertTrue(i.isArray());
 
         //Check default values
-        boolean[] array = TypeCheckerHelper.parseBooleanArray(i.getValue());
+        Boolean[] array = TypeCheckerHelper.parseBooleanArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertTrue(array[0]);
         Assert.assertFalse(array[1]);

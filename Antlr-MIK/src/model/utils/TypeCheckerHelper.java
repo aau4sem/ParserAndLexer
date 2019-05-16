@@ -209,10 +209,10 @@ public class TypeCheckerHelper {
         return null;
     }
 
-    public static int[] parseIntegerArray(String val){
+    public static Integer[] parseIntegerArray(String val){
         ArrayList<String> elements = getArrayElements(val);
 
-        int[] result = new int[elements.size()];
+        Integer[] result = new Integer[elements.size()];
 
         for(int i = 0; i < elements.size(); i++)
             result[i] = parseInt(elements.get(i));
@@ -220,10 +220,10 @@ public class TypeCheckerHelper {
         return result;
     }
 
-    public static float[] parseFloatArray(String val){
+    public static Float[] parseFloatArray(String val){
         ArrayList<String> elements = getArrayElements(val);
 
-        float[] result = new float[elements.size()];
+        Float[] result = new Float[elements.size()];
 
         for(int i = 0; i < elements.size(); i++)
             result[i] = parseFloat(elements.get(i));
@@ -242,10 +242,10 @@ public class TypeCheckerHelper {
         return result;
     }
 
-    public static boolean[] parseBooleanArray(String val){
+    public static Boolean[] parseBooleanArray(String val){
         ArrayList<String> elements = getArrayElements(val);
 
-        boolean[] result = new boolean[elements.size()];
+        Boolean[] result = new Boolean[elements.size()];
 
         for(int i = 0; i < elements.size(); i++)
             result[i] = parseBool(elements.get(i));
