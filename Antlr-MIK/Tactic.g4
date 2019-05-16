@@ -60,10 +60,8 @@ arithExprMiddle : (identifier | number) (arithAction (identifier | number))+; //
 arithExprBoth : arithAction ((identifier | number) arithAction)* ;
 arithAction : ADDITION | SUBTRACTION | DIVISION | MULTIPLY | MODULO ;
 
-
-vecExpr    : (vecAdd | vecSub) ((ADDITION | SUBTRACTION) (identifier | vec))* ;
-vecAdd     : (identifier | vec) ADDITION (identifier | vec) ;
-vecSub     : (identifier | vec) SUBTRACTION (identifier | vec) ;
+vecExpr    : (identifier | vec) (vecOperator (identifier | vec))+ ;
+vecOperator: ADDITION | SUBTRACTION ;
 vecPara    : identifier | integer | arithExpr ;
 
 arguments       : value | arguments SEPERATOR arguments ;

@@ -5,6 +5,7 @@ import gen.TacticBaseListener;
 import model.Procedure;
 import model.dataTypes.GamePiece;
 import model.dataTypes.Number;
+import model.dataTypes.Vector;
 import model.utils.ArgumentGatherer;
 import model.utils.ArithmeticGatherer;
 import model.utils.Parameter;
@@ -244,7 +245,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         } else if(ctx.boolExpr() != null){ //format identifier = boolStmt //TODO Change in grammar has made this invalid, Mathias is working on solution
             value = String.valueOf(getBoolStmtResult(ctx.boolExpr())); //TODO Change in grammar has made this invalid, Mathias is working on solution
         } else if(ctx.vecExpr() != null){ //format identifier = vecExpr (subtraction or addition)
-            throw new IllegalArgumentException(); //TODO Not yet implemented
+            value = getResultOfVectorArithmetic(ctx.vecExpr()).toString();
         } else if(ctx.identifier().size() == 2){ //format identifier = (identifier (LBRACKET integer RBRACKET)+) | dotStmt)
             throw new IllegalArgumentException(); //TODO Not yet implemented
         } else
@@ -400,6 +401,57 @@ public class VariableCollectorListener extends TacticBaseListener {
             String changedGpValue = gp.getGamePieceString();
             addVariableToScope(new VariableContainer(variableBeingDotted.getIdentifier(), changedGpValue, VariableCollectorListener.VariableType.GAMEPIECE));
         }
+    }
+
+    //VECTOR ARITHMETIC
+    /** @return the result of the given VecExpr. */
+    private Vector getResultOfVectorArithmetic(Tactic.VecExprContext ctx){
+
+        Vector resultVector = null;
+        String operator = null;
+
+
+        for(ParseTree child : ctx.children){
+            if(child instanceof Tactic.VecContext){
+                if(resultVector != null){
+                    Vector currentVector = TypeCheckerHelper.parseVector(child.getText());
+                    resultVector = getResultOfVectorOperation(resultVector, currentVector, operator);
+                } else //First vector
+                    resultVector = TypeCheckerHelper.parseVector(child.getText());
+
+            }else if(child instanceof Tactic.VecOperatorContext){
+                operator = child.getText();
+            }else if(child instanceof  Tactic.IdentifierContext){
+
+                VariableContainer varCon = getValueFromIdentifier(child.getText());
+
+                if(varCon == null){
+                    System.out.println("The identifier has not been declared.");
+                    throw new IllegalArgumentException();
+                }
+
+                if(varCon.getType() != VariableType.VEC){
+                    System.out.println("The variable has been declared but is not of type vector.");
+                    throw new IllegalArgumentException();
+                }
+
+                Vector currentVector = TypeCheckerHelper.parseVector(varCon.getValue());
+                resultVector = getResultOfVectorOperation(resultVector, currentVector, operator);
+            }
+        }
+
+        return resultVector;
+    }
+
+    private Vector getResultOfVectorOperation(Vector one, Vector two, String operator){
+        if(operator.compareTo("+") == 0){ //Addition
+            one.addVector(two);
+        }else if(operator.compareTo("-") == 0){ //Subtraction
+            one.subVector(two);
+        }else
+            throw new IllegalArgumentException(); //Grammar has changed. New vector operations.
+
+        return one;
     }
 
     // ARITHMETIC EXPRESSIONS ------------------------------

@@ -198,6 +198,24 @@ public class ArithmeticParsingTests {
         Assert.assertEquals(4, TypeCheckerHelper.parseInt(varCon.getValue()).intValue());
     }
 
+    @Test
+    public void selfAddition03(){
+        TacticLexer lexer = new TacticLexer(new ANTLRInputStream("int i; i = 0; i = i + 1; i = i + 1;;"));
+        Tactic parser = new Tactic(new CommonTokenStream(lexer));
+        VariableCollectorListener vcl = new VariableCollectorListener();
+        parser.addParseListener(vcl);
+        parser.prog();
+        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("i");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right value?
+        Assert.assertEquals(2, TypeCheckerHelper.parseInt(varCon.getValue()).intValue());
+    }
+
     /** Parses the given input and the results can be found in the field. */
     public static void parse(String input){
         TacticLexer lexer = new TacticLexer(new ANTLRInputStream(input));

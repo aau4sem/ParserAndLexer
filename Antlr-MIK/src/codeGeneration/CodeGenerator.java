@@ -1,8 +1,12 @@
 package codeGeneration;
 
 import model.dataTypes.GamePiece;
+import model.utils.buildInFunction.BuildInFunction;
+import model.utils.buildInFunction.BuildInFunctionChange;
+import model.utils.buildInFunction.BuildInFunctionMove;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,13 +21,15 @@ public class CodeGenerator {
     private String outputDirectoryPath;
 
     private ArrayList<GamePiece> gamePieces;
+    private ArrayList<BuildInFunction> actionCalls;
     private ArrayList<String> gamePieceNames;
     private String boardPath;
 
     private String fileSeparator = System.getProperty("file.separator");
 
-    public CodeGenerator(ArrayList<GamePiece> gamePieces, String boardPath) {
+    public CodeGenerator(ArrayList<GamePiece> gamePieces, String boardPath, ArrayList<BuildInFunction> actionCalls) {
         this.gamePieces = gamePieces;
+        this.actionCalls = actionCalls;
         this.gamePieceNames = getAllGamePieceNames(gamePieces);
         this.boardPath = boardPath;
 
@@ -62,7 +68,7 @@ public class CodeGenerator {
 
         //animations.js
         ArrayList<String> animationLines =  generateStringForAnimationsAnimationList(gamePieces);
-        ArrayList<String> functionLines = generateStringsForAnimationFunctions(gamePieces);
+        ArrayList<String> functionLines = generateStringsForAnimationFunctions(gamePieces, actionCalls);
         ArrayList<String> outputAnimations = generateAnimationsFileStrings(animationLines, functionLines);
 
         //Write/create files
@@ -259,12 +265,14 @@ public class CodeGenerator {
         for(GamePiece gp : gamePieces){
             StringBuilder sb = new StringBuilder();
 
-            sb.append("<div class=\"");
+            sb.append("<div class=\"GamePiece ");
             sb.append(gp.getName());
+            sb.append(" ").append(gp.getShape());
             //TODO TAGS //TOOD Has to be generated in the css file
             sb.append("\">");
+            sb.append("<p class=\"label\">");
             sb.append(gp.getLabel()); //LABEL
-            sb.append("</div>");
+            sb.append("</p></div>");
 
             generatedLines.add(sb.toString());
         }
@@ -320,6 +328,9 @@ public class CodeGenerator {
             StringBuilder sb = new StringBuilder();
 
             sb.append(".").append(gp.getName()).append("{\n");
+            sb.append("background-color: ").append(gp.getColor()).append(";\n");
+            sb.append("left: ").append(gp.getPosition().getX()).append("px;\n");
+            sb.append("top: ").append(gp.getPosition().getY()).append("px;\n");
             //TODO more?
             sb.append("}\n");
 
@@ -355,7 +366,7 @@ public class CodeGenerator {
 
     /** @return a string for the function part of the animations.js file.
      * @param gamePieces a list of all GamePieces. */
-    private ArrayList<String> generateStringsForAnimationFunctions(ArrayList<GamePiece> gamePieces){
+    private ArrayList<String> generateStringsForAnimationFunctions(ArrayList<GamePiece> gamePieces, ArrayList<BuildInFunction> actionCalls){
 
         ArrayList<String> generatedStrings = new ArrayList<>();
 
@@ -366,7 +377,39 @@ public class CodeGenerator {
             sb.append("return anime({\n");
             sb.append("targets: ").append("'.").append(gp.getName()).append("',\n"); //TODO Has to be changed?
             sb.append("keyframes: [\n");
-            //TODO keyframes! Format: {left: 20, top: 500, duration: 1000},
+
+            for (BuildInFunction action : actionCalls){
+                if (action instanceof BuildInFunctionMove){
+                    if (action.getGp().getName().compareTo(gp.getName()) == 0){
+                        sb.append("{").append(action.toKeyframe()).append("}, \n");
+                    }
+                }
+            }
+
+            sb.append("],\n");
+            sb.append("scale: [\n");
+
+            for (BuildInFunction action : actionCalls){
+                if (action instanceof BuildInFunctionChange && (((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.SIZE)){
+                    if (action.getGp().getName().compareTo(gp.getName()) == 0){
+                        sb.append("{").append(action.toKeyframe()).append("}, \n");
+                    }
+                }
+            }
+
+            sb.append("{}\n");
+            sb.append("],\n");
+            sb.append("backgroundColor: [\n");
+
+            for (BuildInFunction action : actionCalls){
+                if (action instanceof BuildInFunctionChange && (((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.COLOR)){
+                    if (action.getGp().getName().compareTo(gp.getName()) == 0){
+                        sb.append("{").append(action.toKeyframe()).append("}, \n");
+                    }
+                }
+            }
+
+            sb.append("{}\n");
             sb.append("],\n");
             sb.append("loop: false,\n");
             sb.append("easing: 'linear',\n");

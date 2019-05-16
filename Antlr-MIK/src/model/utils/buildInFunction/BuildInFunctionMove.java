@@ -10,9 +10,9 @@ public class BuildInFunctionMove implements BuildInFunction {
 
     private GamePiece gp;
     private Vector vector;
-    private Number time;
+    private Integer time;
 
-    public BuildInFunctionMove(GamePiece gp, Vector vector, Number time) {
+    public BuildInFunctionMove(GamePiece gp, Vector vector, Integer time) {
         this.gp = gp;
         this.vector = vector;
         this.time = time;
@@ -26,11 +26,18 @@ public class BuildInFunctionMove implements BuildInFunction {
         return vector;
     }
 
-    public Number getTime() {
+    public Integer getTime() {
         return time;
     }
 
-    @Override
+    public void setTime(Integer newTime) {
+        this.time = newTime;
+    }
+
+    public String toKeyframe() {
+            return "left: " + vector.getX() + ", top: " + vector.getY() + ", duration: " + time;
+        }
+
     public String getIdentifier() {
         return identifier;
     }
