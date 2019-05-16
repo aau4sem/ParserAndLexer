@@ -8,11 +8,19 @@ public class VariableContainer {
     private String identifier;
     private String value;
     private VariableType type;
+    private boolean isArray = false;
 
     public VariableContainer(String identifier, String value, VariableType type) {
         this.identifier = identifier;
         this.value = value;
         this.type = type;
+    }
+
+    public VariableContainer(String identifier, String value, VariableType type, boolean isArray) {
+        this.identifier = identifier;
+        this.value = value;
+        this.type = type;
+        this.isArray = isArray;
     }
 
     public String getIdentifier() {
@@ -29,5 +37,9 @@ public class VariableContainer {
 
     public VariableType getType() {
         return type;
+    }
+
+    public boolean isArray() {
+        return isArray;
     }
 }

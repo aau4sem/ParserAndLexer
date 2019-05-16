@@ -3,6 +3,7 @@ package customListeners;
 import gen.Tactic;
 import gen.TacticBaseListener;
 import model.Procedure;
+import model.dataTypes.Array;
 import model.dataTypes.GamePiece;
 import model.dataTypes.Number;
 import model.dataTypes.Vector;
@@ -82,31 +83,50 @@ public class VariableCollectorListener extends TacticBaseListener {
      * is procedure scope, and ff the variable is not found in the function
      * scope, it will then search the main scope.
      * @param identifier the identifier of the requested variable.
+     * @param shouldBeAnArray is the variable being searched for supposed to be an array? If null then it does not matter
      * @return the value of the variable. */
-    public VariableContainer getValueFromScope(String identifier){
+    public VariableContainer getValueFromScope(String identifier, Boolean shouldBeAnArray){ //TODO
 
         VariableContainer varCon;
 
         //Get VariableContainer from the current scope
-        if(currentScope == VariableScopeData.ScopeType.MAIN_SCOPE)
+        if(currentScope == VariableScopeData.ScopeType.MAIN_SCOPE){
             varCon = mainScope.getVariable(identifier);
-        else{
+        } else {
             varCon = procedureScope.getVariable(identifier);
             if(varCon == null)
                 varCon = mainScope.getVariable(identifier);
+        }
+
+        if(shouldBeAnArray == null)
+            return varCon;
+
+
+        //Check for array or not
+        if(shouldBeAnArray){
+            if(!varCon.isArray())
+                return null;
+        }else{
+            if(varCon.isArray())
+                return null;
         }
 
         return varCon;
     }
 
     /** Used to get a value from an identifier. */
-    public VariableContainer getValueFromIdentifier(String identifier){
-        return getValueFromScope(identifier);
+    public VariableContainer getValueFromIdentifier(String identifier, Boolean shouldBeAnArray){
+        return getValueFromScope(identifier, shouldBeAnArray);
     }
 
     /** @return true if the given identifier is found in the current scope or an above scope. */
-    private boolean hasBeenInitialized(String identifier){
-        return getValueFromScope(identifier) != null;
+    private boolean hasBeenInitialized(String identifier, Boolean shouldBeAnArray){
+        return getValueFromScope(identifier, shouldBeAnArray) != null;
+    }
+
+    /** @return true if the given identifier is found in the current scope or an above scope. */
+    private boolean hasBeenInitialized(String identifier){ //TODO Those who call this one, DOES IT MATTER IF IT IS AN ARRAY OR NOT???
+        return getValueFromScope(identifier, null) != null;
     }
 
     /** Used to check if an identifier is declared, assigned and has the correct type.
@@ -265,6 +285,8 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     }
 
+
+
     // PROCEDURES -------------------------------------------------------------------------
 
     @Override
@@ -364,7 +386,40 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     @Override
     public void exitArrayDcl(Tactic.ArrayDclContext ctx) {
-        super.exitArrayDcl(ctx); //TODO HANDLE
+
+        //Trying to create an array with 0 elements?
+        if(ctx.children.get(2).getText().compareTo("0") == 0){
+            System.out.println("An array with 0 elements is being created!");
+            throw new IllegalArgumentException();
+        }
+
+        int sizeOfArray = Integer.parseInt(ctx.children.get(2).getText());
+        String identifier = ctx.identifier().getText();
+
+        VariableContainer varCon;
+
+        if(ctx.type().getText().compareTo("int") == 0){
+            Array<Integer> customArray = new Array<>(new Integer[sizeOfArray], VariableType.INT); //TODO DEFAULT VALUES
+            varCon = new VariableContainer(identifier, customArray.toString(), customArray.getType(), true);
+        }else if(ctx.type().getText().compareTo("float") == 0){
+            Array<Float> customArray = new Array<>(new Float[sizeOfArray], VariableType.FLOAT); //TODO DEFAULT VALUES
+            varCon = new VariableContainer(identifier, customArray.toString(), customArray.getType(), true);
+        }else if(ctx.type().getText().compareTo("vector") == 0){
+            Array<Vector> customArray = new Array<>(new Vector[sizeOfArray], VariableType.VEC); //TODO DEFAULT VALUES
+            varCon = new VariableContainer(identifier, customArray.toString(), customArray.getType(), true);
+        }else if(ctx.type().getText().compareTo("bool") == 0){
+            Array<Boolean> customArray = new Array<>(new Boolean[sizeOfArray], VariableType.BOOL); //TODO DEFAULT VALUES
+            varCon = new VariableContainer(identifier, customArray.toString(), customArray.getType(), true);
+        }else if(ctx.type().getText().compareTo("string") == 0){
+            Array<String> customArray = new Array<>(new String[sizeOfArray], VariableType.STRING); //TODO DEFAULT VALUES
+            varCon = new VariableContainer(identifier, customArray.toString(), customArray.getType(), true);
+        }else if(ctx.type().getText().compareTo("GamePiece") == 0){
+            Array<GamePiece> customArray = new Array<>(new GamePiece[sizeOfArray], VariableType.GAMEPIECE); //TODO DEFAULT VALUES
+            varCon = new VariableContainer(identifier, customArray.toString(), customArray.getType(), true);
+        }else
+            throw new IllegalArgumentException(); //Grammar has changed!
+
+        addVariableToScope(varCon);
     }
 
     // -----------------------------------------------------------------
