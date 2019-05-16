@@ -123,6 +123,10 @@ public class VariableCollectorListener extends TacticBaseListener {
                 varCon = mainScope.getVariable(identifier);
         }
 
+        if(varCon != null)
+            if(!varCon.isArray())
+                return null;
+
         return varCon;
     }
 
@@ -289,7 +293,17 @@ public class VariableCollectorListener extends TacticBaseListener {
         if(isInProcedureDefinition)
             return;
 
+        //TODO Might be on the format: []{x,x,x,,x};
 
+        String identifier = ctx.identifier().getText();
+
+        VariableContainer varConToOverwrite = getArrayValueFromScope(identifier);
+
+        if(varConToOverwrite == null){
+            System.out.println("In the array assignment: the variable being assigned either does not exist or is not an array.");
+        }
+
+        throw new IllegalArgumentException(); //TODO copy code or use code from regular assignment
     }
 
 
