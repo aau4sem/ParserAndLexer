@@ -46,9 +46,8 @@ arrayDcl    : type (LBRACKET integer RBRACKET)+ identifier;
 assignment  : (identifier | dotStmt) (LBRACKET integer RBRACKET)* ASSIGN (value | arithExpr | boolExpr | vecExpr | (identifier (LBRACKET integer RBRACKET)*) | dotStmt);
 
 //Datastructure operations
-arrayExpr   : boolExpr | arithExpr | gpDcl | identifier | dotStmt | arrayDcl | value | vec | floatDcl | vecExpr ;
+arrayExpr   : (value | arithExpr | boolExpr | vecExpr | (identifier (LBRACKET integer RBRACKET)*) | dotStmt) ;
 arrayAssign : identifier (((LBRACKET number RBRACKET)+ ASSIGN arrayExpr) | (LBRACKET RBRACKET ASSIGN LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY));
-
 
 //Arithmetic operations
 arithExpr : arithExprParent | arithExprMiddle ;
