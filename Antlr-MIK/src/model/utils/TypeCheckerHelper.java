@@ -257,11 +257,11 @@ public class TypeCheckerHelper {
                 isInParentheses = true;
             else if(val.charAt(i) == ')')
                 isInParentheses = false;
-            else if(val.charAt(i) == ','){
-                if(!isInParentheses){
-                    result.add(value.toString());
-                    value = new StringBuilder();
-                }
+
+
+            if(val.charAt(i) == ',' && !isInParentheses){
+                result.add(value.toString());
+                value = new StringBuilder();
             }else
                 value.append(val.charAt(i));
         }
