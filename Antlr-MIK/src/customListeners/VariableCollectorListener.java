@@ -97,6 +97,32 @@ public class VariableCollectorListener extends TacticBaseListener {
                 varCon = mainScope.getVariable(identifier);
         }
 
+        if(varCon.isArray()){
+            System.out.println("The requested variable is of the type array. Use other method for this.");
+            throw new IllegalArgumentException();
+        }
+
+        return varCon;
+    }
+
+    /** Used to get variables from the current scope. If the current scope
+     * is procedure scope, and ff the variable is not found in the function
+     * scope, it will then search the main scope.
+     * @param identifier the identifier of the requested variable.
+     * @return the value of the variable. */
+    public VariableContainer getArrayValueFromScope(String identifier){
+
+        VariableContainer varCon;
+
+        //Get VariableContainer from the current scope
+        if(currentScope == VariableScopeData.ScopeType.MAIN_SCOPE){
+            varCon = mainScope.getVariable(identifier);
+        } else {
+            varCon = procedureScope.getVariable(identifier);
+            if(varCon == null)
+                varCon = mainScope.getVariable(identifier);
+        }
+
         return varCon;
     }
 
@@ -380,22 +406,46 @@ public class VariableCollectorListener extends TacticBaseListener {
         VariableContainer varCon;
 
         if(ctx.type().getText().compareTo("int") == 0){
-            Array<Integer> customArray = new Array<>(new Integer[sizeOfArray], VariableType.INT); //TODO DEFAULT VALUES
+            Integer[] tempArray = new Integer[sizeOfArray];
+            for(int i = 0; i < sizeOfArray; i++)
+                tempArray[i] = 1;
+
+            Array<Integer> customArray = new Array<>(tempArray, VariableType.INT);
             varCon = new VariableContainer(identifier, customArray.toString(), customArray.getType(), true);
         }else if(ctx.type().getText().compareTo("float") == 0){
-            Array<Float> customArray = new Array<>(new Float[sizeOfArray], VariableType.FLOAT); //TODO DEFAULT VALUES
+            Float[] tempArray = new Float[sizeOfArray];
+            for(int i = 0; i < sizeOfArray; i++)
+                tempArray[i] = 1f;
+
+            Array<Float> customArray = new Array<>(tempArray, VariableType.FLOAT);
             varCon = new VariableContainer(identifier, customArray.toString(), customArray.getType(), true);
         }else if(ctx.type().getText().compareTo("vector") == 0){
-            Array<Vector> customArray = new Array<>(new Vector[sizeOfArray], VariableType.VEC); //TODO DEFAULT VALUES
+            Vector[] tempArray = new Vector[sizeOfArray];
+            for(int i = 0; i < sizeOfArray; i++)
+                tempArray[i] = new Vector(0,0,0);
+
+            Array<Vector> customArray = new Array<>(tempArray, VariableType.VEC);
             varCon = new VariableContainer(identifier, customArray.toString(), customArray.getType(), true);
         }else if(ctx.type().getText().compareTo("bool") == 0){
-            Array<Boolean> customArray = new Array<>(new Boolean[sizeOfArray], VariableType.BOOL); //TODO DEFAULT VALUES
+            Boolean[] tempArray = new Boolean[sizeOfArray];
+            for(int i = 0; i < sizeOfArray; i++)
+                tempArray[i] = true;
+
+            Array<Boolean> customArray = new Array<>(tempArray, VariableType.BOOL);
             varCon = new VariableContainer(identifier, customArray.toString(), customArray.getType(), true);
         }else if(ctx.type().getText().compareTo("string") == 0){
-            Array<String> customArray = new Array<>(new String[sizeOfArray], VariableType.STRING); //TODO DEFAULT VALUES
+            String[] tempArray = new String[sizeOfArray];
+            for(int i = 0; i < sizeOfArray; i++)
+                tempArray[i] = "";
+
+            Array<String> customArray = new Array<>(tempArray, VariableType.STRING);
             varCon = new VariableContainer(identifier, customArray.toString(), customArray.getType(), true);
         }else if(ctx.type().getText().compareTo("GamePiece") == 0){
-            Array<GamePiece> customArray = new Array<>(new GamePiece[sizeOfArray], VariableType.GAMEPIECE); //TODO DEFAULT VALUES
+            GamePiece[] tempArray = new GamePiece[sizeOfArray];
+            for(int i = 0; i < sizeOfArray; i++)
+                tempArray[i] = new GamePiece();
+
+            Array<GamePiece> customArray = new Array<>(tempArray, VariableType.GAMEPIECE);
             varCon = new VariableContainer(identifier, customArray.toString(), customArray.getType(), true);
         }else
             throw new IllegalArgumentException(); //Grammar has changed!
