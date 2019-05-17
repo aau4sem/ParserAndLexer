@@ -579,7 +579,7 @@ public class BooleanParsingTests {
 
         boolean value = Boolean.parseBoolean(x);
 
-        Assert.assertFalse(value);
+        Assert.assertTrue(value);
     }
 
     @Test
@@ -635,7 +635,7 @@ public class BooleanParsingTests {
 
         boolean value = Boolean.parseBoolean(x);
 
-        Assert.assertFalse(value);
+        Assert.assertTrue(value);
     }
 
     @Test

@@ -143,7 +143,7 @@ public class VariableCollectorListenerTests {
         Assert.assertEquals(5.5, Float.parseFloat(varConX.getValue()), 10);
 
         //Does it have the right type?
-        Assert.assertTrue(varConI.getType() == VariableCollectorListener.VariableType.FLOAT);
+        Assert.assertTrue(varConI.getType() == VariableCollectorListener.VariableType.INT);
         Assert.assertTrue(varConX.getType() == VariableCollectorListener.VariableType.FLOAT);
     }
 
