@@ -191,4 +191,9 @@ public class ArithmeticParsingTests {
         //Does it have the right value?
         Assert.assertEquals(2, TypeCheckerHelper.parseInt(varCon.getValue()).intValue());
     }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void faulty01(){
+        parse("int i; vector x; x = (2,1,3); i = 2 + 3 * x;;");
+    }
 }
