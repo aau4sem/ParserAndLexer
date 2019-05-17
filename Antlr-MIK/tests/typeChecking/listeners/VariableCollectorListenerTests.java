@@ -295,4 +295,9 @@ public class VariableCollectorListenerTests {
     public void faulty04(){
         parse("vector x; x = 2;;");
     }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void faulty05(){
+        parse("int x; vector i; i = x.position;;");
+    }
 }

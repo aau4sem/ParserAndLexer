@@ -346,28 +346,23 @@ public class VariableCollectorListener extends TacticBaseListener {
             }
 
             value = TypeCheckerHelper.getArrayElements(varCon.getValue()).get(index);
-        }else if(ctx.dotStmt() != null){ //format:
+        }else if(ctx.dotStmt() != null){ //format: = identifier (('.' identifier('[' integer ']')?))+ ;
 
             String firstIdentifier = ctx.dotStmt().identifier().get(0).getText();
 
-
             //Is the dotStmt for getting the length of an array?
             if(ctx.dotStmt().identifier(1).getText().compareTo("length") == 0){
-                //TODO Do i have to check if the first identifier is an array?
-
                 VariableContainer varCon = getArrayValueFromScope(firstIdentifier);
 
                 if(varCon == null){
                     System.out.println("The identifier being dotted with length, is either not initialized or not an array.");
                     throw new IllegalArgumentException();
                 }
-
-
+                
                 value = String.valueOf(varCon.getLengthOfarray());
             }else{
-                //TODO Handle all other dot stmts
-                throw new IllegalArgumentException(); //TODO Not yet implemented
-
+                System.out.println("You are using dot-notation but not on a game piece and not as .length on an array.");
+                throw new IllegalArgumentException();
             }
         } else
             throw new GrammarHasChangedException("AssignmentRightContext");
