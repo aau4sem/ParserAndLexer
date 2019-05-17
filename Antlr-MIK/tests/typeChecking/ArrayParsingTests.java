@@ -576,9 +576,4 @@ public class ArrayParsingTests {
     public void faulty_assignment_vector05(){
         parse("vector[4] x; x[2] = true;;");
     }
-
-    @Test (expected = Exception.class)
-    public void faulty01(){
-        parse("int[4] x; int i; i = x[2].test;;");
-    }
 }
