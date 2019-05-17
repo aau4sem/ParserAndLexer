@@ -23,7 +23,7 @@ public class BasicParsingTests {
     }
 
     @Test
-    public void testTest2(){
+    public void empty01(){
         lexer = new TacticLexer(new ANTLRInputStream(";"));
     }
 
@@ -31,7 +31,12 @@ public class BasicParsingTests {
 
     @Test
     public void backgroundImage01() {
-        lexer = new TacticLexer(new ANTLRInputStream("levels[0] = " + "\"" + "\\some\\path\\pictures1.jpg" + "\"" + ";;"));
+        lexer = new TacticLexer(new ANTLRInputStream("Board = " + "\"" + "\\some\\path\\pictures1.jpg" + "\"" + ";;"));
+    }
+
+    @Test
+    public void backgroundImage02() {
+        lexer = new TacticLexer(new ANTLRInputStream("Board = " + "\"" + "https://pbs.twimg.com/profile_images/1115659011330719744/FRmIw6uM.png" + "\"" + ";;"));
     }
 
     //Declaration -----------------------------------------------------------------------------------------------------------------
@@ -95,16 +100,6 @@ public class BasicParsingTests {
     }
 
     @Test
-    public void declaration_variable13() {
-        lexer = new TacticLexer(new ANTLRInputStream("int[4] array_2d_test;;"));
-    }
-
-    @Test
-    public void declaration_variable14() {
-        lexer = new TacticLexer(new ANTLRInputStream("int[4] array_2d_test;;"));
-    }
-
-    @Test
     public void declaration_procedure00(){
         lexer = new TacticLexer(new ANTLRInputStream("test(){x = 5;};;"));
     }
@@ -116,62 +111,62 @@ public class BasicParsingTests {
 
     @Test
     public void declaration_procedure02(){
-        lexer = new TacticLexer(new ANTLRInputStream("test(int i){x = 5;};;"));
+        lexer = new TacticLexer(new ANTLRInputStream("test(int i){};;"));
     }
 
     @Test
     public void declaration_procedure03(){
-        lexer = new TacticLexer(new ANTLRInputStream("test(bool i){x = 5;};;"));
+        lexer = new TacticLexer(new ANTLRInputStream("test(bool i){};;"));
     }
 
     @Test
     public void declaration_procedure04(){
-        lexer = new TacticLexer(new ANTLRInputStream("test(vector d){x = 5;};;"));
+        lexer = new TacticLexer(new ANTLRInputStream("test(vector d){};;"));
     }
 
     @Test
     public void declaration_procedure05(){
-        lexer = new TacticLexer(new ANTLRInputStream("test(string d){x = 5;};;"));
+        lexer = new TacticLexer(new ANTLRInputStream("test(string d){};;"));
     }
 
     @Test
     public void declaration_procedure06(){
-        lexer = new TacticLexer(new ANTLRInputStream("test(float d){x = 5;};;"));
+        lexer = new TacticLexer(new ANTLRInputStream("test(float d){};;"));
     }
 
     @Test
     public void declaration_procedure07(){
-        lexer = new TacticLexer(new ANTLRInputStream("test(GamePiece d){x = 5;};;"));
+        lexer = new TacticLexer(new ANTLRInputStream("test(GamePiece d){};;"));
     }
 
     @Test
     public void declaration_procedure08(){
-        lexer = new TacticLexer(new ANTLRInputStream("test(int[] i){x = 5;};;"));
+        lexer = new TacticLexer(new ANTLRInputStream("test(int[] i){};;"));
     }
 
     @Test
     public void declaration_procedure09(){
-        lexer = new TacticLexer(new ANTLRInputStream("test(bool[] i){x = 5;};;"));
+        lexer = new TacticLexer(new ANTLRInputStream("test(bool[] i){};;"));
     }
 
     @Test
     public void declaration_procedure10(){
-        lexer = new TacticLexer(new ANTLRInputStream("test(vector[] d){x = 5;};;"));
+        lexer = new TacticLexer(new ANTLRInputStream("test(vector[] d){};;"));
     }
 
     @Test
     public void declaration_procedure11(){
-        lexer = new TacticLexer(new ANTLRInputStream("test(string[] d){x = 5;};;"));
+        lexer = new TacticLexer(new ANTLRInputStream("test(string[] d){};;"));
     }
 
     @Test
     public void declaration_procedure12(){
-        lexer = new TacticLexer(new ANTLRInputStream("test(float[] d){x = 5;};;"));
+        lexer = new TacticLexer(new ANTLRInputStream("test(float[] d){};;"));
     }
 
     @Test
     public void declaration_procedure13(){
-        lexer = new TacticLexer(new ANTLRInputStream("test(GamePiece[] d){x = 5;};;"));
+        lexer = new TacticLexer(new ANTLRInputStream("test(GamePiece[] d){};;"));
     }
 
     @Test
@@ -191,7 +186,7 @@ public class BasicParsingTests {
 
     @Test
     public void declaration_procedure17(){
-        lexer = new TacticLexer(new ANTLRInputStream("test(){x.test = 5 + 5;};;"));
+        lexer = new TacticLexer(new ANTLRInputStream("test(){x.test = 5 + x;};;"));
     }
 
     @Test
@@ -209,37 +204,42 @@ public class BasicParsingTests {
         lexer = new TacticLexer(new ANTLRInputStream("test(){while(true){i = 5;};};;"));
     }
 
-    /*@Test
+    @Test
     public void declaration_procedure21(){
-        lexer = new TacticLexer(new ANTLRInputStream("test(){Move();};;"));
+        lexer = new TacticLexer(new ANTLRInputStream("test(){Move(i, (1,1,1), 2);};;"));
     }
 
     @Test
     public void declaration_procedure22(){
-        lexer = new TacticLexer(new ANTLRInputStream("test(){Change();};;"));
+        lexer = new TacticLexer(new ANTLRInputStream("test(){Change(i, \"position\", (2,2,3), 2);};;"));
     }
 
     @Test
     public void declaration_procedure23(){
-        lexer = new TacticLexer(new ANTLRInputStream("test(){Wait();};;"));
+        lexer = new TacticLexer(new ANTLRInputStream("test(){Wait(gp, 4);};;"));
     }
 
-    @Test
+    /*@Test //Procedure calls in procedures is currently not supported
     public void declaration_procedure24(){
         lexer = new TacticLexer(new ANTLRInputStream("test(){anotherProcedure();};;"));
     }
 
-    @Test
+    @Test //Procedure calls in procedures is currently not supported
     public void declaration_procedure25(){
         lexer = new TacticLexer(new ANTLRInputStream("test(){anotherProcedure(x, y, z);};;"));
     }*/
 
-    //Assignment -----------------------------------------------------------------------------------------------------------------
+    @Test
+    public void declaration_procedure26(){
+        lexer = new TacticLexer(new ANTLRInputStream("test(){x = i[2];};;"));
+    }
 
     @Test
-    public void assignment00() {
-        lexer = new TacticLexer(new ANTLRInputStream("int intTest1;;"));
+    public void declaration_procedure27(){
+        lexer = new TacticLexer(new ANTLRInputStream("test(){x[2] = i;};;"));
     }
+
+    //Assignment -----------------------------------------------------------------------------------------------------------------
 
     @Test
     public void assignment_int01() {
@@ -371,7 +371,7 @@ public class BasicParsingTests {
         lexer = new TacticLexer(new ANTLRInputStream("bool_and_test = false && false;;"));
     }
 
-    /*@Test
+    /*@Test //Currently not supported
     public void assignment_bool05() {
         lexer = new TacticLexer(new ANTLRInputStream("bool_not_test = !true;;"));
     }*/
@@ -453,7 +453,7 @@ public class BasicParsingTests {
 
     @Test
     public void assignment_GamePieces04() {
-        lexer = new TacticLexer(new ANTLRInputStream("gp_test1.opasity = 0.5;;"));
+        lexer = new TacticLexer(new ANTLRInputStream("gp_test1.opacity = 0.5;;"));
     }
 
     @Test
@@ -655,6 +655,38 @@ public class BasicParsingTests {
     @Test
     public void procedure_calls09() {
         lexer = new TacticLexer(new ANTLRInputStream("test(3.2, variable, 2);;"));
+    }
+
+    // Vector Arithmetic
+
+    @Test
+    public void vector_arithmetic01() {
+        lexer = new TacticLexer(new ANTLRInputStream("i = (2,2,2) + (2,2,2);;"));
+    }
+
+    @Test
+    public void vector_arithmetic02() {
+        lexer = new TacticLexer(new ANTLRInputStream("i = (2,2,2) - (2,2,2);;"));
+    }
+
+    @Test
+    public void vector_arithmetic03() {
+        lexer = new TacticLexer(new ANTLRInputStream("i = i + (2,2,2);;"));
+    }
+
+    @Test
+    public void vector_arithmetic04() {
+        lexer = new TacticLexer(new ANTLRInputStream("i = x - (2,2,2);;"));
+    }
+
+    @Test
+    public void vector_arithmetic05() {
+        lexer = new TacticLexer(new ANTLRInputStream("i = (2,2,2) + x;;"));
+    }
+
+    @Test
+    public void vector_arithmetic06() {
+        lexer = new TacticLexer(new ANTLRInputStream("i = (2,2,2) - x;;"));
     }
 
     // Overall parsing ------------------------------------------------------------------------------------------
