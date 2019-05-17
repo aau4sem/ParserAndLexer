@@ -338,4 +338,24 @@ public class VariableCollectorListenerTests {
         //Does it have the right type?
         Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.FLOAT);
     }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void faulty01(){
+        parse("int x; x = (2,3,1);;");
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void faulty02(){
+        parse("int x; x = true;;");
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void faulty03(){
+        parse("int x; x = \"test\";;");
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void faulty04(){
+        parse("vector x; x = 2;;");
+    }
 }

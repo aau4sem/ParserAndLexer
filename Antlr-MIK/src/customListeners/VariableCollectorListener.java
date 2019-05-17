@@ -254,6 +254,10 @@ public class VariableCollectorListener extends TacticBaseListener {
                     throw new IllegalArgumentException();
                 }
             }else if(valueContext.number() != null){ //format: number
+
+                if(desiredType != VariableType.INT && desiredType != VariableType.FLOAT)
+                    throw new IllegalArgumentException();
+
                 Number num = TypeCheckerHelper.parseNumber(valueContext.number().getText());
                 if(typeLeftIdentifier == VariableType.INT){
                     if(num.getIntValue() == null){
@@ -270,11 +274,16 @@ public class VariableCollectorListener extends TacticBaseListener {
                 }else
                     throw new IllegalArgumentException(); //This is not possible!
             }else if(valueContext.bool() != null){ //format: bool
+                if(desiredType != VariableType.BOOL)
+                    throw new IllegalArgumentException();
                 value = String.valueOf(TypeCheckerHelper.parseBool(valueContext.bool().getText()));
             }else if(valueContext.string() != null){ //format: string
+                if(desiredType != VariableType.STRING)
+                    throw new IllegalArgumentException();
                 value = TypeCheckerHelper.parseString(valueContext.string().getText());
-                if(value == null) throw new IllegalArgumentException(); //Could not parse string.
             } else if(valueContext.vec() != null){ //format: vec
+                if(desiredType != VariableType.VEC)
+                    throw new IllegalArgumentException();
                 value = String.valueOf(TypeCheckerHelper.parseVector(valueContext.vec().getText()));
             }else
                 throw new IllegalArgumentException(); //Grammar has changed
