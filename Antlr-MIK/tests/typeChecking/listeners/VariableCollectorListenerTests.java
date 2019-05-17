@@ -1,9 +1,6 @@
 package typeChecking.listeners;
 
 import customListeners.VariableCollectorListener;
-import model.dataTypes.GamePiece;
-import model.dataTypes.Vector;
-import model.utils.TypeCheckerHelper;
 import model.variables.VariableContainer;
 import org.junit.*;
 
@@ -93,12 +90,8 @@ public class VariableCollectorListenerTests {
 
     //Array declarations is tested in: ArrayParsingTests
 
-
-    //OTHERS ---- REWORK
-
-
     @Test
-    public void intDcl01(){
+    public void assignment_int01(){
         parse("int x; x = 5;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
@@ -114,7 +107,7 @@ public class VariableCollectorListenerTests {
     }
 
     @Test
-    public void intDcl02(){
+    public void assignment_int02(){
         parse("int x; x = 5; x = 6;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
@@ -130,7 +123,7 @@ public class VariableCollectorListenerTests {
     }
 
     @Test
-    public void intDcl03(){
+    public void assignment_int03(){
         parse("int x; int i; x = 5; i = x;;");
 
         VariableContainer varConI = vcl.getValueFromIdentifier("i");
@@ -150,23 +143,7 @@ public class VariableCollectorListenerTests {
     }
 
     @Test
-    public void intDcl04(){
-        parse("int x; x = 5 + 5;;");
-
-        VariableContainer varCon = vcl.getValueFromIdentifier("x");
-
-        //Was it saved?
-        Assert.assertNotNull(varCon);
-
-        //Does it have the right value?
-        Assert.assertEquals(10, Integer.parseInt(varCon.getValue()));
-
-        //Does it have the right type?
-        Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.INT);
-    }
-
-    @Test
-    public void intDcl05(){
+    public void assignment_int04(){
         parse("int x; x = -5;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
@@ -182,7 +159,7 @@ public class VariableCollectorListenerTests {
     }
 
     @Test
-    public void floatDcl01(){
+    public void assignment_float01(){
         parse("float x; x = 5.3;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
@@ -198,7 +175,7 @@ public class VariableCollectorListenerTests {
     }
 
     @Test
-    public void floatDcl02(){
+    public void assignment_float02(){
         parse("float x; x = 5.3; x = 6.3;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
@@ -214,7 +191,7 @@ public class VariableCollectorListenerTests {
     }
 
     @Test
-    public void floatDcl03(){
+    public void assignment_float03(){
         parse("float x; int i; x = 5.5; i = x;;");
 
         VariableContainer varConI = vcl.getValueFromIdentifier("i");
@@ -234,23 +211,7 @@ public class VariableCollectorListenerTests {
     }
 
     @Test
-    public void floatDcl04(){
-        parse("float x; x = 5.5 + 5.5;;");
-
-        VariableContainer varCon = vcl.getValueFromIdentifier("x");
-
-        //Was it saved?
-        Assert.assertNotNull(varCon);
-
-        //Does it have the right value?
-        Assert.assertEquals(11, Float.parseFloat(varCon.getValue()), 10);
-
-        //Does it have the right type?
-        Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.FLOAT);
-    }
-
-    @Test
-    public void floatDcl05(){
+    public void assignment_float04(){
         parse("float x; x = -5.3;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
@@ -266,7 +227,7 @@ public class VariableCollectorListenerTests {
     }
 
     @Test
-    public void stringDcl01(){
+    public void assignment_string01(){
         parse("string x; x = \"test\";;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
@@ -281,24 +242,6 @@ public class VariableCollectorListenerTests {
 
         //Does it have the right type?
         Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.STRING);
-    }
-
-    @Test
-    public void gamePieceDcl01(){
-        parse("GamePiece x;;");
-
-        VariableContainer varCon = vcl.getValueFromIdentifier("x");
-
-        //Was it saved?
-        Assert.assertNotNull(varCon);
-
-        //Does it have the right value?
-        GamePiece x = TypeCheckerHelper.parseGamePiece(varCon.getValue());
-        Assert.assertNotNull(x);
-        //Assert.assertEquals("test", x); //TODO assert propperties
-
-        //Does it have the right type?
-        Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.GAMEPIECE);
     }
 
     @Test
