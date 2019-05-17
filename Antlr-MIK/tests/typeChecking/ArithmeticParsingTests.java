@@ -1,12 +1,7 @@
 package typeChecking;
 
-import customListeners.VariableCollectorListener;
-import gen.Tactic;
-import gen.TacticLexer;
 import model.utils.TypeCheckerHelper;
 import model.variables.VariableContainer;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -147,12 +142,7 @@ public class ArithmeticParsingTests {
 
     @Test
     public void arithExpr01(){
-        TacticLexer lexer = new TacticLexer(new ANTLRInputStream("int i; int x; i = 3; x = 2 + 3 * 1 - (2 + 2) * (2 + 2 * 2) + i;;"));
-        Tactic parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("int i; int x; i = 3; x = 2 + 3 * 1 - (2 + 2) * (2 + 2 * 2) + i;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
@@ -165,12 +155,7 @@ public class ArithmeticParsingTests {
 
     @Test
     public void selfAddition01(){
-        TacticLexer lexer = new TacticLexer(new ANTLRInputStream("int i; i = 2; i = i * 2;;"));
-        Tactic parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("int i; i = 2; i = i * 2;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("i");
 
@@ -183,12 +168,7 @@ public class ArithmeticParsingTests {
 
     @Test
     public void selfAddition02(){
-        TacticLexer lexer = new TacticLexer(new ANTLRInputStream("int i; i = 2; i = i * 2.3;;"));
-        Tactic parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("int i; i = 2; i = i * 2.3;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("i");
 
@@ -201,12 +181,7 @@ public class ArithmeticParsingTests {
 
     @Test
     public void selfAddition03(){
-        TacticLexer lexer = new TacticLexer(new ANTLRInputStream("int i; i = 0; i = i + 1; i = i + 1;;"));
-        Tactic parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("int i; i = 0; i = i + 1; i = i + 1;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("i");
 
