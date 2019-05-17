@@ -232,71 +232,71 @@ public class ArrayParsingTests {
     public void length01(){
         parse("int[4] i; int x; x = i.length;;");
 
-        VariableContainer i = vcl.getArrayValueFromScope("x");
+        VariableContainer x = vcl.getValueFromScope("x");
 
-        Assert.assertNotNull(i);
-        Assert.assertSame(i.getType(), VariableCollectorListener.VariableType.INT);
+        Assert.assertNotNull(x);
+        Assert.assertSame(x.getType(), VariableCollectorListener.VariableType.INT);
 
-        Assert.assertEquals(4, TypeCheckerHelper.parseInt(i.getValue()).intValue());
+        Assert.assertEquals(4, TypeCheckerHelper.parseInt(x.getValue()).intValue());
     }
 
     @Test
     public void length02(){
         parse("float[4] i; int x; x = i.length;;");
 
-        VariableContainer i = vcl.getArrayValueFromScope("x");
+        VariableContainer x = vcl.getValueFromScope("x");
 
-        Assert.assertNotNull(i);
-        Assert.assertSame(i.getType(), VariableCollectorListener.VariableType.INT);
+        Assert.assertNotNull(x);
+        Assert.assertSame(x.getType(), VariableCollectorListener.VariableType.INT);
 
-        Assert.assertEquals(4, TypeCheckerHelper.parseInt(i.getValue()).intValue());
+        Assert.assertEquals(4, TypeCheckerHelper.parseInt(x.getValue()).intValue());
     }
 
     @Test
     public void length03(){
         parse("vector[4] i; int x; x = i.length;;");
 
-        VariableContainer i = vcl.getArrayValueFromScope("x");
+        VariableContainer x = vcl.getValueFromScope("x");
 
-        Assert.assertNotNull(i);
-        Assert.assertSame(i.getType(), VariableCollectorListener.VariableType.INT);
+        Assert.assertNotNull(x);
+        Assert.assertSame(x.getType(), VariableCollectorListener.VariableType.INT);
 
-        Assert.assertEquals(4, TypeCheckerHelper.parseInt(i.getValue()).intValue());
+        Assert.assertEquals(4, TypeCheckerHelper.parseInt(x.getValue()).intValue());
     }
 
     @Test
     public void length04(){
         parse("bool[4] i; int x; x = i.length;;");
 
-        VariableContainer i = vcl.getArrayValueFromScope("x");
+        VariableContainer x = vcl.getValueFromScope("x");
 
-        Assert.assertNotNull(i);
-        Assert.assertSame(i.getType(), VariableCollectorListener.VariableType.INT);
+        Assert.assertNotNull(x);
+        Assert.assertSame(x.getType(), VariableCollectorListener.VariableType.INT);
 
-        Assert.assertEquals(4, TypeCheckerHelper.parseInt(i.getValue()).intValue());
+        Assert.assertEquals(4, TypeCheckerHelper.parseInt(x.getValue()).intValue());
     }
 
     @Test
     public void length05(){
         parse("string[4] i; int x; x = i.length;;");
 
-        VariableContainer i = vcl.getArrayValueFromScope("x");
+        VariableContainer x = vcl.getValueFromScope("x");
 
-        Assert.assertNotNull(i);
-        Assert.assertSame(i.getType(), VariableCollectorListener.VariableType.INT);
+        Assert.assertNotNull(x);
+        Assert.assertSame(x.getType(), VariableCollectorListener.VariableType.INT);
 
-        Assert.assertEquals(4, TypeCheckerHelper.parseInt(i.getValue()).intValue());
+        Assert.assertEquals(4, TypeCheckerHelper.parseInt(x.getValue()).intValue());
     }
 
     @Test
     public void length06(){
         parse("GamePiece[4] i; int x; x = i.length;;");
 
-        VariableContainer i = vcl.getArrayValueFromScope("x");
+        VariableContainer x = vcl.getValueFromScope("x");
 
-        Assert.assertNotNull(i);
-        Assert.assertSame(i.getType(), VariableCollectorListener.VariableType.INT);
+        Assert.assertNotNull(x);
+        Assert.assertSame(x.getType(), VariableCollectorListener.VariableType.INT);
 
-        Assert.assertEquals(4, TypeCheckerHelper.parseInt(i.getValue()).intValue());
+        Assert.assertEquals(4, TypeCheckerHelper.parseInt(x.getValue()).intValue());
     }
 }
