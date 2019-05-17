@@ -319,7 +319,7 @@ public class ArrayParsingTests {
         Assert.assertEquals(1, array1[2].intValue());
         Assert.assertEquals(10, array1[3].intValue());
 
-        Integer[] array2 = TypeCheckerHelper.parseIntegerArray(i.getValue());
+        Integer[] array2 = TypeCheckerHelper.parseIntegerArray(x.getValue());
         Assert.assertEquals(1, array2.length);
         Assert.assertEquals(10, array2[0].intValue());
     }
