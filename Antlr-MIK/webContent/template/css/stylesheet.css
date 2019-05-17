@@ -34,6 +34,14 @@ GAMEPIECESTAG
     font-weight: bold;
 }
 
+.label {
+    display: none;
+}
+
+.GamePiece:hover .label{
+    display: inline-block;
+}
+
 .objects-and-media {
     width: calc(100% - 69px);
     margin-top: 20px;

@@ -27,9 +27,9 @@ procedureBlock  : LCURLY (procedureStmt ENDSTMT)* RCURLY;
 procedureStmt   : dotAssignment | arrayAssign | condStmt | whileStmt | assignment | action;
 
 action         : moveAction | waitAction | changeAction;
-moveAction      : MOVE LPAREN identifier SEPERATOR vec SEPERATOR number RPAREN  ;
-waitAction      : WAIT LPAREN identifier SEPERATOR number RPAREN  ;
-changeAction    : CHANGE LPAREN identifier SEPERATOR string SEPERATOR string SEPERATOR number RPAREN  ;
+moveAction      : MOVE LPAREN identifier SEPERATOR vec SEPERATOR integer RPAREN  ;
+waitAction      : WAIT LPAREN identifier SEPERATOR integer RPAREN  ;
+changeAction    : CHANGE LPAREN identifier SEPERATOR string SEPERATOR value SEPERATOR integer RPAREN  ;
 
 dotStmt         : identifier ((DOT identifier(LBRACKET number? RBRACKET)*))+ ;
 dotAssignment   : dotStmt ASSIGN value;
@@ -43,12 +43,11 @@ stringDcl   : STRING identifier;
 gpDcl       : GAMEPIECE identifier;
 arrayDcl    : type (LBRACKET integer RBRACKET)+ identifier;
 
-assignment  : (identifier | dotStmt) (LBRACKET integer RBRACKET)* ASSIGN (value | arithExpr | boolExpr | vecExpr | (identifier (LBRACKET integer RBRACKET)*) | dotStmt);
+assignment  : (identifier | dotStmt) (LBRACKET integer RBRACKET)* ASSIGN assignmentRight ;
+assignmentRight : (value | arithExpr | boolExpr | vecExpr | (identifier (LBRACKET integer RBRACKET)*) | dotStmt) ;
 
 //Datastructure operations
-arrayExpr   : boolExpr | arithExpr | gpDcl | identifier | dotStmt | arrayDcl | value | vec | floatDcl | vecExpr ;
-arrayAssign : identifier (((LBRACKET number RBRACKET)+ ASSIGN arrayExpr) | (LBRACKET RBRACKET ASSIGN LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY));
-
+arrayAssign : identifier (((LBRACKET integer RBRACKET)+ ASSIGN assignmentRight) | (LBRACKET RBRACKET ASSIGN LCURLY (assignmentRight(SEPERATOR assignmentRight)*) RCURLY));
 
 //Arithmetic operations
 arithExpr : arithExprParent | arithExprMiddle ;
@@ -60,10 +59,8 @@ arithExprMiddle : (identifier | number) (arithAction (identifier | number))+; //
 arithExprBoth : arithAction ((identifier | number) arithAction)* ;
 arithAction : ADDITION | SUBTRACTION | DIVISION | MULTIPLY | MODULO ;
 
-
-vecExpr    : (vecAdd | vecSub) ((ADDITION | SUBTRACTION) (identifier | vec))* ;
-vecAdd     : (identifier | vec) ADDITION (identifier | vec) ;
-vecSub     : (identifier | vec) SUBTRACTION (identifier | vec) ;
+vecExpr    : (identifier | vec) (vecOperator (identifier | vec))+ ;
+vecOperator: ADDITION | SUBTRACTION ;
 vecPara    : identifier | integer | arithExpr ;
 
 arguments       : value | arguments SEPERATOR arguments ;

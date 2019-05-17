@@ -15,6 +15,7 @@ import model.dataTypes.GamePiece;
 import model.dataTypes.Number;
 import model.dataTypes.Vector;
 import model.variables.VariableContainer;
+import org.antlr.v4.runtime.CodePointBuffer;
 
 import java.util.ArrayList;
 
@@ -31,9 +32,8 @@ public class ActionCollectorListener extends TacticBaseListener {
         this.variableCollectorListener = variableCollectorListener;
     }
 
-    /** This method will only detect function calls with the prefix/identifier: wait, change or move. */
     @Override
-    public void exitProcedureCall(Tactic.ProcedureCallContext ctx) {
+    public void exitAction(Tactic.ActionContext ctx) {
 
         if(variableCollectorListener.isInProcedureDefinition)
             return;
@@ -41,115 +41,127 @@ public class ActionCollectorListener extends TacticBaseListener {
         if(variableCollectorListener.isTraversingWhileStmt)
             return;
 
-        //System.out.println(ctx.children.get(0).getText());
-        String identifier = ctx.identifier().getText();
 
-        if(identifier.compareTo(BuildInFunctionChange.identifier) == 0 || identifier.compareTo(BuildInFunctionMove.identifier) == 0 ||identifier.compareTo(BuildInFunctionWait.identifier) == 0){
-            //Get the argumentContext of the function call, and get the last child of that, which is the attached ArgumentGatherer.
-            ArgumentGatherer ag = (ArgumentGatherer)((Tactic.ArgumentsContext) ctx.children.get(2)).children.get(ctx.children.get(2).getChildCount() -1);
-            ArrayList<Argument> arguments = ag.getConvertedArgumentsList();
+        //FIRST ARGUMENT
+        String firstArgIdentifier;
 
-            if(identifier.compareTo(BuildInFunctionChange.identifier) == 0){
-                //Parameters: GP, string, string, number
+        if(ctx.changeAction() != null)
+            firstArgIdentifier = ctx.changeAction().identifier().getText();
+        else if(ctx.moveAction() != null)
+            firstArgIdentifier = ctx.moveAction().identifier().getText();
+        else if(ctx.waitAction() != null)
+            firstArgIdentifier = ctx.waitAction().identifier().getText();
+        else
+            throw new IllegalArgumentException(); //Grammar has changed
 
-                if(ag.getNumberOfArguments() != 4)
-                    throw new IllegalNumberOfArguments(4, identifier, ag.getNumberOfArguments());
-
-                //INITIAL TYPE CHECKING --------------------------------------------
-                typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArgumentType.IDENTIFIER);
-
-                if(TypeCheckerHelper.parseGamePiecePropertyType(arguments.get(1).getValue()) == null)
-                    throw new IllegalArgumentType(2, identifier, Argument.ArgumentType.GAMEPIECE_PROPERTY);
-
-                typeCheckArgument(arguments.get(2), 3, identifier, Argument.ArgumentType.STRING,
-                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.INTEGER, Argument.ArgumentType.FLOAT,
-                        Argument.ArgumentType.VECTOR);
-
-                typeCheckArgument(arguments.get(3), 4, identifier,
-                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.INTEGER, Argument.ArgumentType.FLOAT);
-
-                //VALUE EVALUATION --------------------------------------------
-                //FIRST ARGUMENT
-                VariableContainer variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
-                GamePiece variableFirstArg = TypeCheckerHelper.parseGamePiece(variableConFirstArg.getValue());
-
-                if(variableFirstArg == null) //Was the parsed variable a GP?
-                    throw new IllegalArgumentType(1, identifier, "GamePiece");
-
-                //SECOND ARGUMENT //Make sure that the value matches the property
-                GamePiece.GamePiecePropertyType secondArg = TypeCheckerHelper.parseGamePiecePropertyType(arguments.get(1).getValue());
-
-                //THIRD ARGUMENT
-                String thirdArg = arguments.get(2).getValue();
-
-                //FOURTH ARGUMENT
-                Number fourthArg = evalIdentifierOrNumberArgument(arguments.get(3), 3, identifier);
-
-                //Collect the function //This function is used because of the third argument - it can be multiple types
-                addChangeActionCall(variableFirstArg, secondArg, thirdArg, fourthArg);
-
-            }else if(identifier.compareTo(BuildInFunctionMove.identifier) == 0) {
-                //Parameters: GP, vector, number
-
-                if(ag.getNumberOfArguments() != 3)
-                    throw new IllegalNumberOfArguments(3, identifier, ag.getNumberOfArguments());
-
-                typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArgumentType.IDENTIFIER);
-
-                typeCheckArgument(arguments.get(1), 2, identifier, Argument.ArgumentType.VECTOR);
-
-                typeCheckArgument(arguments.get(2), 3, identifier,
-                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.FLOAT, Argument.ArgumentType.INTEGER);
-
-                //VALUE EVALUATION --------------------------------------------
-                //FIRST ARGUMENT
-                VariableContainer variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
-                GamePiece variableFirstArg = TypeCheckerHelper.parseGamePiece(variableConFirstArg.getValue());
-
-                if(variableFirstArg == null) //Was the parsed variable a GP?
-                    throw new IllegalArgumentType(1, identifier, "GamePiece");
-
-                //SECOND ARGUMENT
-                Vector variableSecondArgVec = TypeCheckerHelper.parseVector(arguments.get(1).getValue());
-
-                //THIRD ARGUMENT
-                Number variableThirdArgNum = evalIdentifierOrNumberArgument(arguments.get(2), 2, identifier);
-
-                //Collect the function
-                actionFunctions.add(new BuildInFunctionMove(variableFirstArg, variableSecondArgVec, variableThirdArgNum));
-
-            }else if(identifier.compareTo(BuildInFunctionWait.identifier) == 0){
-                //Parameters: GP, number
-
-                if(ag.getNumberOfArguments() != 2)
-                    throw new IllegalNumberOfArguments(2, identifier, ag.getNumberOfArguments());
-
-                //INITIAL TYPE CHECKING --------------------------------------------
-                typeCheckArgument(arguments.get(0), 1, identifier, Argument.ArgumentType.IDENTIFIER);
-
-                typeCheckArgument(arguments.get(1), 2, identifier,
-                        Argument.ArgumentType.IDENTIFIER, Argument.ArgumentType.FLOAT, Argument.ArgumentType.INTEGER);
-
-                //VALUE EVALUATION --------------------------------------------
-                //FIRST ARGUMENT
-                VariableContainer variableConFirstArg = variableCollectorListener.getValueFromIdentifier(arguments.get(0).getValue());
-                GamePiece variableFirstArg = TypeCheckerHelper.parseGamePiece(variableConFirstArg.getValue());
-
-                if(variableFirstArg == null) //Was the parsed variable a GP?
-                    throw new IllegalArgumentType(1, identifier, "GamePiece");
-
-                //SECOND ARGUMENT
-                Number variableSecondArgNum = evalIdentifierOrNumberArgument(arguments.get(1), 1, identifier);
-
-                //Collect the function
-                actionFunctions.add(new BuildInFunctionWait(variableFirstArg, variableSecondArgNum));
-            }
+        //Is the identifier evaluation to a GamePiece?
+        VariableContainer firstArgVarCon = variableCollectorListener.getValueFromIdentifier(firstArgIdentifier);
+        if(firstArgVarCon == null){
+            System.out.println("The first argument to the action call is an identifier but it is not evaluating to a GamePiece.");
+            throw new IllegalArgumentException();
         }
+
+        GamePiece firstArgument = TypeCheckerHelper.parseGamePiece(firstArgVarCon.getValue());
+
+        //LAST ARGUMENT
+        String lastArgString;
+
+        if(ctx.changeAction() != null)
+            lastArgString = ctx.changeAction().integer().getText();
+        else if(ctx.moveAction() != null)
+            lastArgString = ctx.moveAction().integer().getText();
+        else if(ctx.waitAction() != null)
+            lastArgString = ctx.waitAction().integer().getText();
+        else
+            throw new IllegalArgumentException(); //Grammar has changed
+
+        Integer lastArg = TypeCheckerHelper.parseInt(lastArgString);
+
+        if(lastArg == null){
+            System.out.println("The last argument of the action call is not a valid integer.");
+            throw new IllegalArgumentException();
+        }
+
+        //Get the remaining of the arguments and collect action call
+        if(ctx.changeAction() != null){
+
+            //SECOND ARGUMENT
+            String secondArgString = ctx.changeAction().string().getText();
+            secondArgString = TypeCheckerHelper.parseString(secondArgString);
+            if(TypeCheckerHelper.parseGamePiecePropertyType(secondArgString) == null){
+                System.out.println("The second argument of the change action call ");
+                throw new IllegalArgumentException();
+            }
+
+            GamePiece.GamePiecePropertyType secondArg = TypeCheckerHelper.parseGamePiecePropertyType(secondArgString);
+
+            //THIRD ARGUMENT
+            VariableContainer thirdArgVarCon;
+            Tactic.ValueContext thirdArgValueContext = ctx.changeAction().value();
+            if(thirdArgValueContext.identifier() != null){
+                thirdArgVarCon = variableCollectorListener.getValueFromIdentifier(thirdArgValueContext.identifier().getText());
+
+                if(thirdArgVarCon == null){
+                    System.out.println("The requested variable has not been declared. Change action call, third argument.");
+                    throw new IllegalArgumentException();
+                }
+
+            }else if(thirdArgValueContext.number() != null){
+                if(thirdArgValueContext.number().integer() != null){
+                    float temp = Float.parseFloat(thirdArgValueContext.number().integer().getText()); //Casting the value to float
+                    thirdArgVarCon = new VariableContainer(null, String.valueOf(temp), VariableCollectorListener.VariableType.FLOAT);
+                }else if(thirdArgValueContext.number().floatVal() != null){
+                    thirdArgVarCon = new VariableContainer(null, thirdArgValueContext.number().floatVal().getText(), VariableCollectorListener.VariableType.FLOAT);
+                }else
+                    throw new IllegalArgumentException(); //Grammar has changed!
+            }else if(thirdArgValueContext.bool() != null){
+                System.out.println("The third argument of the change action call cannot be of type boolean.");
+                throw new IllegalArgumentException();
+            }else if(thirdArgValueContext.vec() != null){
+                thirdArgVarCon = new VariableContainer(null, thirdArgValueContext.vec().getText(), VariableCollectorListener.VariableType.VEC);
+            }else if(thirdArgValueContext.string() != null){
+                String temp = TypeCheckerHelper.parseString(thirdArgValueContext.string().getText()); //Trim citations
+                thirdArgVarCon = new VariableContainer(null, temp, VariableCollectorListener.VariableType.STRING);
+
+            } else
+                throw new IllegalArgumentException(); //Grammar has changed!
+
+            //Check if the given third argument can be saved in the property given in the second argument
+            boolean check = GamePiece.doesValueMatchPropertyType(secondArg, thirdArgVarCon);
+            if(!check){
+                System.out.println("The given type of the third argument in the change action call does not match the given property (second argument)");
+                throw new IllegalArgumentException();
+            }
+
+            //Collect the argument
+            actionFunctions.add(new BuildInFunctionChange(firstArgument, secondArg, thirdArgVarCon.getValue(), lastArg));
+
+        }else if(ctx.moveAction() != null){
+
+            //SECOND ARGUMENT
+            String secondArgString = ctx.moveAction().vec().getText();
+            Vector secondArg = TypeCheckerHelper.parseVector(secondArgString);
+
+            if(secondArg == null){
+                System.out.println("The second argument of a move action call is not a valid vector.");
+                throw new IllegalArgumentException();
+            }
+
+            //Collect the argument
+            actionFunctions.add(new BuildInFunctionMove(firstArgument, secondArg, lastArg));
+
+        }else if(ctx.waitAction() != null){
+
+            //Collect the argument
+            actionFunctions.add(new BuildInFunctionWait(firstArgument, lastArg));
+
+        }else
+            throw new IllegalArgumentException(); //Grammar has been changed
     }
 
     /** Used to parse the type of the third argument of the change call.
      * This can be a different types based on the property type. */
-    private void addChangeActionCall(GamePiece firstArg, GamePiece.GamePiecePropertyType secondArg, String thirdArg, Number fourthArg){
+    private void addChangeActionCall(GamePiece firstArg, GamePiece.GamePiecePropertyType secondArg, String thirdArg, Integer fourthArg){
 
         if(secondArg == GamePiece.GamePiecePropertyType.POSITION){
             if(TypeCheckerHelper.parseVector(thirdArg) == null)
@@ -205,6 +217,57 @@ public class ActionCollectorListener extends TacticBaseListener {
             throw new IllegalArgumentType(numberOfArguments + 1, functionName, "integer or float");
 
         return num;
+    }
+
+    public static void checkGamePiecePropertyColorValue(String val){
+        //Check if the given string is the RBG format: rgb(x,x,x)
+        val = val.toLowerCase();
+
+        if(val.length() < 5)
+            return;
+
+        if(val.substring(0, 4).compareTo("rgb(") == 0 && val.charAt(val.length() -1) == ')'){
+
+            val = val.substring(4, val.length() -1); //This cuts of: "rbg(" and ")"
+
+            String firstNumber = "";
+            String secondNumber = "";
+            String thirdNumber = "";
+            int commaCounter = 0;
+
+            for(char c : val.toCharArray()){
+
+                if(c == ','){
+                    commaCounter++;
+                    continue;
+                }
+
+                if(commaCounter == 0)
+                    firstNumber = firstNumber + c;
+                else if(commaCounter == 1)
+                    secondNumber = secondNumber + c;
+                else if(commaCounter == 2)
+                    thirdNumber = thirdNumber + c;
+            }
+
+            if(commaCounter > 2)
+                throwException("The given RBG given as the color property of a GamePiece is not of the current format: rgb(x,x,x)");
+
+            if(firstNumber.length() == 0 || secondNumber.length() == 0 || thirdNumber.length() == 0)
+                throwException("The given RBG given as the color property of a GamePiece: one of the values are missing. format: rgb(x,x,x)");
+
+            Integer firstInt = TypeCheckerHelper.parseInt(firstNumber);
+            Integer secondInt = TypeCheckerHelper.parseInt(secondNumber);
+            Integer thirdInt = TypeCheckerHelper.parseInt(thirdNumber);
+
+            if(firstInt == null || secondInt == null || thirdInt == null)
+                throwException("The given RBG given as the color property of a GamePiece: one of the values are not of the type integer. format: rgb(x,x,x)");
+        }
+    }
+
+    private static void throwException(String msg){
+        System.out.println(msg);
+        throw new IllegalArgumentException();
     }
 
     /** //TODO: Improvement: This method could be moved to a more general parserListener.

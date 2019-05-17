@@ -3,8 +3,10 @@ package customListeners;
 import gen.Tactic;
 import gen.TacticBaseListener;
 import model.Procedure;
+import model.dataTypes.Array;
 import model.dataTypes.GamePiece;
 import model.dataTypes.Number;
+import model.dataTypes.Vector;
 import model.utils.ArgumentGatherer;
 import model.utils.ArithmeticGatherer;
 import model.utils.Parameter;
@@ -88,13 +90,43 @@ public class VariableCollectorListener extends TacticBaseListener {
         VariableContainer varCon;
 
         //Get VariableContainer from the current scope
-        if(currentScope == VariableScopeData.ScopeType.MAIN_SCOPE)
+        if(currentScope == VariableScopeData.ScopeType.MAIN_SCOPE){
             varCon = mainScope.getVariable(identifier);
-        else{
+        } else {
             varCon = procedureScope.getVariable(identifier);
             if(varCon == null)
                 varCon = mainScope.getVariable(identifier);
         }
+
+        if(varCon.isArray()){
+            System.out.println("The requested variable is of the type array. Use other method for this.");
+            throw new IllegalArgumentException();
+        }
+
+        return varCon;
+    }
+
+    /** Used to get variables from the current scope. If the current scope
+     * is procedure scope, and ff the variable is not found in the function
+     * scope, it will then search the main scope.
+     * @param identifier the identifier of the requested variable.
+     * @return the value of the variable. */
+    public VariableContainer getArrayValueFromScope(String identifier){
+
+        VariableContainer varCon;
+
+        //Get VariableContainer from the current scope
+        if(currentScope == VariableScopeData.ScopeType.MAIN_SCOPE){
+            varCon = mainScope.getVariable(identifier);
+        } else {
+            varCon = procedureScope.getVariable(identifier);
+            if(varCon == null)
+                varCon = mainScope.getVariable(identifier);
+        }
+
+        if(varCon != null)
+            if(!varCon.isArray())
+                return null;
 
         return varCon;
     }
@@ -172,11 +204,10 @@ public class VariableCollectorListener extends TacticBaseListener {
             return;
 
         //Do check for board path assignment
-        if(ctx.identifier(0).getText().compareTo(BoardListener.boardKeyword) == 0)
+        if(ctx.identifier().getText().compareTo(BoardListener.boardKeyword) == 0)
             return;
 
-        String identifier = ctx.identifier(0).getText();
-        String value;
+        String identifier = ctx.identifier().getText();
 
         //Check the identifier on the left side of the assignment
         VariableContainer varConToOverwrite = getValueFromIdentifier(identifier);
@@ -186,10 +217,16 @@ public class VariableCollectorListener extends TacticBaseListener {
             throw new IllegalArgumentException();
         }
 
-        VariableType typeLeftIdentifier = varConToOverwrite.getType();
+        String value = getValueOfRightSideAssignment(ctx.assignmentRight(), varConToOverwrite.getType());
 
+        overwriteValueOfVariable(identifier, value);
+    }
 
-        //TODO Check if it is an array assignment
+    private String getValueOfRightSideAssignment(Tactic.AssignmentRightContext ctx, VariableType desiredType){
+
+        String value;
+
+        VariableType typeLeftIdentifier = desiredType;
 
         if(ctx.value() != null){ //format: identifier = value
 
@@ -248,8 +285,8 @@ public class VariableCollectorListener extends TacticBaseListener {
         } else if(ctx.boolExpr() != null){ //format identifier = boolStmt //TODO Change in grammar has made this invalid, Mathias is working on solution
             value = String.valueOf(getBoolStmtResult(ctx.boolExpr())); //TODO Change in grammar has made this invalid, Mathias is working on solution
         } else if(ctx.vecExpr() != null){ //format identifier = vecExpr (subtraction or addition)
-            throw new IllegalArgumentException(); //TODO Not yet implemented
-        } else if(ctx.identifier().size() == 2){ //format identifier = (identifier (LBRACKET integer RBRACKET)+) | dotStmt)
+            value = getResultOfVectorArithmetic(ctx.vecExpr()).toString();
+        } else if(ctx.identifier() != null){ //format identifier = (identifier (LBRACKET integer RBRACKET)+) | dotStmt)
             throw new IllegalArgumentException(); //TODO Not yet implemented
         } else
             throw new IllegalArgumentException(); //Grammar has changed
@@ -257,7 +294,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         if(value == null)
             throw new IllegalArgumentException(); //This should not be throw! If so, then the above code is not properly written.
 
-        overwriteValueOfVariable(identifier, value);
+        return value;
     }
 
     @Override
@@ -268,9 +305,99 @@ public class VariableCollectorListener extends TacticBaseListener {
         if(isTraversingWhileStmt)
             return;
 
-        //TODO
-    }
+        //TODO Might be on the format: []{x,x,x,,x};
 
+        String identifier = ctx.identifier().getText();
+        int index = TypeCheckerHelper.parseInt(ctx.integer(0).getText());
+
+        VariableContainer varConToOverwrite = getArrayValueFromScope(identifier);
+
+        if(varConToOverwrite == null){
+            System.out.println("In the array assignment: the variable being assigned either does not exist or is not an array.");
+            throw new IllegalArgumentException();
+        }
+
+        String value = getValueOfRightSideAssignment(ctx.assignmentRight(0), varConToOverwrite.getType());
+        String newValue;
+
+        if(varConToOverwrite.getType() == VariableType.INT){
+
+            Integer[] array = TypeCheckerHelper.parseIntegerArray(varConToOverwrite.getValue());
+
+            if(index >= array.length){
+                System.out.println("The index for the array assignment is greater than the number of elements in the array.");
+                throw new IllegalArgumentException();
+            }
+
+            array[index] = TypeCheckerHelper.parseInt(value);
+
+            newValue = new Array(array, VariableType.BOOL).toString();
+        } else if(varConToOverwrite.getType() == VariableType.FLOAT){
+
+            Float[] array = TypeCheckerHelper.parseFloatArray(varConToOverwrite.getValue());
+
+            if(index >= array.length){
+                System.out.println("The index for the array assignment is greater than the number of elements in the array.");
+                throw new IllegalArgumentException();
+            }
+
+            array[index] = TypeCheckerHelper.parseFloat(value);
+
+            newValue = new Array(array, VariableType.BOOL).toString();
+        } else if(varConToOverwrite.getType() == VariableType.VEC){
+
+            Vector[] array = TypeCheckerHelper.parseVectorArray(varConToOverwrite.getValue());
+
+            if(index >= array.length){
+                System.out.println("The index for the array assignment is greater than the number of elements in the array.");
+                throw new IllegalArgumentException();
+            }
+
+            array[index] = TypeCheckerHelper.parseVector(value);
+
+            newValue = new Array(array, VariableType.BOOL).toString();
+        } else if(varConToOverwrite.getType() == VariableType.BOOL){
+
+            Boolean[] array = TypeCheckerHelper.parseBooleanArray(varConToOverwrite.getValue());
+
+            if(index >= array.length){
+                System.out.println("The index for the array assignment is greater than the number of elements in the array.");
+                throw new IllegalArgumentException();
+            }
+
+            array[index] = TypeCheckerHelper.parseBool(value);
+
+            newValue = new Array(array, VariableType.BOOL).toString();
+        } else if(varConToOverwrite.getType() == VariableType.STRING){
+
+            String[] array = TypeCheckerHelper.parseStringArray(varConToOverwrite.getValue());
+
+            if(index >= array.length){
+                System.out.println("The index for the array assignment is greater than the number of elements in the array.");
+                throw new IllegalArgumentException();
+            }
+
+            array[index] = TypeCheckerHelper.parseString(value);
+
+            newValue = new Array(array, VariableType.STRING).toString();
+        } else if(varConToOverwrite.getType() == VariableType.GAMEPIECE){
+
+            GamePiece[] array = TypeCheckerHelper.parseGamePieceArray(varConToOverwrite.getValue());
+
+            if(index >= array.length){
+                System.out.println("The index for the array assignment is greater than the number of elements in the array.");
+                throw new IllegalArgumentException();
+            }
+
+            array[index] = TypeCheckerHelper.parseGamePiece(value);
+
+            newValue = new Array(array, VariableType.GAMEPIECE).toString();
+        }else
+            throw new IllegalArgumentException(); //Grammar has changed
+
+        overwriteValueOfVariable(identifier, newValue);
+    }
+    
     // PROCEDURES -------------------------------------------------------------------------
 
     @Override
@@ -312,30 +439,26 @@ public class VariableCollectorListener extends TacticBaseListener {
 
         String identifier = ctx.identifier().getText();
 
-        //Is the procedure call one of the three action calls? If so, do not do anything. (This is handled in ActionCollectorListener.)
-        if(!(identifier.compareTo(BuildInFunctionChange.identifier) == 0 || identifier.compareTo(BuildInFunctionMove.identifier) == 0 ||identifier.compareTo(BuildInFunctionWait.identifier) == 0)){
-            this.currentScope = VariableScopeData.ScopeType.PROCEDURE_SCOPE;
+        this.currentScope = VariableScopeData.ScopeType.PROCEDURE_SCOPE;
 
-            Procedure procedure = getProcedureFromIdentifier(identifier);
+        Procedure procedure = getProcedureFromIdentifier(identifier);
 
+        //Does the procedure have arguments
+        if(ctx.children.size() > 3) {
+            if (!(ctx.children.get(2).getChild(ctx.children.get(2).getChildCount() - 1) instanceof ArgumentGatherer))
+                throw new IllegalArgumentException(); //The arguments has not been collected.
 
-            //Does the procedure have arguments
-            if(ctx.children.size() > 3) {
-                if (!(ctx.children.get(2).getChild(ctx.children.get(2).getChildCount() - 1) instanceof ArgumentGatherer))
-                    throw new IllegalArgumentException(); //The arguments has not been collected.
-
-                ArgumentGatherer ag = (ArgumentGatherer) ctx.children.get(2).getChild(ctx.children.get(2).getChildCount() - 1);
-                procedureScope.setGivenArguments(ag.getConvertedArgumentsList());
-                //procedure.execute(ag.getConvertedArgumentsList(), this, identifier);
-            }
-
-
-            this.procedureScope.setCurrentProcedure(procedure);
-            this.procedureScope.execute();
-
-            this.currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
-            this.procedureScope.reset();
+            ArgumentGatherer ag = (ArgumentGatherer) ctx.children.get(2).getChild(ctx.children.get(2).getChildCount() - 1);
+            procedureScope.setGivenArguments(ag.getConvertedArgumentsList());
+            //procedure.execute(ag.getConvertedArgumentsList(), this, identifier);
         }
+
+
+        this.procedureScope.setCurrentProcedure(procedure);
+        this.procedureScope.execute();
+
+        this.currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
+        this.procedureScope.reset();
     }
 
     // DECLARATIONS ----------------------------------------------------
@@ -373,7 +496,64 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     @Override
     public void exitArrayDcl(Tactic.ArrayDclContext ctx) {
-        super.exitArrayDcl(ctx); //TODO HANDLE
+
+        //Trying to create an array with 0 elements?
+        if(ctx.children.get(2).getText().compareTo("0") == 0){
+            System.out.println("An array with 0 elements is being created!");
+            throw new IllegalArgumentException();
+        }
+
+        int sizeOfArray = Integer.parseInt(ctx.children.get(2).getText());
+        String identifier = ctx.identifier().getText();
+
+        VariableContainer varCon;
+
+        if(ctx.type().getText().compareTo("int") == 0){
+            Integer[] tempArray = new Integer[sizeOfArray];
+            for(int i = 0; i < sizeOfArray; i++)
+                tempArray[i] = 1;
+
+            Array<Integer> customArray = new Array<>(tempArray, VariableType.INT);
+            varCon = new VariableContainer(identifier, customArray.toString(), customArray.getType(), true);
+        }else if(ctx.type().getText().compareTo("float") == 0){
+            Float[] tempArray = new Float[sizeOfArray];
+            for(int i = 0; i < sizeOfArray; i++)
+                tempArray[i] = 1f;
+
+            Array<Float> customArray = new Array<>(tempArray, VariableType.FLOAT);
+            varCon = new VariableContainer(identifier, customArray.toString(), customArray.getType(), true);
+        }else if(ctx.type().getText().compareTo("vector") == 0){
+            Vector[] tempArray = new Vector[sizeOfArray];
+            for(int i = 0; i < sizeOfArray; i++)
+                tempArray[i] = new Vector(0,0,0);
+
+            Array<Vector> customArray = new Array<>(tempArray, VariableType.VEC);
+            varCon = new VariableContainer(identifier, customArray.toString(), customArray.getType(), true);
+        }else if(ctx.type().getText().compareTo("bool") == 0){
+            Boolean[] tempArray = new Boolean[sizeOfArray];
+            for(int i = 0; i < sizeOfArray; i++)
+                tempArray[i] = true;
+
+            Array<Boolean> customArray = new Array<>(tempArray, VariableType.BOOL);
+            varCon = new VariableContainer(identifier, customArray.toString(), customArray.getType(), true);
+        }else if(ctx.type().getText().compareTo("string") == 0){
+            String[] tempArray = new String[sizeOfArray];
+            for(int i = 0; i < sizeOfArray; i++)
+                tempArray[i] = "";
+
+            Array<String> customArray = new Array<>(tempArray, VariableType.STRING);
+            varCon = new VariableContainer(identifier, customArray.toString(), customArray.getType(), true);
+        }else if(ctx.type().getText().compareTo("GamePiece") == 0){
+            GamePiece[] tempArray = new GamePiece[sizeOfArray];
+            for(int i = 0; i < sizeOfArray; i++)
+                tempArray[i] = new GamePiece();
+
+            Array<GamePiece> customArray = new Array<>(tempArray, VariableType.GAMEPIECE);
+            varCon = new VariableContainer(identifier, customArray.toString(), customArray.getType(), true);
+        }else
+            throw new IllegalArgumentException(); //Grammar has changed!
+
+        addVariableToScope(varCon);
     }
 
     // -----------------------------------------------------------------
@@ -410,6 +590,7 @@ public class VariableCollectorListener extends TacticBaseListener {
 
             //Change the property in the GP (also removed citation-marks if needed)
             String newPropertyValue = TypeCheckerHelper.parseString(ctx.value().getText()); //Trim citations
+            if(gpPropType == GamePiece.GamePiecePropertyType.COLOR) ActionCollectorListener.checkGamePiecePropertyColorValue(newPropertyValue);
             GamePiece gp = TypeCheckerHelper.parseGamePiece(variableBeingDotted.getValue());
             gp.changeProperty(gpPropType, newPropertyValue);
 
@@ -417,6 +598,57 @@ public class VariableCollectorListener extends TacticBaseListener {
             String changedGpValue = gp.getGamePieceString();
             addVariableToScope(new VariableContainer(variableBeingDotted.getIdentifier(), changedGpValue, VariableCollectorListener.VariableType.GAMEPIECE));
         }
+    }
+
+    //VECTOR ARITHMETIC
+    /** @return the result of the given VecExpr. */
+    private Vector getResultOfVectorArithmetic(Tactic.VecExprContext ctx){
+
+        Vector resultVector = null;
+        String operator = null;
+
+
+        for(ParseTree child : ctx.children){
+            if(child instanceof Tactic.VecContext){
+                if(resultVector != null){
+                    Vector currentVector = TypeCheckerHelper.parseVector(child.getText());
+                    resultVector = getResultOfVectorOperation(resultVector, currentVector, operator);
+                } else //First vector
+                    resultVector = TypeCheckerHelper.parseVector(child.getText());
+
+            }else if(child instanceof Tactic.VecOperatorContext){
+                operator = child.getText();
+            }else if(child instanceof  Tactic.IdentifierContext){
+
+                VariableContainer varCon = getValueFromIdentifier(child.getText());
+
+                if(varCon == null){
+                    System.out.println("The identifier has not been declared.");
+                    throw new IllegalArgumentException();
+                }
+
+                if(varCon.getType() != VariableType.VEC){
+                    System.out.println("The variable has been declared but is not of type vector.");
+                    throw new IllegalArgumentException();
+                }
+
+                Vector currentVector = TypeCheckerHelper.parseVector(varCon.getValue());
+                resultVector = getResultOfVectorOperation(resultVector, currentVector, operator);
+            }
+        }
+
+        return resultVector;
+    }
+
+    private Vector getResultOfVectorOperation(Vector one, Vector two, String operator){
+        if(operator.compareTo("+") == 0){ //Addition
+            one.addVector(two);
+        }else if(operator.compareTo("-") == 0){ //Subtraction
+            one.subVector(two);
+        }else
+            throw new IllegalArgumentException(); //Grammar has changed. New vector operations.
+
+        return one;
     }
 
     // ARITHMETIC EXPRESSIONS ------------------------------

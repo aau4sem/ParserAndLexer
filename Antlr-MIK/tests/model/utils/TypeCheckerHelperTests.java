@@ -140,7 +140,7 @@ public class TypeCheckerHelperTests {
         Assert.assertNotNull(output);
         Assert.assertEquals(1, output.getX());
         Assert.assertEquals(4, output.getY());
-        Assert.assertEquals(-1, output.getZ());
+        Assert.assertEquals(0, output.getZ());
     }
 
     @Test

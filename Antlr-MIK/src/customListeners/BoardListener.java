@@ -22,13 +22,13 @@ public class BoardListener extends TacticBaseListener {
     @Override
     public void exitAssignment(Tactic.AssignmentContext ctx) {
 
-        String identifier = ctx.identifier().get(0).getText();
+        String identifier = ctx.identifier().getText();
 
         if(identifier.compareTo(boardKeyword) == 0){ //format: identifier = "string";
 
-            if(ctx.value() != null){
-                if(ctx.value().string() != null){
-                    boardPath = TypeCheckerHelper.parseString(ctx.value().getText());
+            if(ctx.assignmentRight().value() != null){
+                if(ctx.assignmentRight().value().string() != null){
+                    boardPath = TypeCheckerHelper.parseString(ctx.assignmentRight().value().getText());
                 }else
                     throw new IllegalArgumentException(); //The assignment is a value but not a string
             }else
