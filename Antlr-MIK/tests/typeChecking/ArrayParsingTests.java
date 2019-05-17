@@ -21,7 +21,7 @@ public class ArrayParsingTests {
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
 
-        //Check default values
+        //Check values
         Integer[] array = TypeCheckerHelper.parseIntegerArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertEquals(1, array[0].intValue());
@@ -39,7 +39,7 @@ public class ArrayParsingTests {
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
 
-        //Check default values
+        //Check values
         Float[] array = TypeCheckerHelper.parseFloatArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertEquals(1f, array[0], 10);
@@ -57,7 +57,7 @@ public class ArrayParsingTests {
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
 
-        //Check default values
+        //Check values
         Vector[] array = TypeCheckerHelper.parseVectorArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertTrue(isVectorsValuesEqual(array[0], new Vector(0,0,0)));
@@ -75,7 +75,7 @@ public class ArrayParsingTests {
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
 
-        //Check default values
+        //Check values
         Boolean[] array = TypeCheckerHelper.parseBooleanArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertTrue(array[0]);
@@ -93,7 +93,7 @@ public class ArrayParsingTests {
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
 
-        //Check default values
+        //Check values
         String[] array = TypeCheckerHelper.parseStringArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertEquals(array[0], "");
@@ -111,7 +111,7 @@ public class ArrayParsingTests {
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
 
-        //Check default values
+        //Check values
         GamePiece[] array = TypeCheckerHelper.parseGamePieceArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertTrue(isGamePiecesValuesEqual(array[0], new GamePiece()));
@@ -129,7 +129,7 @@ public class ArrayParsingTests {
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
 
-        //Check default values
+        //Check values
         Integer[] array = TypeCheckerHelper.parseIntegerArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertEquals(1, array[0].intValue());
@@ -147,7 +147,7 @@ public class ArrayParsingTests {
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
 
-        //Check default values
+        //Check values
         Float[] array = TypeCheckerHelper.parseFloatArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertEquals(1f, array[0], 10);
@@ -165,7 +165,7 @@ public class ArrayParsingTests {
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
 
-        //Check default values
+        //Check values
         Vector[] array = TypeCheckerHelper.parseVectorArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertTrue(isVectorsValuesEqual(array[0], new Vector(0,0,0)));
@@ -183,7 +183,7 @@ public class ArrayParsingTests {
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
 
-        //Check default values
+        //Check values
         Boolean[] array = TypeCheckerHelper.parseBooleanArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertTrue(array[0]);
@@ -201,7 +201,7 @@ public class ArrayParsingTests {
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
 
-        //Check default values
+        //Check values
         String[] array = TypeCheckerHelper.parseStringArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertEquals(array[0], "");
@@ -219,7 +219,7 @@ public class ArrayParsingTests {
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
 
-        //Check default values
+        //Check values
         GamePiece[] array = TypeCheckerHelper.parseGamePieceArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertTrue(isGamePiecesValuesEqual(array[0], new GamePiece()));
@@ -237,7 +237,7 @@ public class ArrayParsingTests {
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
 
-        //Check default values
+        //Check values
         Float[] array = TypeCheckerHelper.parseFloatArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertEquals(1f, array[0], 10);
@@ -255,7 +255,7 @@ public class ArrayParsingTests {
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
 
-        //Check default values
+        //Check values
         Float[] array = TypeCheckerHelper.parseFloatArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertEquals(1f, array[0], 10);
@@ -273,7 +273,7 @@ public class ArrayParsingTests {
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
 
-        //Check default values
+        //Check values
         Boolean[] array = TypeCheckerHelper.parseBooleanArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertTrue(array[0]);
@@ -291,7 +291,7 @@ public class ArrayParsingTests {
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
 
-        //Check default values
+        //Check values
         Vector[] array = TypeCheckerHelper.parseVectorArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertTrue(isVectorsValuesEqual(array[0], new Vector(0,0,0)));
@@ -333,7 +333,7 @@ public class ArrayParsingTests {
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
 
-        //Check default values
+        //Check values
         Integer[] array = TypeCheckerHelper.parseIntegerArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertEquals(1, array[0].intValue());
@@ -351,7 +351,7 @@ public class ArrayParsingTests {
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
 
-        //Check default values
+        //Check values
         Integer[] array = TypeCheckerHelper.parseIntegerArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertEquals(1, array[0].intValue());
