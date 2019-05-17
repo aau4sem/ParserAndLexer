@@ -320,8 +320,31 @@ public class VariableCollectorListener extends TacticBaseListener {
             value = String.valueOf(getBoolStmtResult(ctx.boolExpr())); //TODO Change in grammar has made this invalid, Mathias is working on solution
         } else if(ctx.vecExpr() != null){ //format identifier = vecExpr (subtraction or addition)
             value = getResultOfVectorArithmetic(ctx.vecExpr()).toString();
-        } else if(ctx.identifier() != null){ //format identifier = (identifier (LBRACKET integer RBRACKET)+) | dotStmt)
+        } else if(ctx.identifier() != null) { //format identifier = (identifier (LBRACKET integer RBRACKET)+) | dotStmt)
             throw new IllegalArgumentException(); //TODO Not yet implemented
+        }else if(ctx.dotStmt() != null){ //format:
+
+            String firstIdentifier = ctx.dotStmt().identifier().get(0).getText();
+
+
+            //Is the dotStmt for getting the length of an array?
+            if(ctx.dotStmt().identifier(1).getText().compareTo("length") == 0){
+                //TODO Do i have to check if the first identifier is an array?
+
+                VariableContainer varCon = getArrayValueFromScope(firstIdentifier);
+
+                if(varCon == null){
+                    System.out.println("The identifier being dotted with length, is either not initialized or not an array.");
+                    throw new IllegalArgumentException();
+                }
+
+
+                value = String.valueOf(varCon.getLengthOfarray());
+            }else{
+                //TODO Handle all other dot stmts
+                throw new IllegalArgumentException(); //TODO Not yet implemented
+
+            }
         } else
             throw new IllegalArgumentException(); //Grammar has changed
 
