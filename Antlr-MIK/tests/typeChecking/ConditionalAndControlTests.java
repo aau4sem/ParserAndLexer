@@ -11,6 +11,138 @@ import static testUtilities.TestUtils.vcl;
 
 public class ConditionalAndControlTests {
 
+    // WHILE STMTS ----------------------------------------------------
+
+    @Test
+    public void while_condition01(){
+        parse("int i; i = 0; while(true){ i = 5;};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(5, i.intValue());
+    }
+
+    @Test
+    public void while_condition02(){
+        parse("int i; i = 0; while(false){ i = 5;};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(0, i.intValue());
+    }
+
+    @Test
+    public void while_condition03(){
+        parse("int i; bool y; y = true; i = 0; while(y){ i = 5;};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(5, i.intValue());
+    }
+
+    @Test
+    public void while_condition04(){
+        parse("int i; bool y; y = false; i = 0; while(y){ i = 5;};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(0, i.intValue());
+    }
+
+    @Test
+    public void while_condition05(){
+        parse("int i; i = 0; while(2 == 2){ i = 5;};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(5, i.intValue());
+    }
+
+    @Test
+    public void while_condition06(){
+        parse("int i; i = 0; while(2 == 3){ i = 5;};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(0, i.intValue());
+    }
+
+    @Test
+    public void while_condition07(){
+        parse("int i; i = 0; while(2 != 4){ i = 5;};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(5, i.intValue());
+    }
+
+    @Test
+    public void while_condition08(){
+        parse("int i; i = 0; while(2 != 2){ i = 5;};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(0, i.intValue());
+    }
+
+    @Test
+    public void while_condition09(){
+        parse("int i; i = 0; while(true && true){ i = 5;};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(5, i.intValue());
+    }
+
+    @Test
+    public void while_condition10(){
+        parse("int i; i = 0; while(true && false){ i = 5;};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(0, i.intValue());
+    }
+
+    @Test
+    public void while_condition11(){
+        parse("int i; i = 0; while(false || true){ i = 5;};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(5, i.intValue());
+    }
+
+    @Test
+    public void while_condition12(){
+        parse("int i; i = 0; while(true || false){ i = 5;};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(5, i.intValue());
+    }
+
+    @Test
+    public void while_condition13(){
+        parse("int i; i = 0; while(false || false){ i = 5;};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(0, i.intValue());
+    }
+
     @Test
     public void while_general01(){
         parse("int i; i = 0; while(i < 5){ i = 5;};;");
@@ -20,6 +152,38 @@ public class ConditionalAndControlTests {
         Assert.assertNotNull(i);
         Assert.assertEquals(5, i.intValue());
     }
+
+    @Test
+    public void while_block01(){
+        parse("int i; i = 5; while(false){ Move(gp, (2,2,3), 20);};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(5, i.intValue());
+    }
+
+    @Test
+    public void while_block02(){
+        parse("int i; i = 5; while(false){ Change(gp, \"position\", (2,3,2), 20);};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(5, i.intValue());
+    }
+
+    @Test
+    public void while_block03(){
+        parse("int i; i = 5; while(false){ Wait(gp, 20);};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(5, i.intValue());
+    }
+
+    //TODO All stmts
 
     //@Test //Endless loop
     public void while_general02(){
@@ -39,26 +203,6 @@ public class ConditionalAndControlTests {
 
         Assert.assertNotNull(i);
         Assert.assertEquals(5, i.intValue());
-    }
-
-    @Test
-    public void if01(){
-        parse("int i; i = 5; if(true){i = 6;};;");
-
-        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
-
-        Assert.assertNotNull(i);
-        Assert.assertEquals(6, i.intValue());
-    }
-
-    @Test
-    public void if02() {
-        parse("int i; i = 5; if(false){i = 6;};;");
-
-        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
-
-        Assert.assertNotNull(i);
-        Assert.assertEquals(10, i.intValue());
     }
 
     @Test
@@ -99,26 +243,6 @@ public class ConditionalAndControlTests {
 
         Assert.assertNotNull(i);
         Assert.assertEquals(5, i.intValue());
-    }
-
-    @Test
-    public void ifelse01(){
-        parse("int i; i = 5; if(true){i = 6;}else{i = 10;};;");
-
-        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
-
-        Assert.assertNotNull(i);
-        Assert.assertEquals(6, i.intValue());
-    }
-
-    @Test
-    public void ifelse02(){
-        parse("int i; i = 5; if(false){i = 6;}else{i = 10;};;");
-
-        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
-
-        Assert.assertNotNull(i);
-        Assert.assertEquals(10, i.intValue());
     }
 
     public void while_stmt_procedureCall02(){
@@ -183,6 +307,47 @@ public class ConditionalAndControlTests {
         Assert.assertEquals(10, i.intValue());
     }
 
+    // IF STMTS -------------------------------------------------------
+
+    @Test
+    public void if01(){
+        parse("int i; i = 5; if(true){i = 6;};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(6, i.intValue());
+    }
+
+    @Test
+    public void if02() {
+        parse("int i; i = 5; if(false){i = 6;};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(10, i.intValue());
+    }
+
+    @Test
+    public void ifelse01(){
+        parse("int i; i = 5; if(true){i = 6;}else{i = 10;};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(6, i.intValue());
+    }
+
+    @Test
+    public void ifelse02(){
+        parse("int i; i = 5; if(false){i = 6;}else{i = 10;};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(10, i.intValue());
+    }
 
     @Test
     public void ifThenElse01(){
