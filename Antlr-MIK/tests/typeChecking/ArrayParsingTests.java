@@ -7,20 +7,19 @@ import model.dataTypes.GamePiece;
 import model.dataTypes.Vector;
 import model.utils.TypeCheckerHelper;
 import model.variables.VariableContainer;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ArrayParsingTests {
+import static testUtilities.TestUtils.parse;
+import static testUtilities.TestUtils.vcl;
 
-    private static VariableCollectorListener vlc;
+public class ArrayParsingTests {
 
     @Test
     public void declaration01(){
         parse("int[4] i;;");
 
-        VariableContainer i = vlc.getArrayValueFromScope("i");
+        VariableContainer i = vcl.getArrayValueFromScope("i");
 
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
@@ -38,7 +37,7 @@ public class ArrayParsingTests {
     public void declaration02(){
         parse("float[4] i;;");
 
-        VariableContainer i = vlc.getArrayValueFromScope("i");
+        VariableContainer i = vcl.getArrayValueFromScope("i");
 
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
@@ -56,7 +55,7 @@ public class ArrayParsingTests {
     public void declaration03(){
         parse("vector[4] i;;");
 
-        VariableContainer i = vlc.getArrayValueFromScope("i");
+        VariableContainer i = vcl.getArrayValueFromScope("i");
 
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
@@ -74,7 +73,7 @@ public class ArrayParsingTests {
     public void declaration04(){
         parse("bool[4] i;;");
 
-        VariableContainer i = vlc.getArrayValueFromScope("i");
+        VariableContainer i = vcl.getArrayValueFromScope("i");
 
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
@@ -92,7 +91,7 @@ public class ArrayParsingTests {
     public void declaration05(){
         parse("string[4] i;;");
 
-        VariableContainer i = vlc.getArrayValueFromScope("i");
+        VariableContainer i = vcl.getArrayValueFromScope("i");
 
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
@@ -110,7 +109,7 @@ public class ArrayParsingTests {
     public void declaration06(){
         parse("GamePiece[4] i;;");
 
-        VariableContainer i = vlc.getArrayValueFromScope("i");
+        VariableContainer i = vcl.getArrayValueFromScope("i");
 
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
@@ -128,7 +127,7 @@ public class ArrayParsingTests {
     public void assignment01(){
         parse("int[4] i; i[3] = 4;;");
 
-        VariableContainer i = vlc.getArrayValueFromScope("i");
+        VariableContainer i = vcl.getArrayValueFromScope("i");
 
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
@@ -146,7 +145,7 @@ public class ArrayParsingTests {
     public void assignment02(){
         parse("float[4] i; i[2] = 2.3;;");
 
-        VariableContainer i = vlc.getArrayValueFromScope("i");
+        VariableContainer i = vcl.getArrayValueFromScope("i");
 
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
@@ -164,7 +163,7 @@ public class ArrayParsingTests {
     public void assignment03(){
         parse("vector[4] i; i[2] = (5,5,5);;");
 
-        VariableContainer i = vlc.getArrayValueFromScope("i");
+        VariableContainer i = vcl.getArrayValueFromScope("i");
 
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
@@ -182,7 +181,7 @@ public class ArrayParsingTests {
     public void assignment04(){
         parse("bool[4] i; i[1] = false;;");
 
-        VariableContainer i = vlc.getArrayValueFromScope("i");
+        VariableContainer i = vcl.getArrayValueFromScope("i");
 
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
@@ -200,7 +199,7 @@ public class ArrayParsingTests {
     public void assignment05(){
         parse("string[4] i; i[1] = \"test\";;");
 
-        VariableContainer i = vlc.getArrayValueFromScope("i");
+        VariableContainer i = vcl.getArrayValueFromScope("i");
 
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
@@ -218,7 +217,7 @@ public class ArrayParsingTests {
     public void assignment06(){ //TODO LOTS OF TESTS!
         parse("GamePiece[4] i;;");
 
-        VariableContainer i = vlc.getArrayValueFromScope("i");
+        VariableContainer i = vcl.getArrayValueFromScope("i");
 
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
@@ -230,16 +229,6 @@ public class ArrayParsingTests {
         Assert.assertTrue(isGamePiecesValuesEqual(array[1], new GamePiece()));
         Assert.assertTrue(isGamePiecesValuesEqual(array[2], new GamePiece()));
         Assert.assertTrue(isGamePiecesValuesEqual(array[3], new GamePiece()));
-    }
-
-    /** Parses the given input and the results can be found in the field. */
-    public static void parse(String input){
-        TacticLexer lexer = new TacticLexer(new ANTLRInputStream(input));
-        Tactic parser = new Tactic(new CommonTokenStream(lexer));
-        vlc = new VariableCollectorListener();
-        parser.addParseListener(vlc);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
     }
 
     private static boolean isGamePiecesValuesEqual(GamePiece one, GamePiece two){

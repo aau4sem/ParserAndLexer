@@ -1,24 +1,20 @@
 package typeChecking;
 
-import customListeners.VariableCollectorListener;
-import gen.Tactic;
-import gen.TacticLexer;
 import model.dataTypes.Vector;
 import model.utils.TypeCheckerHelper;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class VectorArithmeticTests {
+import static testUtilities.TestUtils.parse;
+import static testUtilities.TestUtils.vcl;
 
-    private static VariableCollectorListener vlc;
+public class VectorArithmeticTests {
 
     @Test
     public void add01(){
         parse("vector i; i = (5,5,5) + (2,2,2);;");
 
-        Vector i = TypeCheckerHelper.parseVector(vlc.getValueFromIdentifier("i").getValue());
+        Vector i = TypeCheckerHelper.parseVector(vcl.getValueFromIdentifier("i").getValue());
 
         Assert.assertNotNull(i);
         Assert.assertEquals(7, i.getX());
@@ -30,7 +26,7 @@ public class VectorArithmeticTests {
     public void add02(){
         parse("vector i; i = (5,5,5) + (2,2,2) + (3,3,3);;");
 
-        Vector i = TypeCheckerHelper.parseVector(vlc.getValueFromIdentifier("i").getValue());
+        Vector i = TypeCheckerHelper.parseVector(vcl.getValueFromIdentifier("i").getValue());
 
         Assert.assertNotNull(i);
         Assert.assertEquals(10, i.getX());
@@ -42,7 +38,7 @@ public class VectorArithmeticTests {
     public void sub01(){
         parse("vector i; i = (5,5,5) - (2,2,2);;");
 
-        Vector i = TypeCheckerHelper.parseVector(vlc.getValueFromIdentifier("i").getValue());
+        Vector i = TypeCheckerHelper.parseVector(vcl.getValueFromIdentifier("i").getValue());
 
         Assert.assertNotNull(i);
         Assert.assertEquals(3, i.getX());
@@ -54,7 +50,7 @@ public class VectorArithmeticTests {
     public void sub02(){
         parse("vector i; i = (5,5,5) - (2,2,2) - (2,2,2);;");
 
-        Vector i = TypeCheckerHelper.parseVector(vlc.getValueFromIdentifier("i").getValue());
+        Vector i = TypeCheckerHelper.parseVector(vcl.getValueFromIdentifier("i").getValue());
 
         Assert.assertNotNull(i);
         Assert.assertEquals(1, i.getX());
@@ -66,7 +62,7 @@ public class VectorArithmeticTests {
     public void sub03(){
         parse("vector i; vector x; x = (1,1,1); i = (5,5,5) - x;;");
 
-        Vector i = TypeCheckerHelper.parseVector(vlc.getValueFromIdentifier("i").getValue());
+        Vector i = TypeCheckerHelper.parseVector(vcl.getValueFromIdentifier("i").getValue());
 
         Assert.assertNotNull(i);
         Assert.assertEquals(4, i.getX());
@@ -78,21 +74,11 @@ public class VectorArithmeticTests {
     public void sub05(){ //TODO Currently fails because i = i - x; is not parsed or check, so it is assumed to be a "normal" arithmetic expression.
         parse("vector i; vector x; x = (1,1,1); i = (5,5,5) - x; i = i - x;;");
 
-        Vector i = TypeCheckerHelper.parseVector(vlc.getValueFromIdentifier("i").getValue());
+        Vector i = TypeCheckerHelper.parseVector(vcl.getValueFromIdentifier("i").getValue());
 
         Assert.assertNotNull(i);
         Assert.assertEquals(3, i.getX());
         Assert.assertEquals(3, i.getY());
         Assert.assertEquals(3, i.getZ());
-    }
-
-    /** Parses the given input and the results can be found in the field. */
-    public static void parse(String input){
-        TacticLexer lexer = new TacticLexer(new ANTLRInputStream(input));
-        Tactic parser = new Tactic(new CommonTokenStream(lexer));
-        vlc = new VariableCollectorListener();
-        parser.addParseListener(vlc);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
     }
 }
