@@ -252,8 +252,6 @@ public class VariableCollectorListener extends TacticBaseListener {
 
         String value;
 
-        VariableType typeLeftIdentifier = desiredType;
-
         if(ctx.value() != null){ //format: identifier = value
 
             //Get value
@@ -268,12 +266,12 @@ public class VariableCollectorListener extends TacticBaseListener {
                 }
 
                 //Type checking for assignment
-                if(typeLeftIdentifier == varConRight.getType()){
+                if(desiredType == varConRight.getType()){
                     value = varConRight.getValue();
-                } else if(typeLeftIdentifier == VariableType.INT && varConRight.getType() == VariableType.FLOAT){
+                } else if(desiredType == VariableType.INT && varConRight.getType() == VariableType.FLOAT){
                     //throw new IllegalArgumentException(); //Trying to assign an float to an int
                     value = String.valueOf(TypeCheckerHelper.trimFloatToInt(varConRight.getValue())); //Cast value from float to int
-                } else if(typeLeftIdentifier == VariableType.FLOAT && varConRight.getType() == VariableType.INT){
+                } else if(desiredType == VariableType.FLOAT && varConRight.getType() == VariableType.INT){
                     value = varConRight.getValue(); //Casting int to float
                 } else{
                     System.out.println("The value in the right side of the assignment is wrong.");
@@ -285,12 +283,12 @@ public class VariableCollectorListener extends TacticBaseListener {
                     throw new IllegalArgumentException();
 
                 Number num = TypeCheckerHelper.parseNumber(valueContext.number().getText());
-                if(typeLeftIdentifier == VariableType.INT){
+                if(desiredType == VariableType.INT){
                     if(num.getIntValue() == null){
                         throw new IllegalArgumentException(); //Trying to assign a float value to an int
                     }
                     value = String.valueOf(num.getIntValue());
-                }else if (typeLeftIdentifier == VariableType.FLOAT){
+                }else if (desiredType == VariableType.FLOAT){
                     if(num.getIntValue() != null)
                         value = String.valueOf(num.getIntValue());
                     else if(num.getFloatValue() != null)
@@ -321,8 +319,33 @@ public class VariableCollectorListener extends TacticBaseListener {
             value = String.valueOf(getBoolStmtResult(ctx.boolExpr())); //TODO Change in grammar has made this invalid, Mathias is working on solution
         } else if(ctx.vecExpr() != null){ //format identifier = vecExpr (subtraction or addition)
             value = getResultOfVectorArithmetic(ctx.vecExpr()).toString();
-        } else if(ctx.identifier() != null) { //format identifier = (identifier (LBRACKET integer RBRACKET)+) | dotStmt)
-            throw new IllegalArgumentException(); //TODO Not yet implemented
+        } else if(ctx.identifier() != null) { //format identifier = identifier LBRACKET integer RBRACKET
+
+            VariableContainer varCon = getArrayValueFromScope(ctx.identifier().getText());
+
+            if(varCon == null){
+                System.out.println("The requested array does not exist.");
+                throw new IllegalArgumentException();
+            }
+
+            if(varCon.getType() != desiredType){
+                System.out.println("The array is not of the requested type.");
+                throw new IllegalArgumentException();
+            }
+
+            int index = Integer.parseInt(ctx.integer().getText());
+
+            if(index >= varCon.getLengthOfarray()){
+                System.out.println("The index addressing the array is larger than the array.");
+                throw new IllegalArgumentException();
+            }
+
+            if(index < 0){
+                System.out.println("The index addressing the array is a negative number.");
+                throw new IllegalArgumentException();
+            }
+
+            value = TypeCheckerHelper.getArrayElements(varCon.getValue()).get(index);
         }else if(ctx.dotStmt() != null){ //format:
 
             String firstIdentifier = ctx.dotStmt().identifier().get(0).getText();
