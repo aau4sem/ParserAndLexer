@@ -231,6 +231,78 @@ public class ArrayParsingTests {
         Assert.assertTrue(isGamePiecesValuesEqual(array[3], new GamePiece()));
     }
 
+    @Test
+    public void length01(){
+        parse("int[4] i; int x; x = i.length;;");
+
+        VariableContainer i = vcl.getArrayValueFromScope("x");
+
+        Assert.assertNotNull(i);
+        Assert.assertSame(i.getType(), VariableCollectorListener.VariableType.INT);
+
+        Assert.assertEquals(4, TypeCheckerHelper.parseInt(i.getValue()).intValue());
+    }
+
+    @Test
+    public void length02(){
+        parse("float[4] i; int x; x = i.length;;");
+
+        VariableContainer i = vcl.getArrayValueFromScope("x");
+
+        Assert.assertNotNull(i);
+        Assert.assertSame(i.getType(), VariableCollectorListener.VariableType.INT);
+
+        Assert.assertEquals(4, TypeCheckerHelper.parseInt(i.getValue()).intValue());
+    }
+
+    @Test
+    public void length03(){
+        parse("vector[4] i; int x; x = i.length;;");
+
+        VariableContainer i = vcl.getArrayValueFromScope("x");
+
+        Assert.assertNotNull(i);
+        Assert.assertSame(i.getType(), VariableCollectorListener.VariableType.INT);
+
+        Assert.assertEquals(4, TypeCheckerHelper.parseInt(i.getValue()).intValue());
+    }
+
+    @Test
+    public void length04(){
+        parse("bool[4] i; int x; x = i.length;;");
+
+        VariableContainer i = vcl.getArrayValueFromScope("x");
+
+        Assert.assertNotNull(i);
+        Assert.assertSame(i.getType(), VariableCollectorListener.VariableType.INT);
+
+        Assert.assertEquals(4, TypeCheckerHelper.parseInt(i.getValue()).intValue());
+    }
+
+    @Test
+    public void length05(){
+        parse("string[4] i; int x; x = i.length;;");
+
+        VariableContainer i = vcl.getArrayValueFromScope("x");
+
+        Assert.assertNotNull(i);
+        Assert.assertSame(i.getType(), VariableCollectorListener.VariableType.INT);
+
+        Assert.assertEquals(4, TypeCheckerHelper.parseInt(i.getValue()).intValue());
+    }
+
+    @Test
+    public void length06(){
+        parse("GamePiece[4] i; int x; x = i.length;;");
+
+        VariableContainer i = vcl.getArrayValueFromScope("x");
+
+        Assert.assertNotNull(i);
+        Assert.assertSame(i.getType(), VariableCollectorListener.VariableType.INT);
+
+        Assert.assertEquals(4, TypeCheckerHelper.parseInt(i.getValue()).intValue());
+    }
+
     private static boolean isGamePiecesValuesEqual(GamePiece one, GamePiece two){
 
         boolean result = true;
