@@ -160,7 +160,7 @@ public class ConditionalAndControlTests {
 
     @Test
     public void while_block01(){
-        parse("int i; i = 5; while(i > 4){ Move(gp, (2,2,3), 20); i = 4;};;");
+        parse("int i; GamePiece gp; i = 5; while(i > 4){ Move(gp, (2,2,3), 20); i = 4;};;");
 
         Assert.assertEquals(1, acl.getActionFunctions().size());
         Assert.assertTrue(acl.getActionFunctions().get(0) instanceof BuildInFunctionMove);
@@ -168,7 +168,7 @@ public class ConditionalAndControlTests {
 
     @Test
     public void while_block02(){
-        parse("int i; i = 5; while(i > 4){ Change(gp, \"position\", (2,3,2), 20); i = 4;};;");
+        parse("int i; GamePiece gp; i = 5; while(i > 4){ Change(gp, \"position\", (2,3,2), 20); i = 4;};;");
 
         Assert.assertEquals(1, acl.getActionFunctions().size());
         Assert.assertTrue(acl.getActionFunctions().get(0) instanceof BuildInFunctionChange);
@@ -176,7 +176,7 @@ public class ConditionalAndControlTests {
 
     @Test
     public void while_block03(){
-        parse("int i; i = 5; while(i > 4){ Wait(gp, 20); i = 4;};;");
+        parse("int i; GamePiece gp; i = 5; while(i > 4){ Wait(gp, 20); i = 4;};;");
 
         Assert.assertEquals(1, acl.getActionFunctions().size());
         Assert.assertTrue(acl.getActionFunctions().get(0) instanceof BuildInFunctionWait);
@@ -322,12 +322,94 @@ public class ConditionalAndControlTests {
     }
 
     @Test
-    public void ifThenElse01(){
-        parse("testTODO");
+    public void if_block01(){
+        parse("int i; int[4] x; i = 5; if(true){i = x.length;};;");
 
         Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
 
         Assert.assertNotNull(i);
-        Assert.assertEquals(5, i.intValue());
+        Assert.assertEquals(4, i.intValue());
+    }
+
+    @Test
+    public void if_block02(){
+        parse("int x; int[4] i; x = 5; if(true){i[3] = x;};;");
+
+        VariableContainer i = vcl.getArrayValueFromScope("i");
+
+        Assert.assertNotNull(i);
+        Assert.assertTrue(i.isArray());
+
+        //Check default values
+        Integer[] array = TypeCheckerHelper.parseIntegerArray(i.getValue());
+        Assert.assertEquals(4, array.length);
+        Assert.assertEquals(1, array[0].intValue());
+        Assert.assertEquals(1, array[1].intValue());
+        Assert.assertEquals(1, array[2].intValue());
+        Assert.assertEquals(5, array[3].intValue());
+    }
+
+    @Test
+    public void if_block03(){
+        parse("proc(){i = 10;}; int i; i = 5; if(true){proc();};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(10, i.intValue());
+    }
+
+    @Test
+    public void if_block04(){
+        parse("int i; i = 5; if(true){if(true){i = 10;};};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(10, i.intValue());
+    }
+
+    @Test
+    public void if_block05(){
+        parse("int i; i = 5; if(true){if(false){i = 3;}else{i = 10;};};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(10, i.intValue());
+    }
+
+    @Test
+    public void if_block06(){
+        parse("int i; i = 5; if(true){while(i > 4){i = 4;};};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(4, i.intValue());
+    }
+
+    @Test
+    public void if_block07(){
+        parse("int i; GamePiece gp; i = 5; if(true){Move(gp, (2,2,3), 20);};;");
+
+        Assert.assertEquals(1, acl.getActionFunctions().size());
+        Assert.assertTrue(acl.getActionFunctions().get(0) instanceof BuildInFunctionMove);
+    }
+
+    @Test
+    public void if_block08(){
+        parse("int i; GamePiece gp; i = 5; if(true){Change(gp, \"position\", (2,3,2), 20);};;");
+
+        Assert.assertEquals(1, acl.getActionFunctions().size());
+        Assert.assertTrue(acl.getActionFunctions().get(0) instanceof BuildInFunctionChange);
+    }
+
+    @Test
+    public void if_block09(){
+        parse("int i; GamePiece gp; i = 5; if(true){Wait(gp, 20); i = 4;};;");
+
+        Assert.assertEquals(1, acl.getActionFunctions().size());
+        Assert.assertTrue(acl.getActionFunctions().get(0) instanceof BuildInFunctionWait);
     }
 }
