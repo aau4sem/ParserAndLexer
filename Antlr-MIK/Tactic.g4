@@ -8,11 +8,11 @@ parser grammar Tactic;
 options { tokenVocab = TacticLexer; }
 
 prog    : (dcl ENDSTMT)* (stmt ENDSTMT)* ENDSTMT;
-stmt    : dotAssignment | arrayAssign | procedureCall | condStmt | whileStmt | assignment;
+stmt    : dotAssignment | arrayAssign | procedureCall | condStmt | whileStmt | assignment | action;
 dcl     : intDcl | boolDcl | arrayDcl | stringDcl | gpDcl | floatDcl | vecDcl | procedureDef;
 
-integer         : NUMBER | DIGIT ;
-floatVal        : (NUMBER | DIGIT) DOT (NUMBER | DIGIT);
+integer         : SUBTRACTION? (NUMBER | DIGIT) ;
+floatVal        : SUBTRACTION? ((NUMBER | DIGIT) DOT (NUMBER | DIGIT));
 number          : integer | floatVal ;
 word            : WORD | LETTER ;
 string          : STRINGTEXT ;
@@ -23,7 +23,13 @@ type            : INTEGER | FLOAT | VEC | BOOL | STRING | GAMEPIECE ;
 
 procedureCall   : identifier LPAREN arguments? RPAREN;
 procedureDef    : identifier LPAREN (type(LBRACKET RBRACKET)* identifier (SEPERATOR type (LBRACKET RBRACKET)* identifier)*)? RPAREN procedureBlock;
-procedureBlock  : LCURLY (stmt ENDSTMT)* RCURLY;
+procedureBlock  : LCURLY (procedureStmt ENDSTMT)* RCURLY;
+procedureStmt   : dotAssignment | arrayAssign | condStmt | whileStmt | assignment | action;
+
+action         : moveAction | waitAction | changeAction;
+moveAction      : MOVE LPAREN identifier SEPERATOR vec SEPERATOR integer RPAREN  ;
+waitAction      : WAIT LPAREN identifier SEPERATOR integer RPAREN  ;
+changeAction    : CHANGE LPAREN identifier SEPERATOR string SEPERATOR value SEPERATOR integer RPAREN  ;
 
 dotStmt         : identifier ((DOT identifier(LBRACKET number? RBRACKET)*))+ ;
 dotAssignment   : dotStmt ASSIGN value;
@@ -35,14 +41,13 @@ vecDcl      : VEC identifier;
 boolDcl     : BOOL identifier;
 stringDcl   : STRING identifier;
 gpDcl       : GAMEPIECE identifier;
-arrayDcl    : type (LBRACKET integer RBRACKET)+ identifier;
+arrayDcl    : type LBRACKET integer RBRACKET identifier;
 
-assignment  : (identifier | dotStmt) (LBRACKET integer RBRACKET)* ASSIGN (value | arithExpr | boolExpr | vecExpr | (identifier (LBRACKET integer RBRACKET)*) | dotStmt);
+assignment  : (identifier | dotStmt) (LBRACKET integer RBRACKET)? ASSIGN assignmentRight ;
+assignmentRight : (value | arithExpr | boolExpr | vecExpr | (identifier (LBRACKET integer RBRACKET)*) | dotStmt) ;
 
 //Datastructure operations
-arrayExpr   : boolExpr | arithExpr | gpDcl | identifier | dotStmt | arrayDcl | value | vec | floatDcl | vecExpr ;
-arrayAssign : identifier (((LBRACKET number RBRACKET)+ ASSIGN arrayExpr) | (LBRACKET RBRACKET ASSIGN LCURLY (arrayExpr(SEPERATOR arrayExpr)*) RCURLY));
-
+arrayAssign : identifier ((LBRACKET integer RBRACKET ASSIGN assignmentRight) | (LBRACKET RBRACKET ASSIGN LCURLY (assignmentRight(SEPERATOR assignmentRight)*) RCURLY));
 
 //Arithmetic operations
 arithExpr : arithExprParent | arithExprMiddle ;
@@ -54,17 +59,15 @@ arithExprMiddle : (identifier | number) (arithAction (identifier | number))+; //
 arithExprBoth : arithAction ((identifier | number) arithAction)* ;
 arithAction : ADDITION | SUBTRACTION | DIVISION | MULTIPLY | MODULO ;
 
-
-vecExpr    : (vecAdd | vecSub) ((ADDITION | SUBTRACTION) (identifier | vec))* ;
-vecAdd     : (identifier | vec) ADDITION (identifier | vec) ;
-vecSub     : (identifier | vec) SUBTRACTION (identifier | vec) ;
-vecPara         : identifier | integer | arithExpr ;
+vecExpr    : (identifier | vec) (vecOperator (identifier | vec))+ ;
+vecOperator: ADDITION | SUBTRACTION ;
+vecPara    : identifier | integer | arithExpr ;
 
 arguments       : value | arguments SEPERATOR arguments ;
 
 //Control structures
 condStmt        : ifStmt elseStmt? ;
-block           : LCURLY (stmt ENDSTMT)* RCURLY ;
+block           : LCURLY ((stmt | action) ENDSTMT)* RCURLY ;
 ifStmt          : IF LPAREN (boolExpr) RPAREN  block ;
 elseStmt        : ELSE block ;
 

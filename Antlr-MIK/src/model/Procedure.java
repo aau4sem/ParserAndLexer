@@ -7,6 +7,7 @@ import model.utils.Argument;
 import model.utils.Parameter;
 import model.variables.VariableContainer;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +15,11 @@ import java.util.List;
 public class Procedure {
 
     private ArrayList<Parameter> parameters;
-    private ArrayList<Tactic.StmtContext> statements;
+    private ArrayList<Tactic.ProcedureStmtContext> statements;
     private String prodecureName;
     private VariableCollectorListener vcl;
 
-    public Procedure(ArrayList<Parameter> parameters, ArrayList<Tactic.StmtContext> statements, String procedureName, VariableCollectorListener vcl) {
+    public Procedure(ArrayList<Parameter> parameters, ArrayList<Tactic.ProcedureStmtContext> statements, String procedureName, VariableCollectorListener vcl) {
         this.parameters = parameters;
         this.statements = statements;
         this.prodecureName = procedureName;
@@ -54,46 +55,67 @@ public class Procedure {
         if(condStmts.size() == 0)
             return; //No statements to run
 
-        runStmts(condStmts);
+        for(Tactic.StmtContext stmtCtx : condStmts){
 
-        vcl.exitCondStmt(ctx);
-    }
+            if(stmtCtx.action() != null){
+                System.out.println("You cannot make an action call inside a procedure!");
+                throw new IllegalArgumentException();
+            }
 
-    private void runStmts(List<Tactic.StmtContext> stmts){
-        for(Tactic.StmtContext ctx : stmts) {
 
-            //TODO Does the stmt have arithmetics? If yes, start gathering
             if(ctx.children.get(0) instanceof Tactic.AssignmentContext){
-                if(((Tactic.AssignmentContext)ctx.children.get(0)).arithExpr() != null){
+                if(((Tactic.AssignmentContext)ctx.children.get(0)).assignmentRight().arithExpr() != null){
 
                     //TODO Manual work the children and call needed methods????
-                    manualArithExprWalker(((Tactic.AssignmentContext)ctx.children.get(0)).arithExpr());
+                    manualArithExprWalker(((Tactic.AssignmentContext)ctx.children.get(0)).assignmentRight().arithExpr());
 
                 }
 
             }
 
-
-
-            if (ctx.children.get(0) instanceof Tactic.AssignmentContext) {
-                vcl.exitAssignment((Tactic.AssignmentContext) ctx.children.get(0));
-            } else if (ctx.children.get(0) instanceof Tactic.WhileStmtContext) {
-                throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
-            } else if (ctx.children.get(0) instanceof Tactic.CondStmtContext) {
-                runCondStmt((Tactic.CondStmtContext) ctx.children.get(0));
-            } else if (ctx.children.get(0) instanceof Tactic.ProcedureCallContext) {
-                vcl.exitProcedureCall((Tactic.ProcedureCallContext) ctx.children.get(0)); //TODO The current implementation does not support procedure calls inside other procedures.
-                throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
-            } else if (ctx.children.get(0) instanceof Tactic.ArrayAssignContext) {
-                throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
-            } else if (ctx.children.get(0) instanceof Tactic.DotAssignmentContext) {
-                vcl.exitDotAssignment((Tactic.DotAssignmentContext) ctx.children.get(0));
-                //throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
-            } else if (ctx.children.get(0) instanceof Tactic.DotStmtContext) {
-                throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED //TODO This should not be in the grammar.
-            } else
-                throw new IllegalArgumentException(); //A context was not handled or grammar has changed
+            runStmt(ctx.children.get(0));
         }
+
+        vcl.exitCondStmt(ctx);
+    }
+
+    private void runStmts(List<Tactic.ProcedureStmtContext> stmts){
+        for(Tactic.ProcedureStmtContext ctx : stmts) {
+
+            //TODO Does the stmt have arithmetics? If yes, start gathering
+            if(ctx.children.get(0) instanceof Tactic.AssignmentContext){
+                if(((Tactic.AssignmentContext)ctx.children.get(0)).assignmentRight().arithExpr() != null){
+
+                    //TODO Manual work the children and call needed methods????
+                    manualArithExprWalker(((Tactic.AssignmentContext)ctx.children.get(0)).assignmentRight().arithExpr());
+
+                }
+
+            }
+
+            runStmt(ctx.children.get(0));
+        }
+    }
+
+    private void runStmt(ParseTree ctx){
+        if (ctx instanceof Tactic.AssignmentContext) {
+            vcl.exitAssignment((Tactic.AssignmentContext) ctx);
+        } else if (ctx instanceof Tactic.WhileStmtContext) {
+            throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
+        } else if (ctx instanceof Tactic.CondStmtContext) {
+            runCondStmt((Tactic.CondStmtContext) ctx);
+        } else if (ctx instanceof Tactic.ProcedureCallContext) {
+            vcl.exitProcedureCall((Tactic.ProcedureCallContext) ctx); //TODO The current implementation does not support procedure calls inside other procedures.
+            throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
+        } else if (ctx instanceof Tactic.ArrayAssignContext) {
+            throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
+        } else if (ctx instanceof Tactic.DotAssignmentContext) {
+            vcl.exitDotAssignment((Tactic.DotAssignmentContext) ctx);
+            //throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED
+        } else if (ctx instanceof Tactic.DotStmtContext) {
+            throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED //TODO This should not be in the grammar.
+        } else
+            throw new IllegalArgumentException(); //A context was not handled or grammar has changed
     }
 
     private void manualArithExprWalker(Tactic.ArithExprContext ctx){
@@ -178,11 +200,11 @@ public class Procedure {
         parameters.add(parameter);
     }
 
-    public void addStatement(Tactic.StmtContext statement){
+    public void addStatement(Tactic.ProcedureStmtContext statement){
         statements.add(statement);
     }
 
-    public void addAllStatments(List<Tactic.StmtContext> stmtContexts){
+    public void addAllStatments(List<Tactic.ProcedureStmtContext> stmtContexts){
         statements.addAll(stmtContexts);
     }
 

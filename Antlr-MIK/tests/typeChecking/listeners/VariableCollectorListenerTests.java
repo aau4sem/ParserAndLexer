@@ -5,24 +5,15 @@ import model.dataTypes.GamePiece;
 import model.dataTypes.Vector;
 import model.utils.TypeCheckerHelper;
 import model.variables.VariableContainer;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.*;
-import gen.*;
+
+import static testUtilities.TestUtils.parse;
+import static testUtilities.TestUtils.vcl;
 
 public class VariableCollectorListenerTests {
-
-    private static TacticLexer lexer;
-    private static Tactic parser;
-
     @Test
     public void intDcl01(){
-        lexer = new TacticLexer(new ANTLRInputStream("int x; x = 5;;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("int x; x = 5;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
@@ -38,12 +29,7 @@ public class VariableCollectorListenerTests {
 
     @Test
     public void intDcl02(){
-        lexer = new TacticLexer(new ANTLRInputStream("int x; x = 5; x = 6;;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("int x; x = 5; x = 6;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
@@ -59,12 +45,7 @@ public class VariableCollectorListenerTests {
 
     @Test
     public void intDcl03(){
-        lexer = new TacticLexer(new ANTLRInputStream("int x; int i; x = 5; i = x;;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("int x; int i; x = 5; i = x;;");
 
         VariableContainer varConI = vcl.getValueFromIdentifier("i");
         VariableContainer varConX = vcl.getValueFromIdentifier("x");
@@ -84,12 +65,7 @@ public class VariableCollectorListenerTests {
 
     @Test
     public void intDcl04(){
-        lexer = new TacticLexer(new ANTLRInputStream("int x; x = 5 + 5;;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("int x; x = 5 + 5;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
@@ -104,13 +80,24 @@ public class VariableCollectorListenerTests {
     }
 
     @Test
+    public void intDcl05(){
+        parse("int x; x = -5;;");
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right value?
+        Assert.assertEquals(-5, Integer.parseInt(varCon.getValue()));
+
+        //Does it have the right type?
+        Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.INT);
+    }
+
+    @Test
     public void floatDcl01(){
-        lexer = new TacticLexer(new ANTLRInputStream("float x; x = 5.3;;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("float x; x = 5.3;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
@@ -126,12 +113,7 @@ public class VariableCollectorListenerTests {
 
     @Test
     public void floatDcl02(){
-        lexer = new TacticLexer(new ANTLRInputStream("float x; x = 5.3; x = 6.3;;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("float x; x = 5.3; x = 6.3;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
@@ -147,12 +129,7 @@ public class VariableCollectorListenerTests {
 
     @Test
     public void floatDcl03(){
-        lexer = new TacticLexer(new ANTLRInputStream("float x; int i; x = 5.5; i = x;;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("float x; int i; x = 5.5; i = x;;");
 
         VariableContainer varConI = vcl.getValueFromIdentifier("i");
         VariableContainer varConX = vcl.getValueFromIdentifier("x");
@@ -166,18 +143,13 @@ public class VariableCollectorListenerTests {
         Assert.assertEquals(5.5, Float.parseFloat(varConX.getValue()), 10);
 
         //Does it have the right type?
-        Assert.assertTrue(varConI.getType() == VariableCollectorListener.VariableType.FLOAT);
+        Assert.assertTrue(varConI.getType() == VariableCollectorListener.VariableType.INT);
         Assert.assertTrue(varConX.getType() == VariableCollectorListener.VariableType.FLOAT);
     }
 
     @Test
     public void floatDcl04(){
-        lexer = new TacticLexer(new ANTLRInputStream("float x; x = 5.5 + 5.5;;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("float x; x = 5.5 + 5.5;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
@@ -192,13 +164,24 @@ public class VariableCollectorListenerTests {
     }
 
     @Test
+    public void floatDcl05(){
+        parse("float x; x = -5.3;;");
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right value?
+        Assert.assertEquals(-5.3, Float.parseFloat(varCon.getValue()), 10);
+
+        //Does it have the right type?
+        Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.FLOAT);
+    }
+
+    @Test
     public void vectorDcl01(){
-        lexer = new TacticLexer(new ANTLRInputStream("vector x; x = (2,3,4);;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("vector x; x = (2,3,4);;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
@@ -218,12 +201,7 @@ public class VariableCollectorListenerTests {
 
     @Test
     public void vectorDcl02(){
-        lexer = new TacticLexer(new ANTLRInputStream("vector x; x = (22,3);;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("vector x; x = (22,3);;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
@@ -243,12 +221,7 @@ public class VariableCollectorListenerTests {
 
     @Test
     public void vectorDcl03(){
-        lexer = new TacticLexer(new ANTLRInputStream("vector x; x = (2.2,3.3);;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("vector x; x = (2.2,3.3);;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
@@ -261,13 +234,28 @@ public class VariableCollectorListenerTests {
     }
 
     @Test
+    public void vectorDcl04(){
+        parse("vector x; x = (-2,-3,-4);;");
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right value?
+        Vector vec = TypeCheckerHelper.parseVector(varCon.getValue());
+        Assert.assertNotNull(vec);
+        Assert.assertEquals(-2, vec.getX());
+        Assert.assertEquals(-3, vec.getY());
+        Assert.assertEquals(-4, vec.getZ());
+
+        //Does it have the right type?
+        Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.VEC);
+    }
+
+    @Test
     public void boolDcl01(){
-        lexer = new TacticLexer(new ANTLRInputStream("bool x; x = true;;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("bool x; x = true;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
@@ -285,12 +273,7 @@ public class VariableCollectorListenerTests {
 
     @Test
     public void stringDcl01(){
-        lexer = new TacticLexer(new ANTLRInputStream("string x; x = \"test\";;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("string x; x = \"test\";;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
@@ -308,12 +291,7 @@ public class VariableCollectorListenerTests {
 
     @Test
     public void gamePieceDcl01(){
-        lexer = new TacticLexer(new ANTLRInputStream("GamePiece x;;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("GamePiece x;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
@@ -331,12 +309,7 @@ public class VariableCollectorListenerTests {
 
     @Test
     public void mixedDcl01(){
-        lexer = new TacticLexer(new ANTLRInputStream("int x; float x; x = 6.0;;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("int x; float x; x = 6.0;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
@@ -352,12 +325,7 @@ public class VariableCollectorListenerTests {
 
     @Test
     public void mixedDcl02(){
-        lexer = new TacticLexer(new ANTLRInputStream("int x; float x; x = 3 + 3;;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("int x; float x; x = 3 + 3;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("x");
 
@@ -369,5 +337,25 @@ public class VariableCollectorListenerTests {
 
         //Does it have the right type?
         Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.FLOAT);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void faulty01(){
+        parse("int x; x = (2,3,1);;");
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void faulty02(){
+        parse("int x; x = true;;");
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void faulty03(){
+        parse("int x; x = \"test\";;");
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void faulty04(){
+        parse("vector x; x = 2;;");
     }
 }

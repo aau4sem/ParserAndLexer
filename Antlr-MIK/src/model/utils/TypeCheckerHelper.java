@@ -1,9 +1,12 @@
 package model.utils;
 
 import customListeners.VariableCollectorListener;
+import model.dataTypes.Array;
 import model.dataTypes.GamePiece;
 import model.dataTypes.Vector;
 import model.dataTypes.Number;
+
+import java.util.ArrayList;
 
 public class TypeCheckerHelper {
 
@@ -174,6 +177,9 @@ public class TypeCheckerHelper {
     /** @return the same string but with removed start and end parentheses. "test" -> test*/
     public static String parseString(String val){
 
+        if(val.length() == 0)
+            return "";
+
         String output = val; //Does this even copy the content?
 
         if(output.charAt(0) == '"')
@@ -201,5 +207,103 @@ public class TypeCheckerHelper {
         }
 
         return null;
+    }
+
+    public static Integer[] parseIntegerArray(String val){
+        ArrayList<String> elements = getArrayElements(val);
+
+        Integer[] result = new Integer[elements.size()];
+
+        for(int i = 0; i < elements.size(); i++)
+            result[i] = parseInt(elements.get(i));
+
+        return result;
+    }
+
+    public static Float[] parseFloatArray(String val){
+        ArrayList<String> elements = getArrayElements(val);
+
+        Float[] result = new Float[elements.size()];
+
+        for(int i = 0; i < elements.size(); i++)
+            result[i] = parseFloat(elements.get(i));
+
+        return result;
+    }
+
+    public static Vector[] parseVectorArray(String val){
+        ArrayList<String> elements = getArrayElements(val);
+
+        Vector[] result = new Vector[elements.size()];
+
+        for(int i = 0; i < elements.size(); i++)
+            result[i] = parseVector(elements.get(i));
+
+        return result;
+    }
+
+    public static Boolean[] parseBooleanArray(String val){
+        ArrayList<String> elements = getArrayElements(val);
+
+        Boolean[] result = new Boolean[elements.size()];
+
+        for(int i = 0; i < elements.size(); i++)
+            result[i] = parseBool(elements.get(i));
+
+        return result;
+    }
+
+    public static String[] parseStringArray(String val){
+        ArrayList<String> elements = getArrayElements(val);
+
+        String[] result = new String[elements.size()];
+
+        for(int i = 0; i < elements.size(); i++)
+            result[i] = parseString(elements.get(i));
+
+        return result;
+    }
+
+    public static GamePiece[] parseGamePieceArray(String val){
+        ArrayList<String> elements = getArrayElements(val);
+
+        GamePiece[] result = new GamePiece[elements.size()];
+
+        for(int i = 0; i < elements.size(); i++)
+            result[i] = parseGamePiece(elements.get(i));
+
+        return result;
+    }
+
+    /** @param val takes an array string in the given format: {x,x,x,x,x,x,...}
+     * @return a list of the individual elements. (All the x's in the above format example.)*/
+    private static ArrayList<String> getArrayElements(String val){
+
+        ArrayList<String> result = new ArrayList<>();
+
+        if(val.length() < 3)
+            return result;
+
+        StringBuilder value = new StringBuilder();
+        boolean isInParentheses = false;
+
+        for(int i = 1; i < val.length() -1; i++){
+
+            if(val.charAt(i) == '(')
+                isInParentheses = true;
+            else if(val.charAt(i) == ')')
+                isInParentheses = false;
+
+
+            if(val.charAt(i) == ',' && !isInParentheses){
+                result.add(value.toString());
+                value = new StringBuilder();
+            }else
+                value.append(val.charAt(i));
+        }
+
+        result.add(value.toString());
+
+        return result;
     }
 }

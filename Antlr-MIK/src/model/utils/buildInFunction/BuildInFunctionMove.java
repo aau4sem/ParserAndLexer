@@ -1,22 +1,29 @@
 package model.utils.buildInFunction;
 
 import model.dataTypes.GamePiece;
+import model.dataTypes.Vector;
 import model.dataTypes.Number;
 
-public class BuildInFunctionWait implements BuildInFunction {
+public class BuildInFunctionMove implements BuildInFunction {
 
-    public static String identifier = "Wait";
+    public static String identifier = "Move";
 
     private GamePiece gp;
+    private Vector vector;
     private Integer time;
 
-    public BuildInFunctionWait(GamePiece gp, Integer time) {
+    public BuildInFunctionMove(GamePiece gp, Vector vector, Integer time) {
         this.gp = gp;
+        this.vector = vector;
         this.time = time;
     }
 
     public GamePiece getGp() {
         return gp;
+    }
+
+    public Vector getVector() {
+        return vector;
     }
 
     public Integer getTime() {
@@ -28,8 +35,8 @@ public class BuildInFunctionWait implements BuildInFunction {
     }
 
     public String toKeyframe() {
-        return "left: " + gp.getPosition().getX() + ", top: " + gp.getPosition().getY() + ", duration: " + time;
-    }
+            return "left: " + vector.getX() + ", top: " + vector.getY() + ", duration: " + time;
+        }
 
     public String getIdentifier() {
         return identifier;

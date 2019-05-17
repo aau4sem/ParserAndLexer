@@ -1,6 +1,8 @@
 package model.dataTypes;
 
+import customListeners.VariableCollectorListener;
 import model.utils.TypeCheckerHelper;
+import model.variables.VariableContainer;
 
 public class GamePiece {
 
@@ -18,16 +20,17 @@ public class GamePiece {
         }
     }
 
-    private static String defaultName = "";
-    private static Vector defaultPosition = null; //TODO Default?
-    private static Float defaultSize = 1f; //TODO Default?
-    private static String defaultColor = null;
+
+    private static Vector defaultPosition = new Vector(0,0,0);
+    private static String defaultIdentifier = "";
+    private static Float defaultSize = 1f;
+    private static String defaultColor = "red";
     private static String defaultLabel = "";
     private static Float defaultOpacity = 1f;
     private static String defaultShape = "circle";
 
     //Does this equal makes so that if we change the below changed the above
-    private String name = defaultName;
+    private String name = defaultIdentifier; //A unique value used in parsing. This is the identifier for this object given in declaration.
     private Vector position = defaultPosition;
     private Float size = defaultSize; //Must be positive
     private String color = defaultColor; //Could also be of format: RBG
@@ -60,6 +63,20 @@ public class GamePiece {
             case SHAPE:     shape = value;
                             break;
         }
+    }
+
+    public static boolean doesValueMatchPropertyType(GamePiecePropertyType type, VariableContainer varCon){
+        switch (type){
+            case NAME:      return (varCon.getType() == VariableCollectorListener.VariableType.STRING);
+            case POSITION:  return (varCon.getType() == VariableCollectorListener.VariableType.VEC);
+            case SIZE:      return (varCon.getType() == VariableCollectorListener.VariableType.FLOAT);
+            case COLOR:     return (varCon.getType() == VariableCollectorListener.VariableType.STRING);
+            case LABEL:     return (varCon.getType() == VariableCollectorListener.VariableType.STRING);
+            case OPACITY:   return (varCon.getType() == VariableCollectorListener.VariableType.FLOAT);
+            case SHAPE:     return (varCon.getType() == VariableCollectorListener.VariableType.STRING);
+        }
+
+        throw new IllegalArgumentException(); //Should never happen!
     }
 
     public String getGamePieceString(){
