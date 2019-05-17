@@ -41,13 +41,13 @@ vecDcl      : VEC identifier;
 boolDcl     : BOOL identifier;
 stringDcl   : STRING identifier;
 gpDcl       : GAMEPIECE identifier;
-arrayDcl    : type (LBRACKET integer RBRACKET)+ identifier;
+arrayDcl    : type LBRACKET integer RBRACKET identifier;
 
-assignment  : (identifier | dotStmt) (LBRACKET integer RBRACKET)* ASSIGN assignmentRight ;
+assignment  : (identifier | dotStmt) (LBRACKET integer RBRACKET)? ASSIGN assignmentRight ;
 assignmentRight : (value | arithExpr | boolExpr | vecExpr | (identifier (LBRACKET integer RBRACKET)*) | dotStmt) ;
 
 //Datastructure operations
-arrayAssign : identifier (((LBRACKET integer RBRACKET)+ ASSIGN assignmentRight) | (LBRACKET RBRACKET ASSIGN LCURLY (assignmentRight(SEPERATOR assignmentRight)*) RCURLY));
+arrayAssign : identifier ((LBRACKET integer RBRACKET ASSIGN assignmentRight) | (LBRACKET RBRACKET ASSIGN LCURLY (assignmentRight(SEPERATOR assignmentRight)*) RCURLY));
 
 //Arithmetic operations
 arithExpr : arithExprParent | arithExprMiddle ;

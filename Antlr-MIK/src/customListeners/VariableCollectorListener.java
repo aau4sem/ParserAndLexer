@@ -308,7 +308,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         //TODO Might be on the format: []{x,x,x,,x};
 
         String identifier = ctx.identifier().getText();
-        int index = TypeCheckerHelper.parseInt(ctx.integer(0).getText());
+        int index = TypeCheckerHelper.parseInt(ctx.integer().getText());
 
         VariableContainer varConToOverwrite = getArrayValueFromScope(identifier);
 

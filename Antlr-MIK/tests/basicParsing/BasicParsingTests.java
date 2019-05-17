@@ -96,12 +96,12 @@ public class BasicParsingTests {
 
     @Test
     public void declaration_variable13() {
-        lexer = new TacticLexer(new ANTLRInputStream("int[4][4] array_2d_test;;"));
+        lexer = new TacticLexer(new ANTLRInputStream("int[4] array_2d_test;;"));
     }
 
     @Test
     public void declaration_variable14() {
-        lexer = new TacticLexer(new ANTLRInputStream("int[4][4][5][1][3] array_2d_test;;"));
+        lexer = new TacticLexer(new ANTLRInputStream("int[4] array_2d_test;;"));
     }
 
     @Test
