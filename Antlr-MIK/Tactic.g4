@@ -67,7 +67,7 @@ arguments       : value | arguments SEPERATOR arguments ;
 
 //Control structures
 condStmt        : ifStmt elseStmt? ;
-block           : LCURLY ((stmt | action) ENDSTMT)* RCURLY ;
+block           : LCURLY (stmt ENDSTMT)* RCURLY ;
 ifStmt          : IF LPAREN (boolExpr) RPAREN  block ;
 elseStmt        : ELSE block ;
 
