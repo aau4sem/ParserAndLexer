@@ -3,9 +3,14 @@ package typeChecking;
 import model.dataTypes.GamePiece;
 import model.utils.TypeCheckerHelper;
 
+import model.utils.buildInFunction.BuildInFunctionChange;
+import model.utils.buildInFunction.BuildInFunctionMove;
+import model.utils.buildInFunction.BuildInFunctionWait;
+import model.variables.VariableContainer;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static testUtilities.TestUtils.acl;
 import static testUtilities.TestUtils.parse;
 import static testUtilities.TestUtils.vcl;
 
@@ -155,156 +160,123 @@ public class ConditionalAndControlTests {
 
     @Test
     public void while_block01(){
-        parse("int i; i = 5; while(false){ Move(gp, (2,2,3), 20);};;");
+        parse("int i; i = 5; while(i > 4){ Move(gp, (2,2,3), 20); i = 4;};;");
 
-        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
-
-        Assert.assertNotNull(i);
-        Assert.assertEquals(5, i.intValue());
+        Assert.assertEquals(1, acl.getActionFunctions().size());
+        Assert.assertTrue(acl.getActionFunctions().get(0) instanceof BuildInFunctionMove);
     }
 
     @Test
     public void while_block02(){
-        parse("int i; i = 5; while(false){ Change(gp, \"position\", (2,3,2), 20);};;");
+        parse("int i; i = 5; while(i > 4){ Change(gp, \"position\", (2,3,2), 20); i = 4;};;");
 
-        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
-
-        Assert.assertNotNull(i);
-        Assert.assertEquals(5, i.intValue());
+        Assert.assertEquals(1, acl.getActionFunctions().size());
+        Assert.assertTrue(acl.getActionFunctions().get(0) instanceof BuildInFunctionChange);
     }
 
     @Test
     public void while_block03(){
-        parse("int i; i = 5; while(false){ Wait(gp, 20);};;");
+        parse("int i; i = 5; while(i > 4){ Wait(gp, 20); i = 4;};;");
 
-        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
-
-        Assert.assertNotNull(i);
-        Assert.assertEquals(5, i.intValue());
-    }
-
-    //TODO All stmts
-
-    //@Test //Endless loop
-    public void while_general02(){
-        parse("int i; i = 5; while(true){ i = 6;};;");
-
-        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
-
-        Assert.assertNotNull(i);
-        Assert.assertEquals(6, i.intValue());
+        Assert.assertEquals(1, acl.getActionFunctions().size());
+        Assert.assertTrue(acl.getActionFunctions().get(0) instanceof BuildInFunctionWait);
     }
 
     @Test
-    public void while_general03(){
-        parse("int i; i = 5; while(false){ i = 6;};;");
+    public void while_block04(){
+        parse("int i; int[4] x; i = 5; while(i > 4){ i = x.length;};;");
 
         Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
 
         Assert.assertNotNull(i);
-        Assert.assertEquals(5, i.intValue());
+        Assert.assertEquals(4, i.intValue());
     }
 
     @Test
-    public void while_general04(){
-        parse("int i; i = 0; while(i < 10){ i = 2; i = i + 2; i = 10;};;");
+    public void while_block05(){
+        parse("int i; int[4] x; i = 5; while(i > 4){ i = x.length; x[0] = 10;};;");
 
-        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
-
-        Assert.assertNotNull(i);
-        Assert.assertEquals(10, i.intValue());
-    }
-
-    @Test
-    public void while_stmt_dotAssignment01(){
-        parse("GamePiece gp; int i; i = 0; while(i < 1){i = 2; gp.label = \"test\";};;");
-
-        GamePiece gp = TypeCheckerHelper.parseGamePiece(vcl.getValueFromIdentifier("gp").getValue());
-
-        Assert.assertNotNull(gp);
-        Assert.assertEquals(0, gp.getLabel().compareTo("test"));
-    }
-
-    @Test //TODO arrays are not yet implemented
-    public void while_stmt_arrayAssignment01(){
-        parse("int i; i = 0; while(i < 10){ i = 2; i = i + 2; i = 10;};;");
-
-        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
-
-        Assert.assertNotNull(i);
-        Assert.assertEquals(10, i.intValue());
-    }
-
-    @Test
-    public void while_stmt_procedureCall01(){
-        parse("proc(){i = 5;}; int i; i = 0; while(i < 3){ proc();};;");
-
-        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
-
-        Assert.assertNotNull(i);
-        Assert.assertEquals(5, i.intValue());
-    }
-
-    public void while_stmt_procedureCall02(){
-        parse("proc(x){x = x + 1;}; int x; int i; i = 0; x = 0; while(i < 3){ i = i + 1; proc(x);};;");
-
-        Integer x = Integer.parseInt(vcl.getValueFromIdentifier("x").getValue());
-        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+        VariableContainer x = vcl.getArrayValueFromScope("x");
 
         Assert.assertNotNull(x);
-        Assert.assertNotNull(i);
-        Assert.assertEquals(3, x.intValue());
-        Assert.assertEquals(3, i.intValue());
+        Assert.assertTrue(x.isArray());
+
+        //Check default values
+        Integer[] array = TypeCheckerHelper.parseIntegerArray(x.getValue());
+        Assert.assertEquals(4, array.length);
+        Assert.assertEquals(10, array[0].intValue());
+        Assert.assertEquals(1, array[1].intValue());
+        Assert.assertEquals(1, array[2].intValue());
+        Assert.assertEquals(1, array[3].intValue());
     }
 
     @Test
-    public void while_stmt_condStmt01(){
-        parse("int i; int x; i = 0; x = 0; while(i < 1){i = i + 1; if(true){x = 1;};};;");
+    public void while_block07(){
+        parse("proc(){i = 4;};int i; i = 5; while(i > 4){proc();};;");
 
-        Integer x = Integer.parseInt(vcl.getValueFromIdentifier("x").getValue());
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
 
-        Assert.assertNotNull(x);
-        Assert.assertEquals(1, x.intValue());
+        Assert.assertNotNull(i);
+        Assert.assertEquals(4, i.intValue());
     }
 
     @Test
-    public void while_stmt_condStmt02(){
-        parse("int i; int x; i = 0; x = 0; while(i < 1){i = i + 1; if(false){x = 1;};};;");
+    public void while_block08(){
+        //TODO notworking
+        Assert.fail();
+        parse("int i; i = 5; while(i > 4){if(true){i = 4;};};;");
 
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(4, i.intValue());
+    }
+
+    @Test
+    public void while_block09(){
+        //TODO notworking
+        Assert.fail();
+        parse("int i; i = 5; while(i > 4){if(true){i = 4;}else{i = 2};};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(4, i.intValue());
+    }
+
+    @Test
+    public void while_block10(){
+        //TODO notworking
+        Assert.fail();
+        parse("int i; i = 5; while(i > 4){if(false){i = 4;}else{i = 2};};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(2, i.intValue());
+    }
+
+    @Test
+    public void while_block11(){
+        parse("int i; i = 5; while(i > 4){while(i > 4){i = 4;};};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(4, i.intValue());
+    }
+
+    @Test
+    public void while_block12(){
+        parse("int i; int x; x = 10; i = 5; while(i > 4){while(false){x = 4;}; i = 4;};;");
+
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
         Integer x = Integer.parseInt(vcl.getValueFromIdentifier("x").getValue());
 
+        Assert.assertNotNull(i);
         Assert.assertNotNull(x);
-        Assert.assertEquals(0, x.intValue());
-    }
-
-    @Test //TODO
-    public void while_stmt_whileStmt01(){
-        parse("int i; i = 0; while(i < 10){ i = 2; i = i + 2; i = 10;};;");
-
-        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
-
-        Assert.assertNotNull(i);
-        Assert.assertEquals(10, i.intValue());
-    }
-
-    @Test //TODO
-    public void while_stmt_assignment01(){
-        parse("int i; i = 0; while(i < 10){ i = 2; i = i + 2; i = 10;};;");
-
-        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
-
-        Assert.assertNotNull(i);
-        Assert.assertEquals(10, i.intValue());
-    }
-
-    @Test //TODO
-    public void while_stmt_action01(){
-        parse("int i; i = 0; while(i < 10){ i = 2; i = i + 2; i = 10;};;");
-
-        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
-
-        Assert.assertNotNull(i);
-        Assert.assertEquals(10, i.intValue());
+        Assert.assertEquals(4, i.intValue());
+        Assert.assertEquals(10, x.intValue());
     }
 
     // IF STMTS -------------------------------------------------------
