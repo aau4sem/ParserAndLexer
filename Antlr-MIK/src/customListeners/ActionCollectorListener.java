@@ -1,5 +1,6 @@
 package customListeners;
 
+import exceptions.GrammarHasChangedException;
 import exceptions.IllegalArgumentType;
 import exceptions.IllegalNumberOfArguments;
 import gen.Tactic;
@@ -52,7 +53,7 @@ public class ActionCollectorListener extends TacticBaseListener {
         else if(ctx.waitAction() != null)
             firstArgIdentifier = ctx.waitAction().identifier().getText();
         else
-            throw new IllegalArgumentException(); //Grammar has changed
+            throw new GrammarHasChangedException("exitAction");
 
         //Is the identifier evaluation to a GamePiece?
         VariableContainer firstArgVarCon = variableCollectorListener.getValueFromIdentifier(firstArgIdentifier);
@@ -73,7 +74,7 @@ public class ActionCollectorListener extends TacticBaseListener {
         else if(ctx.waitAction() != null)
             lastArgString = ctx.waitAction().integer().getText();
         else
-            throw new IllegalArgumentException(); //Grammar has changed
+            throw new GrammarHasChangedException("exitAction");
 
         Integer lastArg = TypeCheckerHelper.parseInt(lastArgString);
 
@@ -113,7 +114,7 @@ public class ActionCollectorListener extends TacticBaseListener {
                 }else if(thirdArgValueContext.number().floatVal() != null){
                     thirdArgVarCon = new VariableContainer(null, thirdArgValueContext.number().floatVal().getText(), VariableCollectorListener.VariableType.FLOAT);
                 }else
-                    throw new IllegalArgumentException(); //Grammar has changed!
+                    throw new GrammarHasChangedException("NumberContext");
             }else if(thirdArgValueContext.bool() != null){
                 System.out.println("The third argument of the change action call cannot be of type boolean.");
                 throw new IllegalArgumentException();
@@ -124,7 +125,7 @@ public class ActionCollectorListener extends TacticBaseListener {
                 thirdArgVarCon = new VariableContainer(null, temp, VariableCollectorListener.VariableType.STRING);
 
             } else
-                throw new IllegalArgumentException(); //Grammar has changed!
+                throw new GrammarHasChangedException("exitAction");
 
             //Check if the given third argument can be saved in the property given in the second argument
             boolean check = GamePiece.doesValueMatchPropertyType(secondArg, thirdArgVarCon);

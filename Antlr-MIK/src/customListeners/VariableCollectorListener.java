@@ -1,5 +1,6 @@
 package customListeners;
 
+import exceptions.GrammarHasChangedException;
 import gen.Tactic;
 import gen.TacticBaseListener;
 import model.Procedure;
@@ -311,7 +312,7 @@ public class VariableCollectorListener extends TacticBaseListener {
                     throw new IllegalArgumentException();
                 value = String.valueOf(TypeCheckerHelper.parseVector(valueContext.vec().getText()));
             }else
-                throw new IllegalArgumentException(); //Grammar has changed
+                throw new GrammarHasChangedException("AssignmentRightContext");
 
         } else if(ctx.arithExpr() != null){ //format identifier = arithExpr
             String result = String.valueOf(getArithmeticResult(ctx.arithExpr()));
@@ -346,7 +347,7 @@ public class VariableCollectorListener extends TacticBaseListener {
 
             }
         } else
-            throw new IllegalArgumentException(); //Grammar has changed
+            throw new GrammarHasChangedException("AssignmentRightContext");
 
         if(value == null)
             throw new IllegalArgumentException(); //This should not be throw! If so, then the above code is not properly written.
@@ -502,7 +503,7 @@ public class VariableCollectorListener extends TacticBaseListener {
 
             newValue = new Array(array, VariableType.GAMEPIECE).toString();
         }else
-            throw new IllegalArgumentException(); //Grammar has changed
+            throw new GrammarHasChangedException("ArrayAssignContext");
 
         overwriteValueOfVariable(identifier, newValue);
     }
@@ -660,7 +661,7 @@ public class VariableCollectorListener extends TacticBaseListener {
             Array<GamePiece> customArray = new Array<>(tempArray, VariableType.GAMEPIECE);
             varCon = new VariableContainer(identifier, customArray.toString(), customArray.getType(), true);
         }else
-            throw new IllegalArgumentException(); //Grammar has changed!
+            throw new GrammarHasChangedException("exitArrayDcl");
 
         addVariableToScope(varCon);
     }
@@ -755,7 +756,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         }else if(operator.compareTo("-") == 0){ //Subtraction
             one.subVector(two);
         }else
-            throw new IllegalArgumentException(); //Grammar has changed. New vector operations.
+            throw new GrammarHasChangedException("VectorOperations");
 
         return one;
     }
@@ -878,7 +879,7 @@ public class VariableCollectorListener extends TacticBaseListener {
 
                 ag.addValue(varCon.getValue());
             } else {
-                throw new IllegalArgumentException(); //Grammar has changed
+                throw new GrammarHasChangedException("ArithmeticContext");
             }
         }
     }
@@ -950,7 +951,7 @@ public class VariableCollectorListener extends TacticBaseListener {
                 throw new IllegalArgumentException(); //Not supported operation
             }
         }else{
-            throw new IllegalArgumentException(); //Grammar has changed
+            throw new GrammarHasChangedException("BoolExprContext");
         }
     }
 
@@ -999,7 +1000,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         }else if(operatorContext.BOOL_COND_AND() != null){
             return firstBool && secondBool;
         }else
-            throw new IllegalArgumentException(); //Grammar has changed
+            throw new GrammarHasChangedException("BoolOperatersContext");
     }
 
     @Override

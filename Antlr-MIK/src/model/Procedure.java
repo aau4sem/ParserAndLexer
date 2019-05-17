@@ -1,6 +1,7 @@
 package model;
 
 import customListeners.VariableCollectorListener;
+import exceptions.GrammarHasChangedException;
 import exceptions.IllegalNumberOfArguments;
 import gen.Tactic;
 import model.utils.Argument;
@@ -115,7 +116,7 @@ public class Procedure {
         } else if (ctx instanceof Tactic.DotStmtContext) {
             throw new IllegalArgumentException(); //TODO NOT IMPLEMENTED //TODO This should not be in the grammar.
         } else
-            throw new IllegalArgumentException(); //A context was not handled or grammar has changed
+            throw new GrammarHasChangedException("StmtContext");
     }
 
     private void manualArithExprWalker(Tactic.ArithExprContext ctx){

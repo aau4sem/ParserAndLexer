@@ -1,5 +1,6 @@
 package model.utils;
 
+import exceptions.GrammarHasChangedException;
 import gen.Tactic;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RuleContext;
@@ -49,7 +50,7 @@ public class ArgumentGatherer implements TerminalNode {
                 else if(vc.number().integer() != null)
                     arg = new Argument(vc.number().integer().getText(), Argument.ArgumentType.INTEGER);
                 else
-                    throw new IllegalArgumentException(); //Grammar has changed
+                    throw new GrammarHasChangedException("ConvertArguments");
             }else if(vc.identifier() != null){ //The argument is an identifier
                 arg = new Argument(vc.identifier().getText(), Argument.ArgumentType.IDENTIFIER);
             }else if(vc.string() != null){ //The argument is a string
