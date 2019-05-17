@@ -245,8 +245,8 @@ public class VariableCollectorListener extends TacticBaseListener {
                 if(typeLeftIdentifier == varConRight.getType()){
                     value = varConRight.getValue();
                 } else if(typeLeftIdentifier == VariableType.INT && varConRight.getType() == VariableType.FLOAT){
-                    throw new IllegalArgumentException(); //Trying to assign an float to an int
-                    //value = String.valueOf(TypeCheckerHelper.trimFloatToInt(varConRight.getValue())); //Cast value from float to int //TODO We do want to casts float to int right?
+                    //throw new IllegalArgumentException(); //Trying to assign an float to an int
+                    value = String.valueOf(TypeCheckerHelper.trimFloatToInt(varConRight.getValue())); //Cast value from float to int
                 } else if(typeLeftIdentifier == VariableType.FLOAT && varConRight.getType() == VariableType.INT){
                     value = varConRight.getValue(); //Casting int to float
                 } else{
