@@ -1,5 +1,8 @@
 package typeChecking;
 
+import customListeners.VariableCollectorListener;
+import model.utils.TypeCheckerHelper;
+import model.variables.VariableContainer;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -678,5 +681,132 @@ public class BooleanParsingTests {
         boolean value = Boolean.parseBoolean(x);
 
         Assert.assertFalse(value);
+    }
+
+    //Assignments ----------------------------------------------------------------------------------------
+    @Test
+    public void assignment01(){
+        parse("bool x; x = true;;");
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right value?
+        Boolean x = TypeCheckerHelper.parseBool(varCon.getValue());
+        Assert.assertNotNull(x);
+        Assert.assertTrue(x);
+
+        //Does it have the right type?
+        Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.BOOL);
+    }
+
+    @Test
+    public void assignment02(){
+        parse("bool x; x = false;;");
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right value?
+        Boolean x = TypeCheckerHelper.parseBool(varCon.getValue());
+        Assert.assertNotNull(x);
+        Assert.assertFalse(x);
+
+        //Does it have the right type?
+        Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.BOOL);
+    }
+
+    @Test (expected = Exception.class)
+    public void assignment03(){
+        parse("bool x; x = 2;;");
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right value?
+        Boolean x = TypeCheckerHelper.parseBool(varCon.getValue());
+        Assert.assertNotNull(x);
+        Assert.assertFalse(x);
+
+        //Does it have the right type?
+        Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.BOOL);
+    }
+
+    @Test (expected = Exception.class)
+    public void assignment04(){
+        parse("bool x; x = 2.0;;");
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right value?
+        Boolean x = TypeCheckerHelper.parseBool(varCon.getValue());
+        Assert.assertNotNull(x);
+        Assert.assertFalse(x);
+
+        //Does it have the right type?
+        Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.BOOL);
+    }
+
+    @Test (expected = Exception.class)
+    public void assignment05(){
+        parse("bool x; x = \"test\";;");
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right value?
+        Boolean x = TypeCheckerHelper.parseBool(varCon.getValue());
+        Assert.assertNotNull(x);
+        Assert.assertFalse(x);
+
+        //Does it have the right type?
+        Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.BOOL);
+    }
+
+    @Test (expected = Exception.class)
+    public void assignment06(){
+        parse("bool x; x = (2,2,3);;");
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right value?
+        Boolean x = TypeCheckerHelper.parseBool(varCon.getValue());
+        Assert.assertNotNull(x);
+        Assert.assertFalse(x);
+
+        //Does it have the right type?
+        Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.BOOL);
+    }
+
+    @Test (expected = Exception.class)
+    public void assignment07(){
+        parse("bool x; GamePiece gp; x = gp;;");
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right value?
+        Boolean x = TypeCheckerHelper.parseBool(varCon.getValue());
+        Assert.assertNotNull(x);
+        Assert.assertFalse(x);
+
+        //Does it have the right type?
+        Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.BOOL);
     }
 }
