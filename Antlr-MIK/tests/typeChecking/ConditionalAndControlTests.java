@@ -18,7 +18,7 @@ public class ConditionalAndControlTests {
 
     // WHILE STMTS ----------------------------------------------------
 
-    @Test
+    /*@Test //This case cannot be tests, it will run forever!
     public void while_condition01(){
         parse("int i; i = 0; while(true){ i = 5;};;");
 
@@ -26,7 +26,7 @@ public class ConditionalAndControlTests {
 
         Assert.assertNotNull(i);
         Assert.assertEquals(5, i.intValue());
-    }
+    } */
 
     @Test
     public void while_condition02(){
@@ -38,7 +38,7 @@ public class ConditionalAndControlTests {
         Assert.assertEquals(0, i.intValue());
     }
 
-    @Test
+    /*@Test //This case cannot be tests, it will run forever!
     public void while_condition03(){
         parse("int i; bool y; y = true; i = 0; while(y){ i = 5;};;");
 
@@ -46,7 +46,7 @@ public class ConditionalAndControlTests {
 
         Assert.assertNotNull(i);
         Assert.assertEquals(5, i.intValue());
-    }
+    }*/
 
     @Test
     public void while_condition04(){
@@ -58,7 +58,7 @@ public class ConditionalAndControlTests {
         Assert.assertEquals(0, i.intValue());
     }
 
-    @Test
+    /*@Test //This case cannot be tests, it will run forever!
     public void while_condition05(){
         parse("int i; i = 0; while(2 == 2){ i = 5;};;");
 
@@ -66,7 +66,7 @@ public class ConditionalAndControlTests {
 
         Assert.assertNotNull(i);
         Assert.assertEquals(5, i.intValue());
-    }
+    }*/
 
     @Test
     public void while_condition06(){
@@ -78,7 +78,7 @@ public class ConditionalAndControlTests {
         Assert.assertEquals(0, i.intValue());
     }
 
-    @Test
+    /*@Test //This case cannot be tests, it will run forever!
     public void while_condition07(){
         parse("int i; i = 0; while(2 != 4){ i = 5;};;");
 
@@ -86,7 +86,7 @@ public class ConditionalAndControlTests {
 
         Assert.assertNotNull(i);
         Assert.assertEquals(5, i.intValue());
-    }
+    }*/
 
     @Test
     public void while_condition08(){
@@ -98,7 +98,7 @@ public class ConditionalAndControlTests {
         Assert.assertEquals(0, i.intValue());
     }
 
-    @Test
+    /*@Test //This case cannot be tests, it will run forever!
     public void while_condition09(){
         parse("int i; i = 0; while(true && true){ i = 5;};;");
 
@@ -106,7 +106,7 @@ public class ConditionalAndControlTests {
 
         Assert.assertNotNull(i);
         Assert.assertEquals(5, i.intValue());
-    }
+    }*/
 
     @Test
     public void while_condition10(){
@@ -118,7 +118,7 @@ public class ConditionalAndControlTests {
         Assert.assertEquals(0, i.intValue());
     }
 
-    @Test
+    /*@Test //This case cannot be tests, it will run forever!
     public void while_condition11(){
         parse("int i; i = 0; while(false || true){ i = 5;};;");
 
@@ -126,9 +126,9 @@ public class ConditionalAndControlTests {
 
         Assert.assertNotNull(i);
         Assert.assertEquals(5, i.intValue());
-    }
+    }*/
 
-    @Test
+    /*@Test //This case cannot be tests, it will run forever!
     public void while_condition12(){
         parse("int i; i = 0; while(true || false){ i = 5;};;");
 
@@ -136,7 +136,7 @@ public class ConditionalAndControlTests {
 
         Assert.assertNotNull(i);
         Assert.assertEquals(5, i.intValue());
-    }
+    } */
 
     @Test
     public void while_condition13(){
