@@ -298,7 +298,7 @@ public class ConditionalAndControlTests {
         Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
 
         Assert.assertNotNull(i);
-        Assert.assertEquals(10, i.intValue());
+        Assert.assertEquals(5, i.intValue());
     }
 
     @Test
