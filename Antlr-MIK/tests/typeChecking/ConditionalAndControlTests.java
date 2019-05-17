@@ -201,7 +201,7 @@ public class ConditionalAndControlTests {
         Assert.assertNotNull(x);
         Assert.assertTrue(x.isArray());
 
-        //Check default values
+        //Check values
         Integer[] array = TypeCheckerHelper.parseIntegerArray(x.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertEquals(10, array[0].intValue());
@@ -340,7 +340,7 @@ public class ConditionalAndControlTests {
         Assert.assertNotNull(i);
         Assert.assertTrue(i.isArray());
 
-        //Check default values
+        //Check values
         Integer[] array = TypeCheckerHelper.parseIntegerArray(i.getValue());
         Assert.assertEquals(4, array.length);
         Assert.assertEquals(1, array[0].intValue());
