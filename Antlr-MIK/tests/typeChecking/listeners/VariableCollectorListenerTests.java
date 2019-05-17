@@ -11,6 +11,92 @@ import static testUtilities.TestUtils.parse;
 import static testUtilities.TestUtils.vcl;
 
 public class VariableCollectorListenerTests {
+
+    //Declarations ---------------------------------------------------------------------------------------
+    @Test
+    public void declaration_int01(){
+        parse("int x;;");
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right type?
+        Assert.assertSame(varCon.getType(), VariableCollectorListener.VariableType.INT);
+    }
+
+    @Test
+    public void declaration_float01(){
+        parse("float x;;");
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right type?
+        Assert.assertSame(varCon.getType(), VariableCollectorListener.VariableType.FLOAT);
+    }
+
+    @Test
+    public void declaration_vector01(){
+        parse("vector x;;");
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right type?
+        Assert.assertSame(varCon.getType(), VariableCollectorListener.VariableType.VEC);
+    }
+
+    @Test
+    public void declaration_bool01(){
+        parse("bool x;;");
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right type?
+        Assert.assertSame(varCon.getType(), VariableCollectorListener.VariableType.BOOL);
+    }
+
+    @Test
+    public void declaration_string01(){
+        parse("string x;;");
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right type?
+        Assert.assertSame(varCon.getType(), VariableCollectorListener.VariableType.STRING);
+    }
+
+    @Test
+    public void declaration_GamePiece01(){
+        parse("GamePiece x;;");
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right type?
+        Assert.assertSame(varCon.getType(), VariableCollectorListener.VariableType.GAMEPIECE);
+    }
+
+    //Array declarations is tested in: ArrayParsingTests
+
+
+    //OTHERS ---- REWORK
+
+
     @Test
     public void intDcl01(){
         parse("int x; x = 5;;");
@@ -177,98 +263,6 @@ public class VariableCollectorListenerTests {
 
         //Does it have the right type?
         Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.FLOAT);
-    }
-
-    @Test
-    public void vectorDcl01(){
-        parse("vector x; x = (2,3,4);;");
-
-        VariableContainer varCon = vcl.getValueFromIdentifier("x");
-
-        //Was it saved?
-        Assert.assertNotNull(varCon);
-
-        //Does it have the right value?
-        Vector vec = TypeCheckerHelper.parseVector(varCon.getValue());
-        Assert.assertNotNull(vec);
-        Assert.assertEquals(2, vec.getX());
-        Assert.assertEquals(3, vec.getY());
-        Assert.assertEquals(4, vec.getZ());
-
-        //Does it have the right type?
-        Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.VEC);
-    }
-
-    @Test
-    public void vectorDcl02(){
-        parse("vector x; x = (22,3);;");
-
-        VariableContainer varCon = vcl.getValueFromIdentifier("x");
-
-        //Was it saved?
-        Assert.assertNotNull(varCon);
-
-        //Does it have the right value?
-        Vector vec = TypeCheckerHelper.parseVector(varCon.getValue());
-        Assert.assertNotNull(vec);
-        Assert.assertEquals(22, vec.getX());
-        Assert.assertEquals(3, vec.getY());
-        Assert.assertEquals(-1, vec.getZ());
-
-        //Does it have the right type?
-        Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.VEC);
-    }
-
-    @Test
-    public void vectorDcl03(){
-        parse("vector x; x = (2.2,3.3);;");
-
-        VariableContainer varCon = vcl.getValueFromIdentifier("x");
-
-        //Was it saved?
-        Assert.assertNotNull(varCon);
-
-        //Does it have the right value?
-        Vector vec = TypeCheckerHelper.parseVector(varCon.getValue());
-        Assert.assertNull(vec);
-    }
-
-    @Test
-    public void vectorDcl04(){
-        parse("vector x; x = (-2,-3,-4);;");
-
-        VariableContainer varCon = vcl.getValueFromIdentifier("x");
-
-        //Was it saved?
-        Assert.assertNotNull(varCon);
-
-        //Does it have the right value?
-        Vector vec = TypeCheckerHelper.parseVector(varCon.getValue());
-        Assert.assertNotNull(vec);
-        Assert.assertEquals(-2, vec.getX());
-        Assert.assertEquals(-3, vec.getY());
-        Assert.assertEquals(-4, vec.getZ());
-
-        //Does it have the right type?
-        Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.VEC);
-    }
-
-    @Test
-    public void boolDcl01(){
-        parse("bool x; x = true;;");
-
-        VariableContainer varCon = vcl.getValueFromIdentifier("x");
-
-        //Was it saved?
-        Assert.assertNotNull(varCon);
-
-        //Does it have the right value?
-        Boolean x = TypeCheckerHelper.parseBool(varCon.getValue());
-        Assert.assertNotNull(x);
-        Assert.assertTrue(x);
-
-        //Does it have the right type?
-        Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.BOOL);
     }
 
     @Test
