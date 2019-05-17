@@ -21,7 +21,7 @@ public class TestUtils {
         Tactic parser = new Tactic(new CommonTokenStream(lexer));
         vcl = new VariableCollectorListener();
         acl = new ActionCollectorListener(vcl);
-        bl = new BoardListener();
+        bl = new BoardListener(vcl);
         parser.addParseListener(vcl);
         parser.addParseListener(acl);
         parser.addParseListener(bl);
