@@ -277,7 +277,7 @@ public class TypeCheckerHelper {
 
     /** @param val takes an array string in the given format: {x,x,x,x,x,x,...}
      * @return a list of the individual elements. (All the x's in the above format example.)*/
-    private static ArrayList<String> getArrayElements(String val){
+    public static ArrayList<String> getArrayElements(String val){
 
         ArrayList<String> result = new ArrayList<>();
 
