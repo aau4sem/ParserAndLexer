@@ -17,23 +17,6 @@ public class BasicParsingTests {
         Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
     }
 
-    public void testTest(){
-
-        //CharStream input = new ANTLRFileStream("FILENAME");
-
-        //ANTLRInputStream input = new ANTLRInputStream("int i = 5;");
-        //TacticLexer lexer = new TacticLexer(input);
-        TacticLexer lexer = new TacticLexer(new ANTLRInputStream("int i;"));
-        Tactic parser = new Tactic(new CommonTokenStream(lexer));
-        //parser.addParseListener(); //Not needed for syntax checking
-        parser.prog();
-
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors()); //Better solution exists: https://stackoverflow.com/questions/21661899/get-all-antlr-parsing-errors-as-list-of-string
-
-        //Hint: if you want to re-use the parser+lexer instances, call their 'reset()' methods after setting their input streams.
-        //https://stackoverflow.com/questions/18110180/processing-a-string-with-antlr4
-    }
-
     @Test
     public void testTest1(){
         lexer = new TacticLexer(new ANTLRInputStream("int i;;"));

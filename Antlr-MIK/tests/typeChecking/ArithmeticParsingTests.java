@@ -10,15 +10,16 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ArithmeticParsingTests {
+import static testUtilities.TestUtils.parse;
+import static testUtilities.TestUtils.vcl;
 
-    private static VariableCollectorListener vlc;
+public class ArithmeticParsingTests {
 
     @Test
     public void mixedCalculation01(){
         parse("int i; i = (5 + 5) * 2;;");
 
-        Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
 
         Assert.assertNotNull(i);
         Assert.assertEquals(20, i.intValue());
@@ -28,7 +29,7 @@ public class ArithmeticParsingTests {
     public void mixedCalculation02(){
         parse("int i; i = (5 + 5) * (2 + 2);;");
 
-        Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
 
         Assert.assertNotNull(i);
         Assert.assertEquals(40, i.intValue());
@@ -38,7 +39,7 @@ public class ArithmeticParsingTests {
     public void mixedCalculation03(){
         parse("int x; int i; x = 2; i = (5 + 5) * x;;");
 
-        Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
 
         Assert.assertNotNull(i);
         Assert.assertEquals(20, i.intValue());
@@ -48,7 +49,7 @@ public class ArithmeticParsingTests {
     public void mixedCalculation04(){
         parse("int i; i = (5 + 5) * 2 * 2;;");
 
-        Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
 
         Assert.assertNotNull(i);
         Assert.assertEquals(40, i.intValue());
@@ -58,7 +59,7 @@ public class ArithmeticParsingTests {
     public void mixedCalculation05(){
         parse("int i; i = 5 + 5 * 2;;");
 
-        Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
 
         Assert.assertNotNull(i);
         Assert.assertEquals(15, i.intValue());
@@ -68,7 +69,7 @@ public class ArithmeticParsingTests {
     public void addition01(){
         parse("int x; x = 2 + 2;;");
 
-        Integer x = Integer.parseInt(vlc.getValueFromIdentifier("x").getValue());
+        Integer x = Integer.parseInt(vcl.getValueFromIdentifier("x").getValue());
 
         Assert.assertNotNull(x);
         Assert.assertEquals(4, x.intValue());
@@ -78,7 +79,7 @@ public class ArithmeticParsingTests {
     public void addition02(){
         parse("float x; x = 2.5 + 2.5;;");
 
-        Float x = Float.parseFloat(vlc.getValueFromIdentifier("x").getValue());
+        Float x = Float.parseFloat(vcl.getValueFromIdentifier("x").getValue());
 
         Assert.assertNotNull(x);
         Assert.assertEquals(5f, x, 4);
@@ -88,7 +89,7 @@ public class ArithmeticParsingTests {
     public void subtraction01(){
         parse("int x; x = 2 - 2;;");
 
-        Integer x = Integer.parseInt(vlc.getValueFromIdentifier("x").getValue());
+        Integer x = Integer.parseInt(vcl.getValueFromIdentifier("x").getValue());
 
         Assert.assertNotNull(x);
         Assert.assertEquals(0, x.intValue());
@@ -98,7 +99,7 @@ public class ArithmeticParsingTests {
     public void subtraction02(){
         parse("float x; x = 2.5 - 2.5;;");
 
-        Float x = Float.parseFloat(vlc.getValueFromIdentifier("x").getValue());
+        Float x = Float.parseFloat(vcl.getValueFromIdentifier("x").getValue());
 
         Assert.assertNotNull(x);
         Assert.assertEquals(0f, x, 4);
@@ -108,7 +109,7 @@ public class ArithmeticParsingTests {
     public void division01(){
         parse("float x; x = 2 / 2;;");
 
-        Float x = Float.parseFloat(vlc.getValueFromIdentifier("x").getValue());
+        Float x = Float.parseFloat(vcl.getValueFromIdentifier("x").getValue());
 
         Assert.assertNotNull(x);
         Assert.assertEquals(1f, x, 4);
@@ -118,7 +119,7 @@ public class ArithmeticParsingTests {
     public void multiply01(){
         parse("int x; x = 2 * 2;;");
 
-        Integer x = Integer.parseInt(vlc.getValueFromIdentifier("x").getValue());
+        Integer x = Integer.parseInt(vcl.getValueFromIdentifier("x").getValue());
 
         Assert.assertNotNull(x);
         Assert.assertEquals(4, x.intValue());
@@ -128,7 +129,7 @@ public class ArithmeticParsingTests {
     public void multiply02(){
         parse("float x; x = 0.5 * 2;;");
 
-        Float x = Float.parseFloat(vlc.getValueFromIdentifier("x").getValue());
+        Float x = Float.parseFloat(vcl.getValueFromIdentifier("x").getValue());
 
         Assert.assertNotNull(x);
         Assert.assertEquals(1f, x, 4);
@@ -138,7 +139,7 @@ public class ArithmeticParsingTests {
     public void mod01(){
         parse("int x; x = 4 % 3;;");
 
-        Integer x = Integer.parseInt(vlc.getValueFromIdentifier("x").getValue());
+        Integer x = Integer.parseInt(vcl.getValueFromIdentifier("x").getValue());
 
         Assert.assertNotNull(x);
         Assert.assertEquals(1, x.intValue());
@@ -214,15 +215,5 @@ public class ArithmeticParsingTests {
 
         //Does it have the right value?
         Assert.assertEquals(2, TypeCheckerHelper.parseInt(varCon.getValue()).intValue());
-    }
-
-    /** Parses the given input and the results can be found in the field. */
-    public static void parse(String input){
-        TacticLexer lexer = new TacticLexer(new ANTLRInputStream(input));
-        Tactic parser = new Tactic(new CommonTokenStream(lexer));
-        vlc = new VariableCollectorListener();
-        parser.addParseListener(vlc);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
     }
 }

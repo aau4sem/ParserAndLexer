@@ -1,30 +1,22 @@
 package typeChecking;
 
-import customListeners.VariableCollectorListener;
 import gen.Tactic;
 import gen.TacticLexer;
 import model.dataTypes.GamePiece;
 import model.dataTypes.Vector;
 import model.utils.TypeCheckerHelper;
 import model.variables.VariableContainer;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class GamePieceParsingTests {
+import static testUtilities.TestUtils.parse;
+import static testUtilities.TestUtils.vcl;
 
-    private static TacticLexer lexer;
-    private static Tactic parser;
+public class GamePieceParsingTests {
 
     @Test
     public void propertyDefaultValues01(){
-        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp;;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("GamePiece gp;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("gp");
         Assert.assertNotNull(varCon);
@@ -44,12 +36,7 @@ public class GamePieceParsingTests {
 
     @Test
     public void propertyChangeVector01(){
-        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.position = (2,3,1);;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("GamePiece gp; gp.position = (2,3,1);;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("gp");
         Assert.assertNotNull(varCon);
@@ -67,12 +54,7 @@ public class GamePieceParsingTests {
 
     @Test
     public void propertyChangeSize01(){
-        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.size = 2.56;;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("GamePiece gp; gp.size = 2.56;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("gp");
         Assert.assertNotNull(varCon);
@@ -85,12 +67,7 @@ public class GamePieceParsingTests {
 
     @Test
     public void propertyChangeColor01(){
-        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.color = \"RED\";;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("GamePiece gp; gp.color = \"RED\";;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("gp");
         Assert.assertNotNull(varCon);
@@ -103,12 +80,7 @@ public class GamePieceParsingTests {
 
     @Test
     public void propertyChangeColor02(){
-        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.color = \"rgb(3,2,3)\";;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("GamePiece gp; gp.color = \"rgb(3,2,3)\";;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("gp");
         Assert.assertNotNull(varCon);
@@ -121,23 +93,14 @@ public class GamePieceParsingTests {
 
     @Test(expected = IllegalArgumentException.class)
     public void propertyChangeColor03(){
-        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.color = \"rgb(3,2,3,4)\";;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("GamePiece gp; gp.color = \"rgb(3,2,3,4)\";;");
+
         Assert.fail();
     }
 
     @Test
     public void propertyChangeLabel01(){
-        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.label = \"PlayerOne\";;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("GamePiece gp; gp.label = \"PlayerOne\";;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("gp");
         Assert.assertNotNull(varCon);
@@ -150,12 +113,7 @@ public class GamePieceParsingTests {
 
     @Test
     public void propertyChangeOpacity01(){
-        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.opacity = 0.3;;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("GamePiece gp; gp.opacity = 0.3;;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("gp");
         Assert.assertNotNull(varCon);
@@ -168,12 +126,7 @@ public class GamePieceParsingTests {
 
     @Test
     public void propertyChangeShape01(){
-        lexer = new TacticLexer(new ANTLRInputStream("GamePiece gp; gp.shape = \"Square\";;"));
-        parser = new Tactic(new CommonTokenStream(lexer));
-        VariableCollectorListener vcl = new VariableCollectorListener();
-        parser.addParseListener(vcl);
-        parser.prog();
-        Assert.assertEquals(0, parser.getNumberOfSyntaxErrors());
+        parse("GamePiece gp; gp.shape = \"Square\";;");
 
         VariableContainer varCon = vcl.getValueFromIdentifier("gp");
         Assert.assertNotNull(varCon);
