@@ -24,6 +24,8 @@ public class TestUtils {
         vcl = new VariableCollectorListener();
         acl = new ActionCollectorListener(vcl);
         bl = new BoardListener(vcl);
+        vcl.setAcl(acl);
+        vcl.setBl(bl);
         parser.addParseListener(vcl);
         parser.addParseListener(acl);
         parser.addParseListener(bl);

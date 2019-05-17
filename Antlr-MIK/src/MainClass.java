@@ -34,6 +34,8 @@ public class MainClass {
             VariableCollectorListener variableListener = new VariableCollectorListener(); //Collects variables as they are declared
             ActionCollectorListener actionCollectorListener = new ActionCollectorListener(variableListener); //Collects action-function-calls
             BoardListener boardListener = new BoardListener(variableListener); //Collects information about the build-in board
+            variableListener.setAcl(actionCollectorListener);
+            variableListener.setBl(boardListener);
 
             //Attach the listeners. This is done to run code on steps of the tree walk.
             parser.addParseListener(variableListener);

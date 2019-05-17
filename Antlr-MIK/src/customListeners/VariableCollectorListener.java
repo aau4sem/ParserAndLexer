@@ -33,6 +33,9 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     //TODO Maybe split into two listeners: one of them being declaration collector???
 
+    private ActionCollectorListener acl;
+    private BoardListener bl;
+
     //Two variableScopeData to keep track of variable declarations in the main and function scope
     private VariableScopeData mainScope = new VariableScopeData(VariableScopeData.ScopeType.MAIN_SCOPE);
     //private VariableScopeData procedureScope = new VariableScopeData(VariableScopeData.ScopeType.PROCEDURE_SCOPE);
@@ -1067,14 +1070,22 @@ public class VariableCollectorListener extends TacticBaseListener {
                 }else if(stmt.whileStmt() != null){
                     this.exitWhileStmt(stmt.whileStmt());
                 }else if(stmt.assignment() != null){
-                    //TODO BoardListenr method
+                    bl.exitAssignment(stmt.assignment());
                     this.exitAssignment(stmt.assignment());
                 }else if(stmt.action() != null){
-                    //TODO ActionCollectorListener, method call
+                    acl.exitAction(stmt.action());
                 }
             }
 
             conditional = getBoolStmtResult(ctx.boolExpr());
         }
+    }
+
+    public void setAcl(ActionCollectorListener acl) {
+        this.acl = acl;
+    }
+
+    public void setBl(BoardListener bl) {
+        this.bl = bl;
     }
 }
