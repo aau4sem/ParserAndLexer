@@ -136,7 +136,7 @@ public class ProcedureTests {
     public void statement_condStmt03(){
         parse("proc(bool x){if(x){i = 10;}else{i = 0;};}; int i; i = 5; proc(false);;");
 
-        Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
 
         Assert.assertNotNull(i);
         Assert.assertEquals(0, i.intValue());
@@ -146,7 +146,7 @@ public class ProcedureTests {
     public void statement_condStmt04(){
         parse("proc(bool x){if(x){i = 10;}else{i = 0;};}; int i; i = 5; proc(true);;");
 
-        Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
 
         Assert.assertNotNull(i);
         Assert.assertEquals(10, i.intValue());
@@ -156,7 +156,7 @@ public class ProcedureTests {
     public void statement_condStmt05(){
         parse("proc(bool x){if(x){i = 10;}else{i = 0; i = 3; i = i * 2;};}; int i; i = 5; proc(false);;");
 
-        Integer i = Integer.parseInt(vlc.getValueFromIdentifier("i").getValue());
+        Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
 
         Assert.assertNotNull(i);
         Assert.assertEquals(6, i.intValue());
