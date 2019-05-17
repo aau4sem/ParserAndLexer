@@ -12,6 +12,7 @@ public class Array<T> {
     public Array(T[] array, VariableCollectorListener.VariableType type) {
         this.array = array;
         this.sizeOfArray = array.length;
+        this.type = type;
     }
 
     public int getSizeOfArray() {
