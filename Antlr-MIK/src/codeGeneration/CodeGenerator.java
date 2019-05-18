@@ -40,6 +40,8 @@ public class CodeGenerator {
         classPath = classPath.substring(6);
         rootProjectPath = rootProjectPath.substring(6);
 
+        rootProjectPath = rootProjectPath.replaceAll("%20", " ");
+
         templateDirectoryPath = rootProjectPath + "webContent/template/";
         outputDirectoryPath = rootProjectPath + "webContent/output/";
     }
