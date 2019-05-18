@@ -4,6 +4,7 @@ import model.dataTypes.GamePiece;
 import model.utils.buildInFunction.BuildInFunction;
 import model.utils.buildInFunction.BuildInFunctionChange;
 import model.utils.buildInFunction.BuildInFunctionMove;
+import model.utils.buildInFunction.BuildInFunctionWait;
 
 import java.util.ArrayList;
 
@@ -30,16 +31,22 @@ public class CalculatedCalls {
             for (BuildInFunction action : temp){
                 int changeTime = action.getTime();
 
-                if (action instanceof BuildInFunctionMove){
+                if (action instanceof BuildInFunctionMove || action instanceof BuildInFunctionWait || (action instanceof BuildInFunctionChange && (((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.POSITION))){
                     if (isPrevious(previousMove)){
                         changeTime = action.getTime() - previousMove.getTime();
                     }
-                    calculatedCalls.add(new BuildInFunctionMove(action.getGp(), ((BuildInFunctionMove) action).getVector(), changeTime));
-                    previousMove = action;
-                }
 
-                if (action instanceof BuildInFunctionChange && ((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.POSITION){
-                    calculatedCalls.add(new BuildInFunctionChange(action.getGp(), ((BuildInFunctionChange) action).getSecondArgument(), ((BuildInFunctionChange) action).getThridArguemnt(), action.getTime()));
+                    if (action instanceof BuildInFunctionMove){
+                        calculatedCalls.add(new BuildInFunctionMove(action.getGp(), ((BuildInFunctionMove) action).getVector(), changeTime));
+                    } else if (action instanceof BuildInFunctionWait){
+                        calculatedCalls.add(new BuildInFunctionWait(action.getGp(), changeTime));
+                    } else if (((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.POSITION){
+                        calculatedCalls.add(new BuildInFunctionChange(action.getGp(), ((BuildInFunctionChange) action).getSecondArgument(), ((BuildInFunctionChange) action).getThridArguemnt(), changeTime));
+                    }
+
+                    if (!(action instanceof BuildInFunctionChange)){
+                        previousMove = action;
+                    }
                 }
 
                 if (action instanceof BuildInFunctionChange && ((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.COLOR){
@@ -58,7 +65,7 @@ public class CalculatedCalls {
                     previousChangeSize = action;
                 }
 
-                if (action instanceof BuildInFunctionChange && (((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.OPACITY) || ((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.POSITION){
+                if (action instanceof BuildInFunctionChange && ((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.OPACITY){
                     if (isPrevious(previousChangeOpacity)){
                         changeTime = action.getTime() - previousChangeOpacity.getTime();
                     }

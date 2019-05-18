@@ -48,9 +48,9 @@ public class BuildInFunctionChange implements BuildInFunction {
                 int x = Integer.parseInt(test[1]);
                 int y = Integer.parseInt(test[2]);
 
-                return "left: " + x + ", top: " + y + ", duration: 1";
+                return "left: " + x + ", top: " + y + ", duration: 1, delay: " + time;
             default:
-                return "value: '" + getThridArguemnt() + "', duration: 1, delay: " + getTime();
+                return "value: '" + thridArguemnt + "', duration: 1, delay: " + time;
         }
     }
 

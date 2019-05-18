@@ -4,6 +4,7 @@ import model.dataTypes.GamePiece;
 import model.utils.buildInFunction.BuildInFunction;
 import model.utils.buildInFunction.BuildInFunctionChange;
 import model.utils.buildInFunction.BuildInFunctionMove;
+import model.utils.buildInFunction.BuildInFunctionWait;
 
 import java.io.*;
 import java.lang.reflect.Array;
@@ -379,7 +380,7 @@ public class CodeGenerator {
             sb.append("keyframes: [\n");
 
             for (BuildInFunction action : actionCalls){
-                if (action instanceof BuildInFunctionMove){
+                if (action instanceof BuildInFunctionMove || action instanceof BuildInFunctionWait || ((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.POSITION){
                     if (action.getGp().getName().compareTo(gp.getName()) == 0){
                         sb.append("{").append(action.toKeyframe()).append("}, \n");
                     }
@@ -414,7 +415,7 @@ public class CodeGenerator {
             sb.append("opacity: [\n");
 
             for (BuildInFunction action : actionCalls){
-                if (action instanceof BuildInFunctionChange && (((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.OPACITY || (((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.OPACITY))){
+                if (action instanceof BuildInFunctionChange && (((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.OPACITY)){
                     if (action.getGp().getName().compareTo(gp.getName()) == 0){
                         sb.append("{").append(action.toKeyframe()).append("}, \n");
                     }

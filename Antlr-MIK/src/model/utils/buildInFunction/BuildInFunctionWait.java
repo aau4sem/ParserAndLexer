@@ -28,7 +28,7 @@ public class BuildInFunctionWait implements BuildInFunction {
     }
 
     public String toKeyframe() {
-        return "left: " + gp.getPosition().getX() + ", top: " + gp.getPosition().getY() + ", duration: " + time;
+        return "duration: " + time;
     }
 
     public String getIdentifier() {
