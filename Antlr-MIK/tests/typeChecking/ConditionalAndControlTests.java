@@ -222,8 +222,6 @@ public class ConditionalAndControlTests {
 
     @Test
     public void while_block08(){
-        //TODO notworking
-        Assert.fail();
         parse("int i; i = 5; while(i > 4){if(true){i = 4;};};;");
 
         Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
@@ -234,9 +232,7 @@ public class ConditionalAndControlTests {
 
     @Test
     public void while_block09(){
-        //TODO notworking
-        Assert.fail();
-        parse("int i; i = 5; while(i > 4){if(true){i = 4;}else{i = 2};};;");
+        parse("int i; i = 5; while(i > 4){if(true){i = 4;}else{i = 2;};};;");
 
         Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
 
@@ -246,9 +242,7 @@ public class ConditionalAndControlTests {
 
     @Test
     public void while_block10(){
-        //TODO notworking
-        Assert.fail();
-        parse("int i; i = 5; while(i > 4){if(false){i = 4;}else{i = 2};};;");
+        parse("int i; i = 5; while(i > 4){if(false){i = 4;}else{i = 2;};};;");
 
         Integer i = Integer.parseInt(vcl.getValueFromIdentifier("i").getValue());
 

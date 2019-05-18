@@ -1066,7 +1066,21 @@ public class VariableCollectorListener extends TacticBaseListener {
                 }else if(stmt.procedureCall() != null){
                     this.exitProcedureCall(stmt.procedureCall());
                 }else if(stmt.condStmt() != null){
-                    this.exitCondStmt(stmt.condStmt());
+
+                    this.isWalkingConditional = true;
+                    this.exitBoolExpr(stmt.condStmt().ifStmt().boolExpr()); //Evaluate if or else?
+
+                    Procedure temp = new Procedure("temp", this);
+
+                    if(mayRunIfBlock)
+                        for(Tactic.StmtContext stmtCtx : stmt.condStmt().ifStmt().block().stmt())
+                            temp.runStmt(stmtCtx.children.get(0));
+
+                    if(mayRunElseBlocK)
+                        for(Tactic.StmtContext stmtCtx : stmt.condStmt().elseStmt().block().stmt())
+                            temp.runStmt(stmtCtx.children.get(0));
+
+                    this.isWalkingConditional = false;
                 }else if(stmt.whileStmt() != null){
                     this.exitWhileStmt(stmt.whileStmt());
                 }else if(stmt.assignment() != null){

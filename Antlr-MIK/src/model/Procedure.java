@@ -98,7 +98,7 @@ public class Procedure {
         }
     }
 
-    private void runStmt(ParseTree ctx){
+    public void runStmt(ParseTree ctx){
         if (ctx instanceof Tactic.AssignmentContext) {
             vcl.exitAssignment((Tactic.AssignmentContext) ctx);
         } else if (ctx instanceof Tactic.WhileStmtContext) {
