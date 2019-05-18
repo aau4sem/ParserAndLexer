@@ -26,7 +26,7 @@ public class MainClass {
         try{
             //PARSING --------------------------------------------------------
             //Initialize lexer and parser with a file as input
-            CharStream input = new ANTLRFileStream("compilerInput.tac"); //Load an input to compile
+            CharStream input = new ANTLRFileStream("Antlr-MIK/compilerInput.tac"); //Load an input to compile
             TacticLexer lexer = new TacticLexer(input);  //Create the lexer
             Tactic parser = new Tactic(new CommonTokenStream(lexer)); //Create the parser
 

@@ -25,6 +25,7 @@ public class CalculatedCalls {
             BuildInFunction previousMove = null;
             BuildInFunction previousChangeColor = null;
             BuildInFunction previousChangeSize = null;
+            BuildInFunction previousChangeOpacity = null;
 
             for (BuildInFunction action : temp){
                 int changeTime = action.getTime();
@@ -35,6 +36,10 @@ public class CalculatedCalls {
                     }
                     calculatedCalls.add(new BuildInFunctionMove(action.getGp(), ((BuildInFunctionMove) action).getVector(), changeTime));
                     previousMove = action;
+                }
+
+                if (action instanceof BuildInFunctionChange && ((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.POSITION){
+                    calculatedCalls.add(new BuildInFunctionChange(action.getGp(), ((BuildInFunctionChange) action).getSecondArgument(), ((BuildInFunctionChange) action).getThridArguemnt(), action.getTime()));
                 }
 
                 if (action instanceof BuildInFunctionChange && ((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.COLOR){
@@ -51,6 +56,14 @@ public class CalculatedCalls {
                     }
                     calculatedCalls.add(new BuildInFunctionChange(action.getGp(), ((BuildInFunctionChange) action).getSecondArgument(), ((BuildInFunctionChange) action).getThridArguemnt(), changeTime));
                     previousChangeSize = action;
+                }
+
+                if (action instanceof BuildInFunctionChange && (((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.OPACITY) || ((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.POSITION){
+                    if (isPrevious(previousChangeOpacity)){
+                        changeTime = action.getTime() - previousChangeOpacity.getTime();
+                    }
+                    calculatedCalls.add(new BuildInFunctionChange(action.getGp(), ((BuildInFunctionChange) action).getSecondArgument(), ((BuildInFunctionChange) action).getThridArguemnt(), changeTime));
+                    previousChangeOpacity = action;
                 }
             }
         }

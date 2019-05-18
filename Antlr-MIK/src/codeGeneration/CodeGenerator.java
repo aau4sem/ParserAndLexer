@@ -411,6 +411,18 @@ public class CodeGenerator {
 
             sb.append("{}\n");
             sb.append("],\n");
+            sb.append("opacity: [\n");
+
+            for (BuildInFunction action : actionCalls){
+                if (action instanceof BuildInFunctionChange && (((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.OPACITY || (((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.OPACITY))){
+                    if (action.getGp().getName().compareTo(gp.getName()) == 0){
+                        sb.append("{").append(action.toKeyframe()).append("}, \n");
+                    }
+                }
+            }
+
+            sb.append("{}\n");
+            sb.append("],\n");
             sb.append("loop: false,\n");
             sb.append("easing: 'linear',\n");
             sb.append("autoplay: false\n");
