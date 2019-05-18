@@ -4,6 +4,7 @@ import model.dataTypes.GamePiece;
 import model.utils.buildInFunction.BuildInFunction;
 import model.utils.buildInFunction.BuildInFunctionChange;
 import model.utils.buildInFunction.BuildInFunctionMove;
+import model.utils.buildInFunction.BuildInFunctionWait;
 
 import java.io.*;
 import java.lang.reflect.Array;
@@ -38,6 +39,8 @@ public class CodeGenerator {
         String rootProjectPath = CodeGenerator.class.getProtectionDomain().getCodeSource().getLocation().toString().substring(0, classPath.length() - 15);
         classPath = classPath.substring(6);
         rootProjectPath = rootProjectPath.substring(6);
+
+        rootProjectPath = rootProjectPath.replaceAll("%20", " ");
 
         templateDirectoryPath = rootProjectPath + "webContent/template/";
         outputDirectoryPath = rootProjectPath + "webContent/output/";
@@ -379,7 +382,7 @@ public class CodeGenerator {
             sb.append("keyframes: [\n");
 
             for (BuildInFunction action : actionCalls){
-                if (action instanceof BuildInFunctionMove){
+                if (action instanceof BuildInFunctionMove || action instanceof BuildInFunctionWait || ((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.POSITION){
                     if (action.getGp().getName().compareTo(gp.getName()) == 0){
                         sb.append("{").append(action.toKeyframe()).append("}, \n");
                     }
@@ -403,6 +406,18 @@ public class CodeGenerator {
 
             for (BuildInFunction action : actionCalls){
                 if (action instanceof BuildInFunctionChange && (((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.COLOR)){
+                    if (action.getGp().getName().compareTo(gp.getName()) == 0){
+                        sb.append("{").append(action.toKeyframe()).append("}, \n");
+                    }
+                }
+            }
+
+            sb.append("{}\n");
+            sb.append("],\n");
+            sb.append("opacity: [\n");
+
+            for (BuildInFunction action : actionCalls){
+                if (action instanceof BuildInFunctionChange && (((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.OPACITY)){
                     if (action.getGp().getName().compareTo(gp.getName()) == 0){
                         sb.append("{").append(action.toKeyframe()).append("}, \n");
                     }

@@ -2,6 +2,7 @@ package model.utils.buildInFunction;
 
 import model.dataTypes.GamePiece;
 import model.dataTypes.Number;
+import model.dataTypes.Vector;
 
 public class BuildInFunctionChange implements BuildInFunction {
 
@@ -40,18 +41,21 @@ public class BuildInFunctionChange implements BuildInFunction {
     }
 
     public String toKeyframe() {
-        // TODO - Create this - Format:
-        // 'background-color': '#FFF', delay: 250
-        // value: 'rgb(0,0,255)', duration: 1, delay: 750
-/*
         switch (this.gpPropperty) {
-            case COLOR:
-                return "value: '" + getThridArguemnt() + "', duration: 1, delay: " + getTime();
-            case SIZE:
-                return "value: '" + getThridArguemnt() + "', duration: 1, delay: " + getTime();
+            case POSITION:
+
+                String test[] = this.thridArguemnt.split("\\D+");
+                int x = Integer.parseInt(test[1]);
+                int y = Integer.parseInt(test[2]);
+
+                return "left: " + x + ", top: " + y + ", duration: 1, delay: " + time;
+            default:
+                return "value: '" + thridArguemnt + "', duration: 1, delay: " + time;
         }
-        */
-        return "value: '" + getThridArguemnt() + "', duration: 1, delay: " + getTime();
+    }
+
+    private boolean isVisible(Vector vector) {
+        return vector.getZ() == 0;
     }
 
     public String getIdentifier() {
