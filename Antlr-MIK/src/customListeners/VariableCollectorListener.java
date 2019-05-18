@@ -311,15 +311,65 @@ public class VariableCollectorListener extends TacticBaseListener {
             } else if(valueContext.vec() != null){ //format: vec
                 if(desiredType != VariableType.VEC)
                     throw new IllegalArgumentException();
-                //TODO Create method for getting parameters from vectors. The ctx at this point.
-                //value = getVector(valueContext.vec()).toString();
-                value = String.valueOf(TypeCheckerHelper.parseVector(valueContext.vec().getText()));
+                Vector vec = getVector(valueContext.vec());
+                value = vec.toString();
             }else
                 throw new GrammarHasChangedException("AssignmentRightContext");
 
         } else if(ctx.arithExpr() != null){ //format identifier = arithExpr
-            String result = String.valueOf(getArithmeticResult(ctx.arithExpr()));
-            value = String.valueOf(TypeCheckerHelper.trimFloatToInt(result)); //If the type the result is saved in, is of type integer, decimals will be cut off
+
+            //TODO VECTOR ARITHMETIC CHECK!!
+            //TODO is one of the arguments in the arithExpr an vector?
+            boolean doesArithExprContainVec = doesArithExprContainVector(ctx.arithExpr());
+
+            if(doesArithExprContainVec){
+                boolean isValidVectorExpr = isArithExprAValidVectorExpr(ctx.arithExpr());
+
+                //TODO If yes.. get vector arithmetic result
+                if(isValidVectorExpr){
+
+                    //format: (x,x,x)+(x,x,x) or (x,x,x)-(x,x,x)
+                    StringBuilder firstVecString = new StringBuilder();
+                    StringBuilder secondVecString = new StringBuilder();
+                    String operator = null;
+
+                    ArithmeticGatherer ag = (ArithmeticGatherer)ctx.arithExpr().children.get(0).getChild(ctx.arithExpr().children.get(0).getChildCount() -1);
+                    String equation = ag.getEquation();
+
+                    int parenthesesCounter = 0;
+
+                    for(char c : equation.toCharArray()){
+
+                        if(c == '(' || c == ')'){
+                            if(parenthesesCounter == 0 || parenthesesCounter == 1)
+                                firstVecString.append(c);
+                            else if(parenthesesCounter == 2 || parenthesesCounter == 3)
+                                secondVecString.append(c);
+
+                            parenthesesCounter++;
+                        }
+                        else if(parenthesesCounter == 1)
+                            firstVecString.append(c);
+                        else if(parenthesesCounter == 2)
+                            operator = String.valueOf(c);
+                        else if(parenthesesCounter == 3)
+                            secondVecString.append(c);
+
+                    }
+
+                    Vector firstVec = TypeCheckerHelper.parseVector(firstVecString.toString());
+                    Vector secondVec = TypeCheckerHelper.parseVector(secondVecString.toString());
+
+                    value = getResultOfVectorOperation(firstVec, secondVec, operator).toString();
+
+                }else{
+                    System.out.println("In the assignment, one of the identifiers resolves to a vector but the equation is not a valid vector equation.");
+                    throw new IllegalArgumentException();
+                }
+            }else{
+                String result = String.valueOf(getArithmeticResult(ctx.arithExpr()));
+                value = String.valueOf(TypeCheckerHelper.trimFloatToInt(result)); //If the type the result is saved in, is of type integer, decimals will be cut off
+            }
         } else if(ctx.boolExpr() != null){ //format identifier = boolStmt //TODO Change in grammar has made this invalid, Mathias is working on solution
             value = String.valueOf(getBoolStmtResult(ctx.boolExpr())); //TODO Change in grammar has made this invalid, Mathias is working on solution
         } else if(ctx.vecExpr() != null){ //format identifier = vecExpr (subtraction or addition)
@@ -387,19 +437,26 @@ public class VariableCollectorListener extends TacticBaseListener {
         //First parameter
         for(int i = 0; i < parameters.size(); i++){
 
-
             if(parameters.get(i).identifier() != null){
 
+                identifierToValueCheck(parameters.get(i).identifier().getText(), VariableType.INT);
+                VariableContainer varCon = getValueFromIdentifier(parameters.get(i).identifier().getText());
+
+                values[i] = TypeCheckerHelper.parseInt(varCon.getValue());
+
             }else if(parameters.get(i).integer() != null){
-
+                values[i] = TypeCheckerHelper.parseInt(parameters.get(i).integer().getText());
             }else if(parameters.get(i).arithExpr() != null){
-
-            }
-
-            //TODO Save value in array
+                float temp = getArithmeticResult(parameters.get(i).arithExpr());
+                values[i] = (int)temp;
+            }else
+                throw new GrammarHasChangedException();
         }
 
-        //todo take values from array and return vector.
+        if(values[2] == null)
+            return new Vector(values[0], values[1]);
+        else
+            return new Vector(values[0], values[1], values[2]);
     }
 
     // CONDITIONALS ---------------------------------------------------------------------
@@ -810,6 +867,77 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     // ARITHMETIC EXPRESSIONS ------------------------------
 
+    private boolean doesArithExprContainVector(Tactic.ArithExprContext ctx){
+        ArithmeticGatherer ag = (ArithmeticGatherer)ctx.children.get(0).getChild(ctx.children.get(0).getChildCount() -1);
+        return doesEquationContainAVector(ag.getEquation());
+    }
+
+    public boolean doesEquationContainAVector(String equation){
+
+        boolean vectorFound = false;
+        boolean isParsingVector = false;
+        int commaCounter = 0;
+
+        for(char c : equation.toCharArray()){
+
+            if(c == '('){
+                isParsingVector = true;
+                commaCounter = 0;
+            }else if(c == ')'){
+                if(isParsingVector && commaCounter == 2){
+                    vectorFound = true;
+                }
+
+                isParsingVector = false;
+            }else if(c == ','){
+                commaCounter++;
+            }
+        }
+
+        return vectorFound;
+    }
+
+    /** Checks: only two values, and both vectors. */
+    private boolean isArithExprAValidVectorExpr(Tactic.ArithExprContext ctx){
+
+        //TODO Does the arithmetic expr, only contain two elements?
+        //TODO is both elements vectors?
+
+        ArithmeticGatherer ag = (ArithmeticGatherer)ctx.children.get(0).getChild(ctx.children.get(0).getChildCount() -1);
+        String equation = ag.getEquation();
+
+        //Does the equation contain 2x')' , 2x'(' , 4x',' and one sign, either + or -
+
+        int lParenthesesCounter = 0;
+        int rParenthesesCounter = 0;
+        int commaCounter = 0;
+        int plusMinusSignCounter = 0;
+
+        //TODO REWORK CHECK: first ( ... then numbers or - until comma and so on..
+        for(char c : equation.toCharArray()){
+
+            if(c == '(')
+                lParenthesesCounter++;
+            else if(c == ')')
+                rParenthesesCounter++;
+            else if(c == ',')
+                commaCounter++;
+            else if(c == '+' || c == '-')
+                plusMinusSignCounter++;
+            else if(isCharADigit(c) || c == '.') //TODO CHECK for negative values in vectors
+                continue;
+            else
+                return false;
+
+        }
+
+        return lParenthesesCounter == 2 && rParenthesesCounter == 2 && commaCounter == 4 && plusMinusSignCounter > 0;
+    }
+
+    private boolean isCharADigit(char c){
+        return c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9';
+    }
+
     private float getArithmeticResult(Tactic.ArithExprContext ctx){
 
         if(ctx.children.get(0).getChild(ctx.children.get(0).getChildCount() -1)  instanceof ArithmeticGatherer)
@@ -921,7 +1049,9 @@ public class VariableCollectorListener extends TacticBaseListener {
                 if(varCon == null)
                     throw new IllegalArgumentException(); //The variable has not been initialized
 
-                if(varCon.getType() != VariableCollectorListener.VariableType.INT && varCon.getType() != VariableCollectorListener.VariableType.FLOAT)
+                if(varCon.getType() != VariableCollectorListener.VariableType.INT &&
+                        varCon.getType() != VariableCollectorListener.VariableType.FLOAT &&
+                        varCon.getType() != VariableType.VEC)
                     throw new IllegalArgumentException(); //Not the correct type
 
                 ag.addValue(varCon.getValue());

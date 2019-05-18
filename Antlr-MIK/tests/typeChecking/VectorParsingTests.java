@@ -251,15 +251,27 @@ public class VectorParsingTests {
     }
 
     @Test
-    public void add03(){ //TODO Currently fails because i = i - x; is not parsed or check, so it is assumed to be a "normal" arithmetic expression.
+    public void add03(){
         parse("vector i; vector x; x = (1,1,1); i = (5,5,5) - x; i = i + x;;");
 
         Vector i = TypeCheckerHelper.parseVector(vcl.getValueFromIdentifier("i").getValue());
 
         Assert.assertNotNull(i);
-        Assert.assertEquals(3, i.getX());
-        Assert.assertEquals(3, i.getY());
-        Assert.assertEquals(3, i.getZ());
+        Assert.assertEquals(5, i.getX());
+        Assert.assertEquals(5, i.getY());
+        Assert.assertEquals(5, i.getZ());
+    }
+
+    @Test
+    public void add04(){
+        parse("vector i; vector x; vector y; x = (1,1,1); y = (5,5,5); i = y + x;;");
+
+        Vector i = TypeCheckerHelper.parseVector(vcl.getValueFromIdentifier("i").getValue());
+
+        Assert.assertNotNull(i);
+        Assert.assertEquals(6, i.getX());
+        Assert.assertEquals(6, i.getY());
+        Assert.assertEquals(6, i.getZ());
     }
 
     @Test
@@ -299,15 +311,16 @@ public class VectorParsingTests {
     }
 
     @Test
-    public void sub05(){ //TODO Currently fails because i = i - x; is not parsed or check, so it is assumed to be a "normal" arithmetic expression.
-        parse("vector i; vector x; x = (1,1,1); i = (5,5,5) - x; i = i - x;;");
+    public void sub05(){
+        parse("vector i; vector y; vector x; x = (1,1,1); y = (5,5,5); i = y - x;;");
+        //parse("vector i; vector x; x = (1,1,1); i = (5,5,5) - x; i = i - x;;");
 
         Vector i = TypeCheckerHelper.parseVector(vcl.getValueFromIdentifier("i").getValue());
 
         Assert.assertNotNull(i);
-        Assert.assertEquals(3, i.getX());
-        Assert.assertEquals(3, i.getY());
-        Assert.assertEquals(3, i.getZ());
+        Assert.assertEquals(4, i.getX());
+        Assert.assertEquals(4, i.getY());
+        Assert.assertEquals(4, i.getZ());
     }
 
     @Test (expected = Exception.class)
