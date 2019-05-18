@@ -24,9 +24,13 @@ public class MainClass {
     /** This method will run the entire compiler. */
     public static void main(String[] args) {
         try{
+            String inputFile = "Antlr-MIK/compilerInput.tac";
+            if(args.length ==1){
+                inputFile = args[0];
+            }
             //PARSING --------------------------------------------------------
             //Initialize lexer and parser with a file as input
-            CharStream input = new ANTLRFileStream("Antlr-MIK/compilerInput.tac"); //Load an input to compile
+            CharStream input = new ANTLRFileStream(inputFile); //Load an input to compile
             TacticLexer lexer = new TacticLexer(input);  //Create the lexer
             Tactic parser = new Tactic(new CommonTokenStream(lexer)); //Create the parser
 
