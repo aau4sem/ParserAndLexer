@@ -207,6 +207,26 @@ public class VectorParsingTests {
     }
 
     @Test
+    public void assignment11(){
+        parse("int i; vector x; i = 4; x = (i, 1, 3);;");
+
+        VariableContainer varCon = vcl.getValueFromIdentifier("x");
+
+        //Was it saved?
+        Assert.assertNotNull(varCon);
+
+        //Does it have the right value?
+        Vector vec = TypeCheckerHelper.parseVector(varCon.getValue());
+        Assert.assertNotNull(vec);
+        Assert.assertEquals(4, vec.getX());
+        Assert.assertEquals(1, vec.getY());
+        Assert.assertEquals(3, vec.getZ());
+
+        //Does it have the right type?
+        Assert.assertTrue(varCon.getType() == VariableCollectorListener.VariableType.VEC);
+    }
+
+    @Test
     public void add01(){
         parse("vector i; i = (5,5,5) + (2,2,2);;");
 

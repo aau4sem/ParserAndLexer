@@ -311,6 +311,8 @@ public class VariableCollectorListener extends TacticBaseListener {
             } else if(valueContext.vec() != null){ //format: vec
                 if(desiredType != VariableType.VEC)
                     throw new IllegalArgumentException();
+                //TODO Create method for getting parameters from vectors. The ctx at this point.
+                //value = getVector(valueContext.vec()).toString();
                 value = String.valueOf(TypeCheckerHelper.parseVector(valueContext.vec().getText()));
             }else
                 throw new GrammarHasChangedException("AssignmentRightContext");
@@ -374,6 +376,30 @@ public class VariableCollectorListener extends TacticBaseListener {
             throw new IllegalArgumentException(); //This should not be throw! If so, then the above code is not properly written.
 
         return value;
+    }
+
+    /** @return a vector from the given context. */
+    private Vector getVector(Tactic.VecContext ctx){
+
+        ArrayList<Tactic.VecParaContext> parameters = new ArrayList<>(ctx.vecPara());
+        Integer[] values = new Integer[3];
+
+        //First parameter
+        for(int i = 0; i < parameters.size(); i++){
+
+
+            if(parameters.get(i).identifier() != null){
+
+            }else if(parameters.get(i).integer() != null){
+
+            }else if(parameters.get(i).arithExpr() != null){
+
+            }
+
+            //TODO Save value in array
+        }
+
+        //todo take values from array and return vector.
     }
 
     // CONDITIONALS ---------------------------------------------------------------------
