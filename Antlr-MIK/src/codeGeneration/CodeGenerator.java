@@ -170,7 +170,7 @@ public class CodeGenerator {
 
         //Find the "TAGS" and replace with code.
         indexTemplateLines = replaceTag(indexTemplateLines, selectorLines,"SELECTORTAG");
-        indexTemplateLines = replaceTag(indexTemplateLines, buttonLines, "BUTTONSTAG");
+        //indexTemplateLines = replaceTag(indexTemplateLines, buttonLines, "BUTTONSTAG");
         indexTemplateLines = replaceTag(indexTemplateLines, objectLines, "OBJECTSTAG");
 
         return indexTemplateLines;
@@ -316,6 +316,8 @@ public class CodeGenerator {
         generatedLines.add("background-size: 100% 100%;");
         generatedLines.add("position: relative;");
         generatedLines.add("margin: auto;");
+        generatedLines.add("border: #555555 1px solid;");
+        generatedLines.add("background-color: linen;");
         generatedLines.add("}");
 
         return generatedLines;
