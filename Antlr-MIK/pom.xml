@@ -42,42 +42,7 @@
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
-            <artifactId>antlr4-master</artifactId>
-            <version>4.7.3-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>4.7.3-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4</artifactId>
-            <version>4.7.3-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-maven-plugin</artifactId>
-            <version>4.7.3-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-runtime-test-annotation-processors</artifactId>
-            <version>4.7.3-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-runtime-test-annotations</artifactId>
-            <version>4.7.3-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-runtime-testsuite</artifactId>
-            <version>4.7.3-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-tool-testsuite</artifactId>
             <version>4.7.3-SNAPSHOT</version>
         </dependency>
     </dependencies>
