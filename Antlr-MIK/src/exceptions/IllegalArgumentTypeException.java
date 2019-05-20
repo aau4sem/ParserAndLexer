@@ -2,12 +2,12 @@ package exceptions;
 
 import model.utils.Argument;
 
-public class IllegalArgumentType extends RuntimeException {
-    public IllegalArgumentType(int argumentNumber, String functionName, Argument.ArgumentType... allowedType) {
+public class IllegalArgumentTypeException extends RuntimeException {
+    public IllegalArgumentTypeException(int argumentNumber, String functionName, Argument.ArgumentType... allowedType) {
         super(printErrorMessage(argumentNumber, functionName, allowedType));
     }
 
-    public IllegalArgumentType(int argumentNumber, String functionName, String allowedType) {
+    public IllegalArgumentTypeException(int argumentNumber, String functionName, String allowedType) {
         super(printErrorMessage(argumentNumber, functionName, allowedType));
     }
 
