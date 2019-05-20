@@ -336,6 +336,7 @@ public class CodeGenerator {
             sb.append("background-color: ").append(gp.getColor()).append(";\n");
             sb.append("left: ").append(gp.getPosition().getX()).append("px;\n");
             sb.append("top: ").append(gp.getPosition().getY()).append("px;\n");
+            sb.append("opacity: ").append(gp.getOpacity()).append(";\n");
             //TODO more?
             sb.append("}\n");
 
