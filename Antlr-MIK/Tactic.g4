@@ -44,7 +44,7 @@ gpDcl       : GAMEPIECE identifier;
 arrayDcl    : type LBRACKET integer RBRACKET identifier;
 
 assignment  : (identifier | dotStmt) (LBRACKET integer RBRACKET)? ASSIGN assignmentRight ;
-assignmentRight : (value | arithExpr | boolExpr | vecExpr | identifier LBRACKET integer RBRACKET | dotStmt) ;
+assignmentRight : value | arithExpr | boolExpr | vecExpr | identifier LBRACKET integer RBRACKET | dotStmt ;
 
 //Datastructure operations
 arrayAssign : identifier (LBRACKET integer RBRACKET ASSIGN assignmentRight | LBRACKET RBRACKET ASSIGN LCURLY (assignmentRight(SEPERATOR assignmentRight)*) RCURLY);
