@@ -269,46 +269,6 @@ public class ActionCollectorListener extends TacticBaseListener {
         throw new IllegalArgumentException();
     }
 
-    /** //TODO: Improvement: This method could be moved to a more general parserListener.
-     * This method is used to combine all arguments in a function call.
-     * It uses that class ArgumentGatherer to collect and merge arguments while traversing
-     * the tree for a given function call.
-     * Method: This method is called every time an Argument node is exited. If it only has one child,
-     * it is an end note with a value, here we create an instance of the ArgumentCollector with the current
-     * nodes value, and attached to the current node. If the node being exited has three children,
-     * an argument node, a comma node, and another argument node, we create a new ArgumentGatherer
-     * from the two attached to the current nodes two argument children. Purpose: when exiting a
-     * function call, we can then get the last child for that node, and it will be a ArgumentGatherer
-     * containing all arguments for the function call. */
-    @Override
-    public void exitArguments(Tactic.ArgumentsContext ctx) {
-
-        if(!variableCollectorListener.mayThisStmtRun())
-            return;
-
-
-        if (ctx.children.size() == 1) { //This is an end note. The child is a value
-            ArgumentGatherer ag = new ArgumentGatherer();
-            ag.addArgument((Tactic.ValueContext) ctx.children.get(0));
-            ctx.addChild(ag);
-        } else if (ctx.children.size() == 3) { //This is a node that has two arguments as children. The middle child is a comma.
-
-            //Get the last child of the first node in this node: current(ctx).1.last
-            ArgumentGatherer agFirstArgument = (ArgumentGatherer) ((Tactic.ArgumentsContext) ctx.children.get(0)).children.get(ctx.children.get(0).getChildCount() - 1);
-
-            //Get the last child of the third node in this node: current(ctx).3.last
-            ArgumentGatherer agSecondArgument = (ArgumentGatherer) ((Tactic.ArgumentsContext) ctx.children.get(2)).children.get(ctx.children.get(2).getChildCount() - 1);
-
-            //Merge the arguments of the children and
-            ArgumentGatherer mergedAg = new ArgumentGatherer();
-            mergedAg.addAllArguments(agFirstArgument.getList());
-            mergedAg.addAllArguments(agSecondArgument.getList());
-
-            //Attach the merged ArgumentGatherer to the current node
-            ctx.addChild(mergedAg);
-        }
-    }
-
     public ArrayList<BuildInFunction> getActionFunctions() {
         return actionFunctions;
     }
