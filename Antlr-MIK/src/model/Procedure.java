@@ -2,12 +2,8 @@ package model;
 
 import customListeners.VariableCollectorListener;
 import exceptions.GrammarHasChangedException;
-import exceptions.IllegalNumberOfArguments;
 import gen.Tactic;
-import model.utils.Argument;
 import model.utils.Parameter;
-import model.variables.VariableContainer;
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;

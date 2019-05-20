@@ -1,7 +1,6 @@
 package model.variables;
 
-import customListeners.VariableCollectorListener;
-import exceptions.IllegalNumberOfArguments;
+import exceptions.IllegalNumberOfArgumentsException;
 import model.Procedure;
 import model.utils.Argument;
 
@@ -61,7 +60,7 @@ public class ProcedureScopeData {
 
         //Does the number of given arguments match the number of parameters
         if(givenArguments.size() != currentProcedure.getNumberOfParameters())
-            throw new IllegalNumberOfArguments(currentProcedure.getNumberOfParameters(), currentProcedure.getProdecureName(), givenArguments.size());
+            throw new IllegalNumberOfArgumentsException(currentProcedure.getNumberOfParameters(), currentProcedure.getProdecureName(), givenArguments.size());
 
         //Does the procedure have any statements?
         if(currentProcedure.getNumberOfStatements() == 0)

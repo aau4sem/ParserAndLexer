@@ -1,8 +1,7 @@
 package customListeners;
 
 import exceptions.GrammarHasChangedException;
-import exceptions.IllegalArgumentType;
-import exceptions.IllegalNumberOfArguments;
+import exceptions.IllegalArgumentTypeException;
 import gen.Tactic;
 import gen.TacticBaseListener;
 import model.utils.Argument;
@@ -16,7 +15,6 @@ import model.dataTypes.GamePiece;
 import model.dataTypes.Number;
 import model.dataTypes.Vector;
 import model.variables.VariableContainer;
-import org.antlr.v4.runtime.CodePointBuffer;
 
 import java.util.ArrayList;
 
@@ -166,13 +164,13 @@ public class ActionCollectorListener extends TacticBaseListener {
 
         if(secondArg == GamePiece.GamePiecePropertyType.POSITION){
             if(TypeCheckerHelper.parseVector(thirdArg) == null)
-                throw new IllegalArgumentType(3, BuildInFunctionChange.identifier, Argument.ArgumentType.VECTOR);
+                throw new IllegalArgumentTypeException(3, BuildInFunctionChange.identifier, Argument.ArgumentType.VECTOR);
         }else if(secondArg == GamePiece.GamePiecePropertyType.SIZE){
             if(TypeCheckerHelper.parseFloat(thirdArg) == null)
-                throw new IllegalArgumentType(3, BuildInFunctionChange.identifier, "float");
+                throw new IllegalArgumentTypeException(3, BuildInFunctionChange.identifier, "float");
         }else if(secondArg == GamePiece.GamePiecePropertyType.OPACITY){
             if(TypeCheckerHelper.parseFloat(thirdArg) == null)
-                throw new IllegalArgumentType(3, BuildInFunctionChange.identifier, "float");
+                throw new IllegalArgumentTypeException(3, BuildInFunctionChange.identifier, "float");
         }
 
         actionFunctions.add(new BuildInFunctionChange(firstArg, secondArg, thirdArg, fourthArg));
@@ -194,7 +192,7 @@ public class ActionCollectorListener extends TacticBaseListener {
 
         //Did the check fail: is the argument of the requested type?
         if(!isArgumentRequestedType){
-            throw new IllegalArgumentType(argumentNumber, functionName, allowedType);
+            throw new IllegalArgumentTypeException(argumentNumber, functionName, allowedType);
         }
     }
 
@@ -215,7 +213,7 @@ public class ActionCollectorListener extends TacticBaseListener {
 
         //Did it parse?
         if(num == null) // Was the value of type integer or float
-            throw new IllegalArgumentType(numberOfArguments + 1, functionName, "integer or float");
+            throw new IllegalArgumentTypeException(numberOfArguments + 1, functionName, "integer or float");
 
         return num;
     }
