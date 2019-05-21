@@ -22,7 +22,7 @@ vec             : LPAREN vecPara SEPERATOR vecPara (SEPERATOR vecPara)? RPAREN;
 type            : INTEGER | FLOAT | VEC | BOOL | STRING | GAMEPIECE ;
 
 procedureCall   : identifier LPAREN arguments? RPAREN;
-procedureDef    : identifier LPAREN (type(LBRACKET RBRACKET)? identifier (SEPERATOR type (LBRACKET RBRACKET)* identifier)*)? RPAREN procedureBlock;
+procedureDef    : identifier LPAREN (type(LBRACKET RBRACKET)? identifier (SEPERATOR type (LBRACKET RBRACKET)? identifier)*)? RPAREN procedureBlock;
 procedureBlock  : LCURLY (procedureStmt ENDSTMT)* RCURLY;
 procedureStmt   : dotAssignment | arrayAssign | condStmt | whileStmt | assignment | action;
 
@@ -68,7 +68,7 @@ arguments       : value | arguments SEPERATOR arguments ;
 //Control structures
 condStmt        : ifStmt elseStmt? ;
 block           : LCURLY (stmt ENDSTMT)* RCURLY ;
-ifStmt          : IF LPAREN (boolExpr) RPAREN  block ;
+ifStmt          : IF LPAREN boolExpr RPAREN  block ;
 elseStmt        : ELSE block ;
 
 whileStmt       : WHILE LPAREN boolExpr RPAREN block ;
