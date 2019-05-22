@@ -12,7 +12,7 @@ stmt    : dotAssignment | arrayAssign | procedureCall | condStmt | whileStmt | a
 dcl     : intDcl | boolDcl | arrayDcl | stringDcl | gpDcl | floatDcl | vecDcl | procedureDef;
 
 integer         : SUBTRACTION? (NUMBER | DIGIT) ;
-floatVal        : SUBTRACTION? ((NUMBER | DIGIT) DOT (NUMBER | DIGIT));
+floatVal        : SUBTRACTION? (NUMBER | DIGIT) DOT (NUMBER | DIGIT);
 number          : integer | floatVal ;
 word            : WORD | LETTER ;
 string          : STRINGTEXT ;
@@ -31,7 +31,7 @@ moveAction      : MOVE LPAREN identifier SEPERATOR vec SEPERATOR integer RPAREN 
 waitAction      : WAIT LPAREN identifier SEPERATOR integer RPAREN  ;
 changeAction    : CHANGE LPAREN identifier SEPERATOR string SEPERATOR value SEPERATOR integer RPAREN  ;
 
-dotStmt         : identifier ((DOT identifier(LBRACKET integer RBRACKET)?))+ ;
+dotStmt         : identifier (DOT identifier(LBRACKET integer RBRACKET)?)+ ;
 dotAssignment   : dotStmt ASSIGN value;
 
 //Declaration
@@ -47,7 +47,7 @@ assignment  : (identifier | dotStmt) (LBRACKET integer RBRACKET)? ASSIGN assignm
 assignmentRight : value | arithExpr | boolExpr | vecExpr | identifier LBRACKET integer RBRACKET | dotStmt ;
 
 //Datastructure operations
-arrayAssign : identifier (LBRACKET integer RBRACKET ASSIGN assignmentRight | LBRACKET RBRACKET ASSIGN LCURLY (assignmentRight(SEPERATOR assignmentRight)*) RCURLY);
+arrayAssign : identifier (LBRACKET integer RBRACKET ASSIGN assignmentRight | LBRACKET RBRACKET ASSIGN LCURLY assignmentRight(SEPERATOR assignmentRight)* RCURLY);
 
 //Arithmetic operations
 arithExpr : arithExprParent | arithExprMiddle ;
