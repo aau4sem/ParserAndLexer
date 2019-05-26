@@ -114,7 +114,7 @@ public class TypeCheckerHelper {
         return gp;
     }
 
-    /** Returns a Vector if the given string is formatted as a vector, else null. */
+    /** @return a Vector if the given string is formatted as a vector, else null. */
     public static Vector parseVector(String val){
         try {
             StringBuilder xString = new StringBuilder();
@@ -163,13 +163,13 @@ public class TypeCheckerHelper {
         return null;
     }
 
-    /** @return the same string but with removed start and end parentheses. "test" -> test*/
+    /** @return the same string but with removed start and end parentheses. "test" -> test. */
     public static String parseString(String val){
 
         if(val.length() == 0)
             return "";
 
-        String output = val; //Does this even copy the content?
+        String output = val;
 
         if(output.charAt(0) == '"')
             output = output.substring(1);
@@ -177,15 +177,11 @@ public class TypeCheckerHelper {
         if(output.charAt(output.length() - 1) == '"')
             output = output.substring(0, output.length() - 1);
 
-
         return output;
     }
 
     /** @return the VariableType matching the given input. */
     public static VariableCollectorListener.VariableType parseVariableType(String val){
-
-        //todo HANDLE ARRAYS
-
         switch (val){
             case "int": return VariableCollectorListener.VariableType.INT;
             case "float" : return VariableCollectorListener.VariableType.FLOAT;
@@ -198,6 +194,7 @@ public class TypeCheckerHelper {
         return null;
     }
 
+    /** @return an array of Integers with the values from the given string. */
     public static Integer[] parseIntegerArray(String val){
         ArrayList<String> elements = getArrayElements(val);
 
@@ -209,6 +206,7 @@ public class TypeCheckerHelper {
         return result;
     }
 
+    /** @return an array of Float with the values from the given string. */
     public static Float[] parseFloatArray(String val){
         ArrayList<String> elements = getArrayElements(val);
 
@@ -220,6 +218,7 @@ public class TypeCheckerHelper {
         return result;
     }
 
+    /** @return an array of Vector with the values from the given string. */
     public static Vector[] parseVectorArray(String val){
         ArrayList<String> elements = getArrayElements(val);
 
@@ -231,6 +230,7 @@ public class TypeCheckerHelper {
         return result;
     }
 
+    /** @return an array of Boolean with the values from the given string. */
     public static Boolean[] parseBooleanArray(String val){
         ArrayList<String> elements = getArrayElements(val);
 
@@ -242,6 +242,7 @@ public class TypeCheckerHelper {
         return result;
     }
 
+    /** @return an array of String with the values from the given string. */
     public static String[] parseStringArray(String val){
         ArrayList<String> elements = getArrayElements(val);
 
@@ -253,6 +254,7 @@ public class TypeCheckerHelper {
         return result;
     }
 
+    /** @return an array of GamePiece with the values from the given string. */
     public static GamePiece[] parseGamePieceArray(String val){
         ArrayList<String> elements = getArrayElements(val);
 
