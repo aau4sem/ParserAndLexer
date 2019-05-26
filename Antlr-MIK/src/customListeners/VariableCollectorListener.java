@@ -386,7 +386,7 @@ public class VariableCollectorListener extends TacticBaseListener {
 
             int index = Integer.parseInt(ctx.integer().getText());
 
-            if(index >= varCon.getLengthOfarray()){
+            if(index >= varCon.getLengthOfArray()){
                 System.out.println("The index addressing the array is larger than the array.");
                 throw new IllegalArgumentException();
             }
@@ -410,7 +410,7 @@ public class VariableCollectorListener extends TacticBaseListener {
                     throw new IllegalArgumentException();
                 }
                 
-                value = String.valueOf(varCon.getLengthOfarray());
+                value = String.valueOf(varCon.getLengthOfArray());
             }else{
                 System.out.println("You are using dot-notation but not on a game piece and not as .length on an array.");
                 throw new IllegalArgumentException();
