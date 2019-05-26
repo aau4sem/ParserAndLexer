@@ -1,13 +1,13 @@
 package model.utils.buildInFunction;
 
 import model.dataTypes.GamePiece;
-import model.dataTypes.Number;
 
+/** This interface is implemented by the three classes modeling the three action calls.*/
 public interface BuildInFunction {
 
     GamePiece getGp();
     Integer getTime();
     String toKeyframe();
-    void setTime(Integer time);
+    void setTime(Integer time); //TODO Remove? Ali?
     String getIdentifier();
 }

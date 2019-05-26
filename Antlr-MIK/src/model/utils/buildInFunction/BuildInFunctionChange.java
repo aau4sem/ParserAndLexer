@@ -1,22 +1,22 @@
 package model.utils.buildInFunction;
 
 import model.dataTypes.GamePiece;
-import model.dataTypes.Number;
 import model.dataTypes.Vector;
 
+/** This class is used to model and store information about the action-call Change. */
 public class BuildInFunctionChange implements BuildInFunction {
 
     public static String identifier = "Change";
 
     private GamePiece gp;
-    private GamePiece.GamePiecePropertyType gpPropperty;
-    private String thridArguemnt; //TODO rename //TODO Handle when implemented in the grammar
+    private GamePiece.GamePiecePropertyType gpProperty;
+    private String thirdArgument;
     private Integer time;
 
-    public BuildInFunctionChange(GamePiece gp, GamePiece.GamePiecePropertyType gpPropperty, String thridArguemnt, Integer time) {
+    public BuildInFunctionChange(GamePiece gp, GamePiece.GamePiecePropertyType gpProperty, String thirdArgument, Integer time) {
         this.gp = gp;
-        this.gpPropperty = gpPropperty;
-        this.thridArguemnt = thridArguemnt;
+        this.gpProperty = gpProperty;
+        this.thirdArgument = thirdArgument;
         this.time = time;
     }
 
@@ -25,11 +25,11 @@ public class BuildInFunctionChange implements BuildInFunction {
     }
 
     public GamePiece.GamePiecePropertyType getSecondArgument() {
-        return gpPropperty;
+        return gpProperty;
     }
 
-    public String getThridArguemnt() {
-        return thridArguemnt;
+    public String getThirdArgument() {
+        return thirdArgument;
     }
 
     public Integer getTime() {
@@ -41,16 +41,16 @@ public class BuildInFunctionChange implements BuildInFunction {
     }
 
     public String toKeyframe() {
-        switch (this.gpPropperty) {
+        switch (this.gpProperty) {
             case POSITION:
 
-                String test[] = this.thridArguemnt.split("\\D+");
+                String test[] = this.thirdArgument.split("\\D+");
                 int x = Integer.parseInt(test[1]);
                 int y = Integer.parseInt(test[2]);
 
                 return "left: " + x + ", top: " + y + ", duration: 1, delay: " + time;
             default:
-                return "value: '" + thridArguemnt + "', duration: 1, delay: " + time;
+                return "value: '" + thirdArgument + "', duration: 1, delay: " + time;
         }
     }
 

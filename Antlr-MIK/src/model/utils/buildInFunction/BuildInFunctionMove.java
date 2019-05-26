@@ -2,8 +2,8 @@ package model.utils.buildInFunction;
 
 import model.dataTypes.GamePiece;
 import model.dataTypes.Vector;
-import model.dataTypes.Number;
 
+/** This class is used to model and store information about the action-call Move. */
 public class BuildInFunctionMove implements BuildInFunction {
 
     public static String identifier = "Move";

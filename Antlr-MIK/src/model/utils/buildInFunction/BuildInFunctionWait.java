@@ -1,8 +1,8 @@
 package model.utils.buildInFunction;
 
 import model.dataTypes.GamePiece;
-import model.dataTypes.Number;
 
+/** This class is used to model and store information about the action-call Wait. */
 public class BuildInFunctionWait implements BuildInFunction {
 
     public static String identifier = "Wait";

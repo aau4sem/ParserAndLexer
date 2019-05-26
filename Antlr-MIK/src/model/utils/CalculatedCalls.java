@@ -41,7 +41,7 @@ public class CalculatedCalls {
                     } else if (action instanceof BuildInFunctionWait){
                         calculatedCalls.add(new BuildInFunctionWait(action.getGp(), changeTime));
                     } else if (((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.POSITION){
-                        calculatedCalls.add(new BuildInFunctionChange(action.getGp(), ((BuildInFunctionChange) action).getSecondArgument(), ((BuildInFunctionChange) action).getThridArguemnt(), changeTime));
+                        calculatedCalls.add(new BuildInFunctionChange(action.getGp(), ((BuildInFunctionChange) action).getSecondArgument(), ((BuildInFunctionChange) action).getThirdArgument(), changeTime));
                     }
 
                     if (!(action instanceof BuildInFunctionChange)){
@@ -53,7 +53,7 @@ public class CalculatedCalls {
                     if (isPrevious(previousChangeColor)){
                         changeTime = action.getTime() - previousChangeColor.getTime();
                     }
-                    calculatedCalls.add(new BuildInFunctionChange(action.getGp(), ((BuildInFunctionChange) action).getSecondArgument(), ((BuildInFunctionChange) action).getThridArguemnt(), changeTime));
+                    calculatedCalls.add(new BuildInFunctionChange(action.getGp(), ((BuildInFunctionChange) action).getSecondArgument(), ((BuildInFunctionChange) action).getThirdArgument(), changeTime));
                     previousChangeColor = action;
                 }
 
@@ -61,7 +61,7 @@ public class CalculatedCalls {
                     if (isPrevious(previousChangeSize)){
                         changeTime = action.getTime() - previousChangeSize.getTime();
                     }
-                    calculatedCalls.add(new BuildInFunctionChange(action.getGp(), ((BuildInFunctionChange) action).getSecondArgument(), ((BuildInFunctionChange) action).getThridArguemnt(), changeTime));
+                    calculatedCalls.add(new BuildInFunctionChange(action.getGp(), ((BuildInFunctionChange) action).getSecondArgument(), ((BuildInFunctionChange) action).getThirdArgument(), changeTime));
                     previousChangeSize = action;
                 }
 
@@ -69,7 +69,7 @@ public class CalculatedCalls {
                     if (isPrevious(previousChangeOpacity)){
                         changeTime = action.getTime() - previousChangeOpacity.getTime();
                     }
-                    calculatedCalls.add(new BuildInFunctionChange(action.getGp(), ((BuildInFunctionChange) action).getSecondArgument(), ((BuildInFunctionChange) action).getThridArguemnt(), changeTime));
+                    calculatedCalls.add(new BuildInFunctionChange(action.getGp(), ((BuildInFunctionChange) action).getSecondArgument(), ((BuildInFunctionChange) action).getThirdArgument(), changeTime));
                     previousChangeOpacity = action;
                 }
             }
