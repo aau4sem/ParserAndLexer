@@ -12,9 +12,6 @@ import model.utils.ArgumentGatherer;
 import model.utils.ArithmeticGatherer;
 import model.utils.Parameter;
 import model.utils.TypeCheckerHelper;
-import model.utils.buildInFunction.BuildInFunctionMove;
-import model.utils.buildInFunction.BuildInFunctionChange;
-import model.utils.buildInFunction.BuildInFunctionWait;
 import model.variables.ProcedureScopeData;
 import model.variables.VariableContainer;
 import model.variables.VariableScopeData;
@@ -31,18 +28,17 @@ import java.util.List;
  * variables. */
 public class VariableCollectorListener extends TacticBaseListener {
 
-    //TODO Maybe split into two listeners: one of them being declaration collector???
+    public enum ScopeType {MAIN_SCOPE, PROCEDURE_SCOPE }
 
     private ActionCollectorListener acl;
     private BoardListener bl;
 
     //Two variableScopeData to keep track of variable declarations in the main and function scope
-    private VariableScopeData mainScope = new VariableScopeData(VariableScopeData.ScopeType.MAIN_SCOPE);
-    //private VariableScopeData procedureScope = new VariableScopeData(VariableScopeData.ScopeType.PROCEDURE_SCOPE);
+    private VariableScopeData mainScope = new VariableScopeData();
     private ProcedureScopeData procedureScope = new ProcedureScopeData(mainScope);
 
     //Keeps track of which scope the parsing/tree walk currently is in
-    private VariableScopeData.ScopeType currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
+    private ScopeType currentScope = ScopeType.MAIN_SCOPE;
 
     //Collection for declared procedures
     private HashMap<String, Procedure> procedures = new HashMap<>();
@@ -72,7 +68,7 @@ public class VariableCollectorListener extends TacticBaseListener {
      * @param identifier the identifier of the variable to overwrite. */
     public void overwriteValueOfVariable(String identifier, String val){
 
-        if(currentScope == VariableScopeData.ScopeType.PROCEDURE_SCOPE){
+        if(currentScope == ScopeType.PROCEDURE_SCOPE){
             VariableContainer varCon = procedureScope.getVariable(identifier);
 
             if(varCon != null){
@@ -100,7 +96,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         VariableContainer varCon;
 
         //Get VariableContainer from the current scope
-        if(currentScope == VariableScopeData.ScopeType.MAIN_SCOPE){
+        if(currentScope == ScopeType.MAIN_SCOPE){
             varCon = mainScope.getVariable(identifier);
         } else {
             varCon = procedureScope.getVariable(identifier);
@@ -126,7 +122,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         VariableContainer varCon;
 
         //Get VariableContainer from the current scope
-        if(currentScope == VariableScopeData.ScopeType.MAIN_SCOPE){
+        if(currentScope == ScopeType.MAIN_SCOPE){
             varCon = mainScope.getVariable(identifier);
         } else {
             varCon = procedureScope.getVariable(identifier);
@@ -653,7 +649,7 @@ public class VariableCollectorListener extends TacticBaseListener {
 
         String identifier = ctx.identifier().getText();
 
-        this.currentScope = VariableScopeData.ScopeType.PROCEDURE_SCOPE;
+        this.currentScope = ScopeType.PROCEDURE_SCOPE;
 
         Procedure procedure = getProcedureFromIdentifier(identifier);
 
@@ -671,7 +667,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         this.procedureScope.setCurrentProcedure(procedure);
         this.procedureScope.execute();
 
-        this.currentScope = VariableScopeData.ScopeType.MAIN_SCOPE;
+        this.currentScope = ScopeType.MAIN_SCOPE;
         this.procedureScope.reset();
     }
 

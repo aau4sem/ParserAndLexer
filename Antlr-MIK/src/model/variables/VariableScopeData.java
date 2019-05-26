@@ -8,17 +8,8 @@ import java.util.HashMap;
 /** This class will contain information of variables for a given scope. */
 public class VariableScopeData {
 
-    public enum ScopeType {MAIN_SCOPE, PROCEDURE_SCOPE }
-
-    private ScopeType type;
-    private String procedureIdentifier = "";
-
     //A map that maps identifiers of variables to a container that hold their value.
     private HashMap<String, VariableContainer> variables = new HashMap<>();
-
-    public VariableScopeData(ScopeType type) {
-        this.type = type;
-    }
 
     /** @return all variables of the given type.*/
     public ArrayList<VariableContainer> getAllVariablesOfType(VariableCollectorListener.VariableType type){
@@ -49,17 +40,5 @@ public class VariableScopeData {
      * if the quested variable does not exist.  */
     public VariableContainer getVariable(String identifier){
         return variables.get(identifier);
-    }
-
-    public ScopeType getType() {
-        return type;
-    }
-
-    public void setProcedureIdentifier(String procedureIdentifier) {
-        this.procedureIdentifier = procedureIdentifier;
-    }
-
-    public void resetProcedureIdentifier(){
-        this.procedureIdentifier = "";
     }
 }
