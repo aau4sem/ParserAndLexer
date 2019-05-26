@@ -37,7 +37,7 @@ public class ProcedureScopeData {
 
 
         //Is the given identifier matching one of the parameters?
-        if(currentProcedure.isIdentifierMatchingAParamter(identifier)){
+        if(currentProcedure.isIdentifierMatchingAParameter(identifier)){
 
             //Get the given argument matching the identifier
             Argument argumentMatchingIdentifier = givenArguments.get(currentProcedure.getNumberOfParameterFromIdentifier(identifier));

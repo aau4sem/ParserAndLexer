@@ -172,7 +172,7 @@ public class Procedure {
     }
 
     /** @return true if the given identifier matches one of this procedures parameters. */
-    public boolean isIdentifierMatchingAParamter(String identifier){
+    public boolean isIdentifierMatchingAParameter(String identifier){
 
         for(Parameter parameter : parameters){
             if(parameter.getIdentifier().compareTo(identifier) == 0)
