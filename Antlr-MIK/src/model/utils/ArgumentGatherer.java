@@ -71,57 +71,57 @@ public class ArgumentGatherer implements TerminalNode {
     // BELOW METHODS IS NOT USED BUT HAS TO BE IMPLEMENTED -------------------
 
     @Override
-    public Token getSymbol() {
-        throw new IllegalArgumentException(); //This call should never happen.
-    }
-
-    @Override
     public ParseTree getParent() {
-        throw new IllegalArgumentException(); //This call should never happen.
+        return null;
     }
 
     @Override
     public Object getPayload() {
-        throw new IllegalArgumentException(); //This call should never happen.
+        return null;
     }
 
     @Override
     public ParseTree getChild(int i) {
-        throw new IllegalArgumentException(); //This call should never happen.
+        return null;
     }
 
     @Override
     public int getChildCount() {
-        throw new IllegalArgumentException(); //This call should never happen.
+        return 0;
     }
 
     @Override
     public String toStringTree() {
-        throw new IllegalArgumentException(); //This call should never happen.
+        return null;
     }
 
     @Override
     public void setParent(RuleContext parent) {
-        throw new IllegalArgumentException(); //This call should never happen.
+
     }
 
     @Override
     public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-        throw new IllegalArgumentException(); //This call should never happen.
+        return null;
     }
 
     @Override
     public String getText() {
-        throw new IllegalArgumentException(); //This call should never happen.
+        return null;
     }
 
     @Override
     public String toStringTree(Parser parser) {
-        throw new IllegalArgumentException(); //This call should never happen.
+        return null;
+    }
+
+    @Override
+    public Token getSymbol() {
+        return null;
     }
 
     @Override
     public Interval getSourceInterval() {
-        throw new IllegalArgumentException(); //This call should never happen.
+        return null;
     }
 }
