@@ -5,7 +5,6 @@ import exceptions.IllegalArgumentTypeException;
 import gen.Tactic;
 import gen.TacticBaseListener;
 import model.utils.Argument;
-import model.utils.ArgumentGatherer;
 import model.utils.TypeCheckerHelper;
 import model.utils.buildInFunction.BuildInFunctionMove;
 import model.utils.buildInFunction.BuildInFunction;
