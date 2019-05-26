@@ -218,8 +218,4 @@ public class ActionCollectorListener extends TacticBaseListener {
     public ArrayList<BuildInFunction> getCollectedActionCalls() {
         return collectedActionCalls;
     }
-
-    @Override
-    public void enterCondStmt(Tactic.CondStmtContext ctx) {
-    }
 }
