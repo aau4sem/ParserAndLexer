@@ -2,21 +2,15 @@ package model.dataTypes;
 
 import customListeners.VariableCollectorListener;
 
-//Generic class
+/** This generic class is used to model and store an array of a given type. */
 public class Array<T> {
 
     private T[] array;
-    private int sizeOfArray;
     private VariableCollectorListener.VariableType type;
 
     public Array(T[] array, VariableCollectorListener.VariableType type) {
         this.array = array;
-        this.sizeOfArray = array.length;
         this.type = type;
-    }
-
-    public int getSizeOfArray() {
-        return sizeOfArray;
     }
 
     public Object[] getArray() {
@@ -29,14 +23,13 @@ public class Array<T> {
 
     @Override
     public String toString() {
-
         StringBuilder sb = new StringBuilder();
 
         sb.append("{");
         for(T element : array)
             sb.append(element).append(",");
 
-        //Replace last comma with a }
+        //Replace last comma with a '}'
         sb.replace(sb.length() -1, sb.length(), "}");
 
         return sb.toString();
