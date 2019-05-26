@@ -225,9 +225,8 @@ public class VariableCollectorListener extends TacticBaseListener {
         if(ctx.identifier().getText().compareTo(BoardListener.boardKeyword) == 0)
             return;
 
+        //Get and check the identifier on the left side of the assignment
         String identifier = ctx.identifier().getText();
-
-        //Check the identifier on the left side of the assignment
         VariableContainer varConToOverwrite = getValueFromIdentifier(identifier);
 
         if(varConToOverwrite == null){
@@ -235,11 +234,14 @@ public class VariableCollectorListener extends TacticBaseListener {
             throw new IllegalArgumentException();
         }
 
+        //Get the value of the right side og the assignment
         String value = getValueOfRightSideAssignment(ctx.assignmentRight(), varConToOverwrite.getType());
 
+        //Assign the found value to the identifier
         overwriteValueOfVariable(identifier, value);
     }
 
+    /** Used to evaluate and get the value of the right side of an assignment. */
     private String getValueOfRightSideAssignment(Tactic.AssignmentRightContext ctx, VariableType desiredType){
 
         String value;
@@ -307,14 +309,13 @@ public class VariableCollectorListener extends TacticBaseListener {
 
         } else if(ctx.arithExpr() != null){ //format identifier = arithExpr
 
-            //TODO VECTOR ARITHMETIC CHECK!!
-            //TODO is one of the arguments in the arithExpr an vector?
+            //Is one of the arguments in the arithExpr an vector?
             boolean doesArithExprContainVec = doesArithExprContainVector(ctx.arithExpr());
 
             if(doesArithExprContainVec){
                 boolean isValidVectorExpr = isArithExprAValidVectorExpr(ctx.arithExpr());
 
-                //TODO If yes.. get vector arithmetic result
+                //If yes.. get vector arithmetic result
                 if(isValidVectorExpr){
 
                     //format: (x,x,x)+(x,x,x) or (x,x,x)-(x,x,x)
@@ -359,8 +360,8 @@ public class VariableCollectorListener extends TacticBaseListener {
                 String result = String.valueOf(getArithmeticResult(ctx.arithExpr()));
                 value = String.valueOf(TypeCheckerHelper.trimFloatToInt(result)); //If the type the result is saved in, is of type integer, decimals will be cut off
             }
-        } else if(ctx.boolExpr() != null){ //format identifier = boolStmt //TODO Change in grammar has made this invalid, Mathias is working on solution
-            value = String.valueOf(getBoolStmtResult(ctx.boolExpr())); //TODO Change in grammar has made this invalid, Mathias is working on solution
+        } else if(ctx.boolExpr() != null){ //format identifier = boolStmt
+            value = String.valueOf(getBoolStmtResult(ctx.boolExpr()));
         } else if(ctx.vecExpr() != null){ //format identifier = vecExpr (subtraction or addition)
             value = getResultOfVectorArithmetic(ctx.vecExpr()).toString();
         } else if(ctx.identifier() != null) { //format identifier = identifier LBRACKET integer RBRACKET
@@ -449,7 +450,6 @@ public class VariableCollectorListener extends TacticBaseListener {
     }
 
     // CONDITIONALS ---------------------------------------------------------------------
-
 
     @Override
     public void exitBoolExpr(Tactic.BoolExprContext ctx) {
@@ -861,7 +861,8 @@ public class VariableCollectorListener extends TacticBaseListener {
         return doesEquationContainAVector(ag.getEquation());
     }
 
-    public boolean doesEquationContainAVector(String equation){
+    /** @return true if the given string contains a vector. (x,x) or (x,x,x). */
+    private boolean doesEquationContainAVector(String equation){
 
         boolean vectorFound = false;
         boolean isParsingVector = false;
@@ -1177,7 +1178,7 @@ public class VariableCollectorListener extends TacticBaseListener {
         if(isTraversingWhileStmt)
             return;
 
-        //TODO
+        //TODO not yet implemented
     }
 
     @Override
