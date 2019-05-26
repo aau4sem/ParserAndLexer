@@ -26,7 +26,7 @@ public class ArithmeticGatherer implements TerminalNode {
         return equation.toString();
     }
 
-    //https://stackoverflow.com/questions/3422673/how-to-evaluate-a-math-expression-given-in-string-form
+    //Credit: https://stackoverflow.com/questions/3422673/how-to-evaluate-a-math-expression-given-in-string-form
     /** @return the result of the equation. */
     public static double eval(final String str) {
         return new Object() {
@@ -108,7 +108,7 @@ public class ArithmeticGatherer implements TerminalNode {
         }.parse();
     }
 
-    // NOT USED --------------------------------------------------------------------
+    // BELOW METHODS IS NOT USED BUT HAS TO BE IMPLEMENTED -------------------
 
     @Override
     public ParseTree getParent() {
