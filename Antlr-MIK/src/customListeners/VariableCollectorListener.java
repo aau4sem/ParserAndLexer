@@ -22,13 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 
 /** This class will collect and handle variables during parsing.
- * The idea is that during the pass, this class will contain a
- * model with the current state of variables, and other classes
- * and listeners will request this class for information regarding
- * variables. */
+ * It also handles everything other overwrite that the other listeners does not. */
 public class VariableCollectorListener extends TacticBaseListener {
-
-    public enum ScopeType {MAIN_SCOPE, PROCEDURE_SCOPE }
 
     private ActionCollectorListener acl;
     private BoardListener bl;
@@ -38,6 +33,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     private ProcedureScopeData procedureScope = new ProcedureScopeData(mainScope);
 
     //Keeps track of which scope the parsing/tree walk currently is in
+    public enum ScopeType {MAIN_SCOPE, PROCEDURE_SCOPE }
     private ScopeType currentScope = ScopeType.MAIN_SCOPE;
 
     //Collection for declared procedures
@@ -87,7 +83,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     }
 
     /** Used to get variables from the current scope. If the current scope
-     * is procedure scope, and ff the variable is not found in the function
+     * is procedure scope, and the variable is not found in the function
      * scope, it will then search the main scope.
      * @param identifier the identifier of the requested variable.
      * @return the value of the variable. */
@@ -150,9 +146,8 @@ public class VariableCollectorListener extends TacticBaseListener {
     /** Used to check if an identifier is declared, assigned and has the correct type.
      * Will throw an exceptions of any of the three cases does not pass.
      * @param identifier the identifier for the value to check.
-     * @param requestedType the type the value should have.
-     * @return a variableContainer holding the value matching the given identifier. */
-    public VariableContainer identifierToValueCheck(String identifier, VariableCollectorListener.VariableType requestedType){
+     * @param requestedType the type the value should have. */
+    private void identifierToValueCheck(String identifier, VariableCollectorListener.VariableType requestedType){
 
         VariableContainer varCon = getValueFromScope(identifier);
 
@@ -167,11 +162,10 @@ public class VariableCollectorListener extends TacticBaseListener {
         }
 
         if(varCon.getType() != requestedType){
-            System.out.println("The requested variable does exist, is assigned, but is not of the right type."); //TODO This should never happen: we check the value before assigning it.
+            //This should never happen: we check the value before assigning it.
+            System.out.println("The requested variable does exist, is assigned, but is not of the right type.");
             throw new IllegalArgumentException();
         }
-
-        return varCon;
     }
 
     /** @return the procedure matching the given identifier. */
@@ -212,7 +206,6 @@ public class VariableCollectorListener extends TacticBaseListener {
             if(isInIfBlock && !mayRunIfBlock)
                 return false;
         }
-
 
         return true;
     }
