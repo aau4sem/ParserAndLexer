@@ -2,6 +2,7 @@ package model.utils;
 
 import customListeners.VariableCollectorListener;
 
+/** Used to model and store information of a parameter for a procedure definition. */
 public class Parameter {
 
     private VariableCollectorListener.VariableType type;
