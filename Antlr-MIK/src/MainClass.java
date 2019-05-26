@@ -12,8 +12,6 @@ import org.antlr.v4.runtime.CommonTokenStream;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,7 +22,7 @@ public class MainClass {
     /** This method will run the entire compiler. */
     public static void main(String[] args) {
         try{
-            String inputFile = "Antlr-MIK/compilerInput.tac";
+            String inputFile = "compilerInput.tac";
             if(args.length ==1){
                 inputFile = args[0];
             }
@@ -37,7 +35,7 @@ public class MainClass {
             //Initialize the listeners
             VariableCollectorListener variableListener = new VariableCollectorListener(); //Collects variables as they are declared
             ActionCollectorListener actionCollectorListener = new ActionCollectorListener(variableListener); //Collects action-function-calls
-            BoardListener boardListener = new BoardListener(variableListener); //Collects information about the build-in board
+            BoardListener boardListener = new BoardListener(); //Collects information about the build-in board
             variableListener.setAcl(actionCollectorListener);
             variableListener.setBl(boardListener);
 
@@ -53,7 +51,7 @@ public class MainClass {
             //Get all GamePieces
             ArrayList<GamePiece> gamePieces = variableListener.getAllGamePieces();
             //Get list of collected action-calls
-            ArrayList<BuildInFunction> actionCalls = new ArrayList<>(actionCollectorListener.getActionFunctions());
+            ArrayList<BuildInFunction> actionCalls = new ArrayList<>(actionCollectorListener.getCollectedActionCalls());
             actionCalls.sort(new SortByTime());
 
             // Code calculation

@@ -1,6 +1,5 @@
 package typeChecking;
 
-import model.dataTypes.GamePiece;
 import model.utils.TypeCheckerHelper;
 
 import model.utils.buildInFunction.BuildInFunctionChange;
@@ -162,24 +161,24 @@ public class ConditionalAndControlTests {
     public void while_block01(){
         parse("int i; GamePiece gp; i = 5; while(i > 4){ Move(gp, (2,2,3), 20); i = 4;};;");
 
-        Assert.assertEquals(1, acl.getActionFunctions().size());
-        Assert.assertTrue(acl.getActionFunctions().get(0) instanceof BuildInFunctionMove);
+        Assert.assertEquals(1, acl.getCollectedActionCalls().size());
+        Assert.assertTrue(acl.getCollectedActionCalls().get(0) instanceof BuildInFunctionMove);
     }
 
     @Test
     public void while_block02(){
         parse("int i; GamePiece gp; i = 5; while(i > 4){ Change(gp, \"position\", (2,3,2), 20); i = 4;};;");
 
-        Assert.assertEquals(1, acl.getActionFunctions().size());
-        Assert.assertTrue(acl.getActionFunctions().get(0) instanceof BuildInFunctionChange);
+        Assert.assertEquals(1, acl.getCollectedActionCalls().size());
+        Assert.assertTrue(acl.getCollectedActionCalls().get(0) instanceof BuildInFunctionChange);
     }
 
     @Test
     public void while_block03(){
         parse("int i; GamePiece gp; i = 5; while(i > 4){ Wait(gp, 20); i = 4;};;");
 
-        Assert.assertEquals(1, acl.getActionFunctions().size());
-        Assert.assertTrue(acl.getActionFunctions().get(0) instanceof BuildInFunctionWait);
+        Assert.assertEquals(1, acl.getCollectedActionCalls().size());
+        Assert.assertTrue(acl.getCollectedActionCalls().get(0) instanceof BuildInFunctionWait);
     }
 
     @Test
@@ -387,23 +386,23 @@ public class ConditionalAndControlTests {
     public void if_block07(){
         parse("int i; GamePiece gp; i = 5; if(true){Move(gp, (2,2,3), 20);};;");
 
-        Assert.assertEquals(1, acl.getActionFunctions().size());
-        Assert.assertTrue(acl.getActionFunctions().get(0) instanceof BuildInFunctionMove);
+        Assert.assertEquals(1, acl.getCollectedActionCalls().size());
+        Assert.assertTrue(acl.getCollectedActionCalls().get(0) instanceof BuildInFunctionMove);
     }
 
     @Test
     public void if_block08(){
         parse("int i; GamePiece gp; i = 5; if(true){Change(gp, \"position\", (2,3,2), 20);};;");
 
-        Assert.assertEquals(1, acl.getActionFunctions().size());
-        Assert.assertTrue(acl.getActionFunctions().get(0) instanceof BuildInFunctionChange);
+        Assert.assertEquals(1, acl.getCollectedActionCalls().size());
+        Assert.assertTrue(acl.getCollectedActionCalls().get(0) instanceof BuildInFunctionChange);
     }
 
     @Test
     public void if_block09(){
         parse("int i; GamePiece gp; i = 5; if(true){Wait(gp, 20); i = 4;};;");
 
-        Assert.assertEquals(1, acl.getActionFunctions().size());
-        Assert.assertTrue(acl.getActionFunctions().get(0) instanceof BuildInFunctionWait);
+        Assert.assertEquals(1, acl.getCollectedActionCalls().size());
+        Assert.assertTrue(acl.getCollectedActionCalls().get(0) instanceof BuildInFunctionWait);
     }
 }

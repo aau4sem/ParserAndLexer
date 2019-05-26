@@ -17,17 +17,18 @@ import model.variables.VariableContainer;
 
 import java.util.ArrayList;
 
-/** The purpose of this call is to collect and store all action calls.
- * This is limited to function calls with the identifiers: move, change and wait.
- * This class will also perform type checking for the parameters of the action function calls.*/
+/** The purpose of this class is to collect and store all action calls.
+ * Action-calls have their own grammar rule called action, so this is overwritten.
+ * This class will also perform type checking and evaluating for the parameters of the action function calls.*/
 public class ActionCollectorListener extends TacticBaseListener {
 
-    private ArrayList<BuildInFunction> actionFunctions = new ArrayList<>();
+    private ArrayList<BuildInFunction> collectedActionCalls;
     private VariableCollectorListener variableCollectorListener;
 
-    /**@param variableCollectorListener is used for getting variables from identifiers used in function calls. */
+    /**@param variableCollectorListener is used for resolving variables from identifiers used in action calls. */
     public ActionCollectorListener(VariableCollectorListener variableCollectorListener) {
         this.variableCollectorListener = variableCollectorListener;
+        this.collectedActionCalls = new ArrayList<>();
     }
 
     @Override
@@ -39,25 +40,24 @@ public class ActionCollectorListener extends TacticBaseListener {
         if(variableCollectorListener.isTraversingWhileStmt)
             return;
 
-
-        //FIRST ARGUMENT
+        //Action-call identifier
         String firstArgIdentifier;
 
-        if(ctx.changeAction() != null)
+        if(ctx.changeAction() != null) {
             firstArgIdentifier = ctx.changeAction().identifier().getText();
-        else if(ctx.moveAction() != null)
+        } else if(ctx.moveAction() != null) {
             firstArgIdentifier = ctx.moveAction().identifier().getText();
-        else if(ctx.waitAction() != null)
+        } else if(ctx.waitAction() != null) {
             firstArgIdentifier = ctx.waitAction().identifier().getText();
-        else
+        } else {
             throw new GrammarHasChangedException("exitAction");
+        }
 
+        //FIRST ARGUMENT
         //Is the identifier evaluation to a GamePiece?
         VariableContainer firstArgVarCon = variableCollectorListener.getValueFromIdentifier(firstArgIdentifier);
-        if(firstArgVarCon == null){
-            System.out.println("The first argument to the action call is an identifier but it is not evaluating to a GamePiece.");
-            throw new IllegalArgumentException();
-        }
+        if(firstArgVarCon == null)
+            throw new IllegalArgumentTypeException(1, "Action-call", "GamePiece");
 
         GamePiece firstArgument = TypeCheckerHelper.parseGamePiece(firstArgVarCon.getValue());
 
@@ -86,10 +86,8 @@ public class ActionCollectorListener extends TacticBaseListener {
             //SECOND ARGUMENT
             String secondArgString = ctx.changeAction().string().getText();
             secondArgString = TypeCheckerHelper.parseString(secondArgString);
-            if(TypeCheckerHelper.parseGamePiecePropertyType(secondArgString) == null){
-                System.out.println("The second argument of the change action call ");
-                throw new IllegalArgumentException();
-            }
+            if(TypeCheckerHelper.parseGamePiecePropertyType(secondArgString) == null)
+                throw new IllegalArgumentTypeException(2, "Change-action-call", "GamePiece property");
 
             GamePiece.GamePiecePropertyType secondArg = TypeCheckerHelper.parseGamePiecePropertyType(secondArgString);
 
@@ -100,8 +98,7 @@ public class ActionCollectorListener extends TacticBaseListener {
                 thirdArgVarCon = variableCollectorListener.getValueFromIdentifier(thirdArgValueContext.identifier().getText());
 
                 if(thirdArgVarCon == null){
-                    System.out.println("The requested variable has not been declared. Change action call, third argument.");
-                    throw new IllegalArgumentException();
+                    throw new IllegalArgumentTypeException("The requested variable has not been declared. Change action call, third argument.");
                 }
 
             }else if(thirdArgValueContext.number() != null){
@@ -113,8 +110,7 @@ public class ActionCollectorListener extends TacticBaseListener {
                 }else
                     throw new GrammarHasChangedException("NumberContext");
             }else if(thirdArgValueContext.bool() != null){
-                System.out.println("The third argument of the change action call cannot be of type boolean.");
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentTypeException("The third argument of the change action call cannot be of type boolean.");
             }else if(thirdArgValueContext.vec() != null){
                 thirdArgVarCon = new VariableContainer(null, thirdArgValueContext.vec().getText(), VariableCollectorListener.VariableType.VEC);
             }else if(thirdArgValueContext.string() != null){
@@ -127,12 +123,11 @@ public class ActionCollectorListener extends TacticBaseListener {
             //Check if the given third argument can be saved in the property given in the second argument
             boolean check = GamePiece.doesValueMatchPropertyType(secondArg, thirdArgVarCon);
             if(!check){
-                System.out.println("The given type of the third argument in the change action call does not match the given property (second argument)");
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentTypeException("The given type of the third argument in the change action call does not match the given property (second argument)");
             }
 
             //Collect the argument
-            actionFunctions.add(new BuildInFunctionChange(firstArgument, secondArg, thirdArgVarCon.getValue(), lastArg));
+            collectedActionCalls.add(new BuildInFunctionChange(firstArgument, secondArg, thirdArgVarCon.getValue(), lastArg));
 
         }else if(ctx.moveAction() != null){
 
@@ -140,25 +135,23 @@ public class ActionCollectorListener extends TacticBaseListener {
             String secondArgString = ctx.moveAction().vec().getText();
             Vector secondArg = TypeCheckerHelper.parseVector(secondArgString);
 
-            if(secondArg == null){
-                System.out.println("The second argument of a move action call is not a valid vector.");
-                throw new IllegalArgumentException();
-            }
+            if(secondArg == null)
+                throw new IllegalArgumentTypeException("The second argument of a move action call is not a valid vector.");
 
             //Collect the argument
-            actionFunctions.add(new BuildInFunctionMove(firstArgument, secondArg, lastArg));
+            collectedActionCalls.add(new BuildInFunctionMove(firstArgument, secondArg, lastArg));
 
         }else if(ctx.waitAction() != null){
 
             //Collect the argument
-            actionFunctions.add(new BuildInFunctionWait(firstArgument, lastArg));
+            collectedActionCalls.add(new BuildInFunctionWait(firstArgument, lastArg));
 
         }else
             throw new IllegalArgumentException(); //Grammar has been changed
     }
 
     /** Used to parse the type of the third argument of the change call.
-     * This can be a different types based on the property type. */
+     * This can be a different types based on the property type. */ //TODO Delete? This does not seem to be nessesary?
     private void addChangeActionCall(GamePiece firstArg, GamePiece.GamePiecePropertyType secondArg, String thirdArg, Integer fourthArg){
 
         if(secondArg == GamePiece.GamePiecePropertyType.POSITION){
@@ -172,51 +165,10 @@ public class ActionCollectorListener extends TacticBaseListener {
                 throw new IllegalArgumentTypeException(3, BuildInFunctionChange.identifier, "float");
         }
 
-        actionFunctions.add(new BuildInFunctionChange(firstArg, secondArg, thirdArg, fourthArg));
+        collectedActionCalls.add(new BuildInFunctionChange(firstArg, secondArg, thirdArg, fourthArg));
     }
 
-    /** This method is used to check if an argument is of the right type.
-     * Will throw an exception if this is not the case.
-     * @param arg the Argument to be checked.
-     * @param argumentNumber which number the argument is, in the function call.
-     * @param functionName the name of the function which argument is being checked.
-     * @param allowedType a given amount of ArgumentTypes which the given Argument has to be ONE of. */
-    private void typeCheckArgument(Argument arg, int argumentNumber, String functionName, Argument.ArgumentType... allowedType){
-
-        boolean isArgumentRequestedType = false;
-
-        for( Argument.ArgumentType type : allowedType)
-            if(type == arg.getType())
-                isArgumentRequestedType = true;
-
-        //Did the check fail: is the argument of the requested type?
-        if(!isArgumentRequestedType){
-            throw new IllegalArgumentTypeException(argumentNumber, functionName, allowedType);
-        }
-    }
-
-    /** This method is used if an Argument can be either an IDENTIFIER or NUMBER.
-     * @return a Number containing the parsed value. */
-    private Number evalIdentifierOrNumberArgument(Argument arg, int numberOfArguments, String functionName){
-        Number num;
-
-        if(arg.getType() == Argument.ArgumentType.IDENTIFIER){
-
-            //Get value from identifier and try to parse
-            VariableContainer varCon = variableCollectorListener.getValueFromIdentifier(arg.getValue());
-            num = TypeCheckerHelper.parseNumber(varCon.getValue());
-
-        }else { //It is of type NUMBER
-            num = TypeCheckerHelper.parseNumber(arg.getValue());
-        }
-
-        //Did it parse?
-        if(num == null) // Was the value of type integer or float
-            throw new IllegalArgumentTypeException(numberOfArguments + 1, functionName, "integer or float");
-
-        return num;
-    }
-
+    /** //TODO */
     public static void checkGamePiecePropertyColorValue(String val){
         //Check if the given string is the RBG format: rgb(x,x,x)
         val = val.toLowerCase();
@@ -249,27 +201,22 @@ public class ActionCollectorListener extends TacticBaseListener {
             }
 
             if(commaCounter > 2)
-                throwException("The given RBG given as the color property of a GamePiece is not of the current format: rgb(x,x,x)");
+                throw new IllegalArgumentException("The given RBG given as the color property of a GamePiece is not of the current format: rgb(x,x,x)");
 
             if(firstNumber.length() == 0 || secondNumber.length() == 0 || thirdNumber.length() == 0)
-                throwException("The given RBG given as the color property of a GamePiece: one of the values are missing. format: rgb(x,x,x)");
+                throw new IllegalArgumentException("The given RBG given as the color property of a GamePiece: one of the values are missing. format: rgb(x,x,x)");
 
             Integer firstInt = TypeCheckerHelper.parseInt(firstNumber);
             Integer secondInt = TypeCheckerHelper.parseInt(secondNumber);
             Integer thirdInt = TypeCheckerHelper.parseInt(thirdNumber);
 
             if(firstInt == null || secondInt == null || thirdInt == null)
-                throwException("The given RBG given as the color property of a GamePiece: one of the values are not of the type integer. format: rgb(x,x,x)");
+                throw new IllegalArgumentException("The given RBG given as the color property of a GamePiece: one of the values are not of the type integer. format: rgb(x,x,x)");
         }
     }
 
-    private static void throwException(String msg){
-        System.out.println(msg);
-        throw new IllegalArgumentException();
-    }
-
-    public ArrayList<BuildInFunction> getActionFunctions() {
-        return actionFunctions;
+    public ArrayList<BuildInFunction> getCollectedActionCalls() {
+        return collectedActionCalls;
     }
 
     @Override

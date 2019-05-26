@@ -183,24 +183,24 @@ public class ProcedureTests {
     public void statement_action01(){
         parse("proc(){Move(gp, (2,2,3), 20);}; GamePiece gp; proc();;");
 
-        Assert.assertEquals(1, acl.getActionFunctions().size());
-        Assert.assertTrue(acl.getActionFunctions().get(0) instanceof BuildInFunctionMove);
+        Assert.assertEquals(1, acl.getCollectedActionCalls().size());
+        Assert.assertTrue(acl.getCollectedActionCalls().get(0) instanceof BuildInFunctionMove);
     }
 
     @Test
     public void statement_action02(){
         parse("proc(){Change(gp, \"position\", (2,3,2), 20);}; GamePiece gp; proc();;");
 
-        Assert.assertEquals(1, acl.getActionFunctions().size());
-        Assert.assertTrue(acl.getActionFunctions().get(0) instanceof BuildInFunctionChange);
+        Assert.assertEquals(1, acl.getCollectedActionCalls().size());
+        Assert.assertTrue(acl.getCollectedActionCalls().get(0) instanceof BuildInFunctionChange);
     }
 
     @Test
     public void statement_action03(){
         parse("proc(){Wait(gp, 20);}; GamePiece gp; proc();;");
 
-        Assert.assertEquals(1, acl.getActionFunctions().size());
-        Assert.assertTrue(acl.getActionFunctions().get(0) instanceof BuildInFunctionWait);
+        Assert.assertEquals(1, acl.getCollectedActionCalls().size());
+        Assert.assertTrue(acl.getCollectedActionCalls().get(0) instanceof BuildInFunctionWait);
     }
 
     @Test

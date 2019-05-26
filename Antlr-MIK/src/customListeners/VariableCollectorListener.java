@@ -46,7 +46,7 @@ public class VariableCollectorListener extends TacticBaseListener {
     //All supported variable types
     public enum VariableType { INT, FLOAT, VEC, BOOL, STRING, GAMEPIECE}
 
-    public boolean isInProcedureDefinition = false; //TODO Comment
+    public boolean isInProcedureDefinition = false;
     public boolean isTraversingWhileStmt = false;
 
     private boolean isWalkingConditional = false;
