@@ -1,10 +1,9 @@
 package model.variables;
 
 import customListeners.VariableCollectorListener.VariableType;
-import model.dataTypes.Array;
 import model.utils.TypeCheckerHelper;
 
-/** This class is used to store variables. */
+/** This class is used to a variable. */
 public class VariableContainer {
 
     private String identifier;
@@ -45,7 +44,7 @@ public class VariableContainer {
         return isArray;
     }
 
-    public int getLengthOfarray(){
+    public int getLengthOfArray(){
         if(!isArray){
             System.out.println("You are requesting the length of a variable that is not an array.");
             throw new IllegalArgumentException();
