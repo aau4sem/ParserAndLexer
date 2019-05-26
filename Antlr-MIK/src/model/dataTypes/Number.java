@@ -1,5 +1,7 @@
 package model.dataTypes;
 
+/** This class models the grammar rule 'number'.
+ * This rule can have the type of either an integer or float. */
 public class Number {
 
     private Integer intValue = null;
