@@ -9,39 +9,34 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import java.util.ArrayList;
 import java.util.List;
 
+/** This class models a procedure. It will usually be created while parsing a procedure definition.*/
 public class Procedure {
 
     private ArrayList<Parameter> parameters;
     private ArrayList<Tactic.ProcedureStmtContext> statements;
-    private String prodecureName;
+    private String procedureName;
     private VariableCollectorListener vcl;
 
-    public Procedure(ArrayList<Parameter> parameters, ArrayList<Tactic.ProcedureStmtContext> statements, String procedureName, VariableCollectorListener vcl) {
-        this.parameters = parameters;
-        this.statements = statements;
-        this.prodecureName = procedureName;
+    public Procedure(String procedureName, VariableCollectorListener vcl) {
+        this.parameters = new ArrayList<>();
+        this.statements = new ArrayList<>();
+        this.procedureName = procedureName;
         this.vcl = vcl;
     }
 
-    public Procedure(String prodecureName, VariableCollectorListener vcl) {
-        this(new ArrayList<>(), new ArrayList<>(), prodecureName, vcl);
-    }
-
-    /** Executes the procedure. */
+    /** Executes the procedure. Runs all statements. */
     public void execute(){
-
-        //Run all statements
         runStmts(statements);
     }
 
+    /** Takes a CondStmt context, evaluates the boolExpr and runs the allowed block. (if/else stmt)*/
     private void runCondStmt(Tactic.CondStmtContext ctx){
 
         vcl.enterCondStmt(ctx);
-
         boolean evaluatedBool = vcl.getBoolStmtResult(ctx.ifStmt().boolExpr());
 
+        //Should we run statements in if or else block?
         List<Tactic.StmtContext> condStmts = new ArrayList<>();
-
         if(evaluatedBool){
             condStmts = ctx.ifStmt().block().stmt();
         }else{
@@ -52,22 +47,19 @@ public class Procedure {
         if(condStmts.size() == 0)
             return; //No statements to run
 
+        //Run all statements
         for(Tactic.StmtContext stmtCtx : condStmts){
-
             if(stmtCtx.action() != null){
                 System.out.println("You cannot make an action call inside a procedure!");
                 throw new IllegalArgumentException();
             }
-
 
             if(ctx.children.get(0) instanceof Tactic.AssignmentContext){
                 if(((Tactic.AssignmentContext)ctx.children.get(0)).assignmentRight().arithExpr() != null){
 
                     //TODO Manual work the children and call needed methods????
                     manualArithExprWalker(((Tactic.AssignmentContext)ctx.children.get(0)).assignmentRight().arithExpr());
-
                 }
-
             }
 
             runStmt(ctx.children.get(0));
@@ -76,6 +68,7 @@ public class Procedure {
         vcl.exitCondStmt(ctx);
     }
 
+    /** Runs all given statements. */
     private void runStmts(List<Tactic.ProcedureStmtContext> stmts){
         for(Tactic.ProcedureStmtContext ctx : stmts) {
 
@@ -87,13 +80,13 @@ public class Procedure {
                     manualArithExprWalker(((Tactic.AssignmentContext)ctx.children.get(0)).assignmentRight().arithExpr());
 
                 }
-
             }
 
             runStmt(ctx.children.get(0));
         }
     }
 
+    /** Takes a ParseTree (Context) and runs the statement depending on the type of the context. */
     public void runStmt(ParseTree ctx){
         if (ctx instanceof Tactic.AssignmentContext) {
             vcl.exitAssignment((Tactic.AssignmentContext) ctx);
@@ -116,7 +109,6 @@ public class Procedure {
     }
 
     private void manualArithExprWalker(Tactic.ArithExprContext ctx){
-
         if(ctx.arithExprParent() != null){
             manualArithExprParentWalker(ctx.arithExprParent());
             vcl.exitArithExprParent(ctx.arithExprParent());
@@ -173,7 +165,6 @@ public class Procedure {
 
     /** @return true if the given identifier matches one of this procedures parameters. */
     public boolean isIdentifierMatchingAParameter(String identifier){
-
         for(Parameter parameter : parameters){
             if(parameter.getIdentifier().compareTo(identifier) == 0)
                 return true;
@@ -184,7 +175,6 @@ public class Procedure {
 
     /** @return the number of the parameter matching the given identifier. */
     public int getNumberOfParameterFromIdentifier(String identifier){
-
         for(int i = 0; i < parameters.size(); i++){
             if(parameters.get(i).getIdentifier().compareTo(identifier) == 0)
                 return i;
@@ -195,10 +185,6 @@ public class Procedure {
 
     public void addArgument(Parameter parameter){
         parameters.add(parameter);
-    }
-
-    public void addStatement(Tactic.ProcedureStmtContext statement){
-        statements.add(statement);
     }
 
     public void addAllStatments(List<Tactic.ProcedureStmtContext> stmtContexts){
@@ -213,8 +199,8 @@ public class Procedure {
         return parameters.size();
     }
 
-    public String getProdecureName() {
-        return prodecureName;
+    public String getProcedureName() {
+        return procedureName;
     }
 
     public int getNumberOfStatements(){
