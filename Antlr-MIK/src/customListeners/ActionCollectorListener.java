@@ -37,7 +37,7 @@ public class ActionCollectorListener extends TacticBaseListener {
         if(!variableCollectorListener.mayThisStmtRun())
             return;
 
-        if(variableCollectorListener.isTraversingWhileStmt)
+        if(variableCollectorListener.isTraversingWhileStmt())
             return;
 
         //Action-call identifier

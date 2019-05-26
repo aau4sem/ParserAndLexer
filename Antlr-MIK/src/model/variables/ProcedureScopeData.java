@@ -6,16 +6,19 @@ import model.utils.Argument;
 
 import java.util.ArrayList;
 
+/** This class is used when the parser enters a procedure through a procedure call. */
 public class ProcedureScopeData {
 
     private VariableScopeData mainScope;
     private Procedure currentProcedure = null;
-    private ArrayList<Argument> givenArguments = new ArrayList<>();
+    private ArrayList<Argument> givenArguments;
 
     public ProcedureScopeData(VariableScopeData mainScope) {
         this.mainScope = mainScope;
+        this.givenArguments = new ArrayList<>();
     }
 
+    /** Resets this class. */
     public void reset(){
         currentProcedure = null;
         givenArguments = new ArrayList<>();
@@ -24,18 +27,6 @@ public class ProcedureScopeData {
     /** Used to get a variable from this scope. Returns null
      * if the quested variable does not exist.  */
     public VariableContainer getVariable(String identifier){
-
-        /*
-        //Is the given identifier matching one of the parameters?
-            //Yes, is the given argument matching that parameter an identifier
-                //Yes, return the variable from the mainscope
-                return mainScope.getVariable(identifier);
-                //No, return the matching argument as a variable container, with the type of the parameter
-            //No, return null;
-            return null;*/
-
-
-
         //Is the given identifier matching one of the parameters?
         if(currentProcedure.isIdentifierMatchingAParameter(identifier)){
 
@@ -56,8 +47,8 @@ public class ProcedureScopeData {
             return null;
     }
 
+    /** Executes all statements within the current procedure*/
     public void execute(){
-
         //Does the number of given arguments match the number of parameters
         if(givenArguments.size() != currentProcedure.getNumberOfParameters())
             throw new IllegalNumberOfArgumentsException(currentProcedure.getNumberOfParameters(), currentProcedure.getProcedureName(), givenArguments.size());
@@ -66,7 +57,7 @@ public class ProcedureScopeData {
         if(currentProcedure.getNumberOfStatements() == 0)
             return;
 
-        //TODO Does the given input have the correct types
+        //TODO Does the given input have the correct types?
 
         currentProcedure.execute();
     }
@@ -74,7 +65,6 @@ public class ProcedureScopeData {
     public void overwriteValueOfVariable(String identifier, String val){
         VariableContainer varCon = getVariable(identifier);
         varCon.overwriteValue(val);
-        //TODO DOES THIS WORK!?!?!?
     }
 
     public void setCurrentProcedure(Procedure currentProcedure) {

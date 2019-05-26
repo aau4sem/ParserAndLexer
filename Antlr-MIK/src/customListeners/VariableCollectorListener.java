@@ -46,14 +46,14 @@ public class VariableCollectorListener extends TacticBaseListener {
     //All supported variable types
     public enum VariableType { INT, FLOAT, VEC, BOOL, STRING, GAMEPIECE}
 
-    public boolean isInProcedureDefinition = false;
-    public boolean isTraversingWhileStmt = false;
+    private boolean isInProcedureDefinition = false;
+    private boolean isTraversingWhileStmt = false;
 
     private boolean isWalkingConditional = false;
     private boolean isInIfBlock = false;
     private boolean isInElseBlock = false;
-    public boolean mayRunIfBlock = false;
-    public boolean mayRunElseBlocK = false;
+    private boolean mayRunIfBlock = false;
+    private boolean mayRunElseBlocK = false;
 
     // CORE METHODS -----------------------------------------------------------
 
@@ -1292,5 +1292,9 @@ public class VariableCollectorListener extends TacticBaseListener {
             //Attach the merged ArgumentGatherer to the current node
             ctx.addChild(mergedAg);
         }
+    }
+
+    public boolean isTraversingWhileStmt() {
+        return isTraversingWhileStmt;
     }
 }
