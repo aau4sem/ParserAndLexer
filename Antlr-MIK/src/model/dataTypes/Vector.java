@@ -1,5 +1,6 @@
 package model.dataTypes;
 
+/** This class models a 3D-vector where the coordinates is of the type Integer.*/
 public class Vector {
 
     private int x;
@@ -16,6 +17,25 @@ public class Vector {
         this(x, y, 0);
     }
 
+    /** Performs vector addition with the given vector. */
+    public void addVector(Vector secondVector){
+        this.x = this.x + secondVector.x;
+        this.y = this.y + secondVector.y;
+        this.z = this.z + secondVector.z;
+    }
+
+    /** Performs vector subtraction with the given vector. */
+    public void subVector(Vector secondVector){
+        this.x = this.x - secondVector.x;
+        this.y = this.y - secondVector.y;
+        this.z = this.z - secondVector.z;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + x + "," + y + "," + z + ')';
+    }
+
     public int getX() {
         return x;
     }
@@ -26,24 +46,5 @@ public class Vector {
 
     public int getZ() {
         return z;
-    }
-
-    /** Performs simple vector addition with the given vector. */
-    public void addVector(Vector secondVector){
-        this.x = this.x + secondVector.x;
-        this.y = this.y + secondVector.y;
-        this.z = this.z + secondVector.z;
-    }
-
-    /** Performs simple vector subtraction with the given vector. */
-    public void subVector(Vector secondVector){
-        this.x = this.x - secondVector.x;
-        this.y = this.y - secondVector.y;
-        this.z = this.z - secondVector.z;
-    }
-
-    @Override
-    public String toString() {
-        return "(" + x + "," + y + "," + z + ')';
     }
 }
