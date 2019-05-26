@@ -8,7 +8,7 @@ import model.utils.TypeCheckerHelper;
 public class BoardListener extends TacticBaseListener {
 
     private String boardPath = "";
-    private static String boardKeyword = "Board";
+    public static String boardKeyword = "Board";
 
     /** This method will recognize only calls that will effect the board,
      * and save the given string.*/
