@@ -1,7 +1,6 @@
 package model.utils;
 
 import customListeners.VariableCollectorListener;
-import model.dataTypes.Array;
 import model.dataTypes.GamePiece;
 import model.dataTypes.Vector;
 import model.dataTypes.Number;
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 public class TypeCheckerHelper {
 
     /** @return true if the given string is "true" and
-     * false if the given string is "false". Else returns null. */
+     * false if the given string is "false". Else it will return null. */
     public static Boolean parseBool(String val){
 
         Boolean returnVal = null;
@@ -53,8 +52,6 @@ public class TypeCheckerHelper {
         try {
             Float floatVal = Float.parseFloat(val);
             return floatVal.intValue();
-
-
         } catch (NumberFormatException e){
             throw new IllegalArgumentException();
         }
@@ -72,14 +69,10 @@ public class TypeCheckerHelper {
     /** Returns a GamePiece if the given string is an string, else null. */
     public static GamePiece parseGamePiece(String val){
 
-        //TODO IdentifierName????
         GamePiece gp = new GamePiece();
 
-        //Format of string should be:
-        //"name:VAL,position:VAL,size:VAL,color:VAL,label:VAL,opacity:VAL,shape:VAL,"
-        //"name:test,position:(2,3,4),size:3.2,color:RED,label:test,opacity:0.2,shape:circle,"
-        //"name:STRING,position:VECTOR,size:FLOAT,color:STRING,label:STRING,opacity:FLOAT[0:1],shape:STRING,"
-        //"name:,position:,size:,color:,label:STRING,opacity:,shape:STRING,"
+        //The format of the string should matching the one given by the GamePiece.ToString method.
+        //Format: "name:STRING,position:VECTOR,size:FLOAT,color:STRING,label:STRING,opacity:FLOAT[0:1],shape:STRING,"
 
         boolean readingProperty = true;
         boolean readingValue = false;
@@ -121,11 +114,7 @@ public class TypeCheckerHelper {
         return gp;
     }
 
-
-
-    /** Returns a Vector if the given string is an vector, else null.
-     * //TODO Current only parses vectors whose values are of the type int.
-     * //TODO Do we support float vectors? */
+    /** Returns a Vector if the given string is formatted as a vector, else null. */
     public static Vector parseVector(String val){
         try {
             StringBuilder xString = new StringBuilder();
