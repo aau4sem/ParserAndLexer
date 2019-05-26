@@ -12,8 +12,8 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
 
-/** Used when collecting arguments of a function call.
- * See uses for a more detailed explanation.*/
+/** Used when collecting arguments of a procedure call.
+ * It implements TerminalNode to gain the ability to be attached to nodes in the ParseTree. */
 public class ArgumentGatherer implements TerminalNode {
 
     private ArrayList<Tactic.ValueContext> arguments = new ArrayList<>();
@@ -30,18 +30,16 @@ public class ArgumentGatherer implements TerminalNode {
         return new ArrayList<>(arguments);
     }
 
-    public int getNumberOfArguments(){
-        return arguments.size();
-    }
-
-    /** @return converts the ValueContext list to a list of Argument.
-     * The Argument list is much cleaner and easier to use. */
+    /** Converts the ValueContext list to a list of Argument.
+     * The Argument list is much cleaner and easier to use.
+     * @return a list of Argument matching the current ValueContexts. */
     public ArrayList<Argument> getConvertedArgumentsList(){
 
         ArrayList<Argument> convertedArguments = new ArrayList<>();
 
+        //Go though every ValueContext and convert them into an Argument
         for( Tactic.ValueContext vc : arguments){
-            Argument arg = null;
+            Argument arg;
 
             //Find the type of the argument
             if(vc.number() != null){ //The argument is a number
@@ -54,8 +52,8 @@ public class ArgumentGatherer implements TerminalNode {
             }else if(vc.identifier() != null){ //The argument is an identifier
                 arg = new Argument(vc.identifier().getText(), Argument.ArgumentType.IDENTIFIER);
             }else if(vc.string() != null){ //The argument is a string
-                //The substring is taken to avoid saving the "" around the string
-                arg = new Argument(vc.string().getText().substring(1, vc.string().getText().length()-1), Argument.ArgumentType.STRING);
+                String trimmedString = TypeCheckerHelper.parseString(vc.string().getText());
+                arg = new Argument(trimmedString, Argument.ArgumentType.STRING);
             }else if(vc.vec() != null) { //The argument is a vector
                 arg = new Argument(vc.vec().getText(), Argument.ArgumentType.VECTOR);
             }else if(vc.bool() != null){
@@ -70,63 +68,60 @@ public class ArgumentGatherer implements TerminalNode {
         return convertedArguments;
     }
 
-
-
-
-    // NOT USED BUT HAS TO BE IMPLEMENTED ---------------------- //TODO Maybe fix in some way? UnImplementedException?
+    // BELOW METHODS IS NOT USED BUT HAS TO BE IMPLEMENTED -------------------
 
     @Override
     public Token getSymbol() {
-        return null;
+        throw new IllegalArgumentException(); //This call should never happen.
     }
 
     @Override
     public ParseTree getParent() {
-        return null;
+        throw new IllegalArgumentException(); //This call should never happen.
     }
 
     @Override
     public Object getPayload() {
-        return null;
+        throw new IllegalArgumentException(); //This call should never happen.
     }
 
     @Override
     public ParseTree getChild(int i) {
-        return null;
+        throw new IllegalArgumentException(); //This call should never happen.
     }
 
     @Override
     public int getChildCount() {
-        return 0;
+        throw new IllegalArgumentException(); //This call should never happen.
     }
 
     @Override
     public String toStringTree() {
-        return null;
+        throw new IllegalArgumentException(); //This call should never happen.
     }
 
     @Override
     public void setParent(RuleContext parent) {
-
+        throw new IllegalArgumentException(); //This call should never happen.
     }
 
     @Override
     public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-        return null;
+        throw new IllegalArgumentException(); //This call should never happen.
     }
 
     @Override
     public String getText() {
-        return null;
+        throw new IllegalArgumentException(); //This call should never happen.
     }
 
     @Override
     public String toStringTree(Parser parser) {
-        return null;
+        throw new IllegalArgumentException(); //This call should never happen.
     }
 
     @Override
     public Interval getSourceInterval() {
-        return null;
+        throw new IllegalArgumentException(); //This call should never happen.
     }
 }
