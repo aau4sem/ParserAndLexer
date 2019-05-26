@@ -26,6 +26,7 @@ public class MainClass {
             if(args.length ==1){
                 inputFile = args[0];
             }
+
             //PARSING --------------------------------------------------------
             //Initialize lexer and parser with a file as input
             CharStream input = new ANTLRFileStream(inputFile); //Load an input to compile
@@ -57,14 +58,9 @@ public class MainClass {
             // Code calculation
             ArrayList<BuildInFunction> calculatedCalls = CalculatedCalls.calculate(actionCalls, gamePieces);
 
-            System.out.println("Test");
-            //TODO pre-codeGeneration-calculations??? Is this needed??
-
             //CODE GENERATION -----------------------------------------------
-            //Get the list of paths
-
+            //Get board path
             String boardPath = boardListener.getBoardPath();
-            //TODO Get other needed data.
             
             //Instantiate and run CodeGenerator
             CodeGenerator cg = new CodeGenerator(gamePieces, boardPath, calculatedCalls);
