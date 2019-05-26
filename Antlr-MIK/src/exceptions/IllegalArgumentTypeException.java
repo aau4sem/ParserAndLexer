@@ -16,7 +16,7 @@ public class IllegalArgumentTypeException extends RuntimeException {
         super(printErrorMessage(argumentNumber, functionName, allowedType));
     }
 
-    /** @return an error message used when an argument of a function call is of the wrong type.
+    /** @return an error message used when an argument of a function or action call is of the wrong type.
      * @param argumentNumber which number the argument is, in the function call. (Counting from 1)
      * @param functionName the name of the function which argument is being checked.
      * @param allowedType a given amount of ArgumentTypes which the given Argument has to be ONE of. */
