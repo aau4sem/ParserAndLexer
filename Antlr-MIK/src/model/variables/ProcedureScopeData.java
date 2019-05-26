@@ -60,7 +60,7 @@ public class ProcedureScopeData {
 
         //Does the number of given arguments match the number of parameters
         if(givenArguments.size() != currentProcedure.getNumberOfParameters())
-            throw new IllegalNumberOfArgumentsException(currentProcedure.getNumberOfParameters(), currentProcedure.getProdecureName(), givenArguments.size());
+            throw new IllegalNumberOfArgumentsException(currentProcedure.getNumberOfParameters(), currentProcedure.getProcedureName(), givenArguments.size());
 
         //Does the procedure have any statements?
         if(currentProcedure.getNumberOfStatements() == 0)
