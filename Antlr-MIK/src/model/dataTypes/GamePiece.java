@@ -1,11 +1,13 @@
 package model.dataTypes;
 
 import customListeners.VariableCollectorListener;
+import exceptions.GrammarHasChangedException;
 import model.utils.TypeCheckerHelper;
 import model.variables.VariableContainer;
 
 public class GamePiece {
 
+    /** This enum is used by the action-call Change. */
     public enum GamePiecePropertyType { NAME("name"), POSITION("position"), SIZE("size"),
         COLOR("color"), OPACITY("opacity"), LABEL("label"), SHAPE("shape");
 
@@ -20,7 +22,6 @@ public class GamePiece {
         }
     }
 
-
     private static Vector defaultPosition = new Vector(0,0,0);
     private static String defaultIdentifier = "";
     private static Float defaultSize = 1f;
@@ -29,7 +30,7 @@ public class GamePiece {
     private static Float defaultOpacity = 1f;
     private static String defaultShape = "circle";
 
-    //Does this equal makes so that if we change the below changed the above
+    //TODO Do checks for boundaries of values.
     private String name = defaultIdentifier; //A unique value used in parsing. This is the identifier for this object given in declaration.
     private Vector position = defaultPosition;
     private Float size = defaultSize; //Must be positive
@@ -38,33 +39,26 @@ public class GamePiece {
     private Float opacity = defaultOpacity; //Must be [0:1]
     private String shape =  defaultShape; //Type check for shapes
 
-    /** @param type the type of the property to change.
+    /** Changes the field matching the given PropertyType to the given value.
+     * @param type the type of the property to change.
      * @param value the value the property should be changed to. */
     public void changeProperty(GamePiecePropertyType type, String value){
-
-        //TODO Make sure that the end value is corrent - that the parsed value is not null
 
         if(value.compareTo("") == 0)
             return;
 
         switch (type){
-            case NAME:      name = value;
-                            break;
-            case POSITION:  position = TypeCheckerHelper.parseVector(value);
-                            break;
-            case SIZE:      size = TypeCheckerHelper.parseFloat(value);
-                            break;
-            case COLOR:     color = value;
-                            break;
-            case LABEL:     label = value;
-                            break;
-            case OPACITY:   opacity = TypeCheckerHelper.parseFloat(value);
-                            break;
-            case SHAPE:     shape = value;
-                            break;
+            case NAME:      setName(value); break;
+            case POSITION:  setPosition(TypeCheckerHelper.parseVector(value)); break;
+            case SIZE:      setSize(TypeCheckerHelper.parseFloat(value)); break;
+            case COLOR:     setColor(value); break;
+            case LABEL:     setLabel(value); break;
+            case OPACITY:   setOpacity(TypeCheckerHelper.parseFloat(value)); break;
+            case SHAPE:     setShape(value); break;
         }
     }
 
+    /** @return true if the given VariableContainers type is the one required by the given PropertyType. */
     public static boolean doesValueMatchPropertyType(GamePiecePropertyType type, VariableContainer varCon){
         switch (type){
             case NAME:      return (varCon.getType() == VariableCollectorListener.VariableType.STRING);
@@ -76,11 +70,11 @@ public class GamePiece {
             case SHAPE:     return (varCon.getType() == VariableCollectorListener.VariableType.STRING);
         }
 
-        throw new IllegalArgumentException(); //Should never happen!
+        throw new GrammarHasChangedException(); //Should never happen!
     }
 
+    /** @return a string representing this GamePiece and all its values. */
     public String getGamePieceString(){
-
         StringBuilder sb = new StringBuilder();
         sb.append(GamePiecePropertyType.NAME.getString()).append(":").append(this.getName()).append(",");
         String positionVal = (position == null) ? "" : position.toString();
@@ -95,35 +89,49 @@ public class GamePiece {
     }
 
     public void setName(String identifierName) {
+        if(identifierName == null)
+            throw new IllegalArgumentException();
         this.name = identifierName;
     }
 
     public void setPosition(Vector position) {
+        if(position == null)
+            throw new IllegalArgumentException();
         this.position = position;
     }
 
     public void setSize(Float size) {
+        if(size == null)
+            throw new IllegalArgumentException();
         this.size = size;
     }
 
     public void setColor(String color) {
+        if(color == null)
+            throw new IllegalArgumentException();
         this.color = color;
     }
 
     public void setLabel(String label) {
+        if(label == null)
+            throw new IllegalArgumentException();
         this.label = label;
     }
 
     public void setOpacity(Float opacity) {
+        if(opacity == null)
+            throw new IllegalArgumentException();
         this.opacity = opacity;
+    }
+
+    public void setShape(String shape) {
+        if(shape == null)
+            throw new IllegalArgumentException();
+        this.shape = shape;
     }
 
     public String getName() {
         return name;
-    }
-
-    public void setShape(String shape) {
-        this.shape = shape;
     }
 
     public Vector getPosition() {
