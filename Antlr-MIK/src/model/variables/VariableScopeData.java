@@ -5,7 +5,7 @@ import customListeners.VariableCollectorListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/** This class will contain information of variables for a given scope. */
+/** This class will contain information of the main scope. */
 public class VariableScopeData {
 
     //A map that maps identifiers of variables to a container that hold their value.
