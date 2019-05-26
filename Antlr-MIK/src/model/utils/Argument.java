@@ -2,6 +2,7 @@ package model.utils;
 
 import customListeners.VariableCollectorListener;
 
+/** This class is used to model and store an Argument from a procedure call. */
 public class Argument {
 
     public enum ArgumentType { IDENTIFIER, INTEGER, FLOAT, BOOL, STRING, VECTOR, GAMEPIECE_PROPERTY}
@@ -22,6 +23,7 @@ public class Argument {
         return type;
     }
 
+    /** @return the VariableType matching this class' ArgumentType. */
     public VariableCollectorListener.VariableType getMatchingVariableType(){
         switch (type){
             case STRING: return VariableCollectorListener.VariableType.STRING;
@@ -31,6 +33,7 @@ public class Argument {
             case INTEGER: return VariableCollectorListener.VariableType.INT;
         }
 
-        throw new IllegalArgumentException(); //Identifier and GamePiece_Property cannot be converted
+        System.out.println("Converting ArgumentType to VariableType: Identifier and GamePiece_Property cannot be converted.");
+        throw new IllegalArgumentException();
     }
 }
