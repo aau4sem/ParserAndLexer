@@ -22,7 +22,7 @@ public class MainClass {
     /** This method will run the entire compiler. */
     public static void main(String[] args) {
         try{
-            String inputFile = "compilerInput.tac";
+            String inputFile = "Antlr-MIK/compilerInput.tac";
             if(args.length ==1){
                 inputFile = args[0];
             }
