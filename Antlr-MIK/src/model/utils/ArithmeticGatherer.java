@@ -8,7 +8,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-/** This class is used when evaluating an arithmetic expression. */
+/** This class is used when collecting and evaluating an arithmetic expression. */
 public class ArithmeticGatherer implements TerminalNode {
 
     private StringBuilder equation = new StringBuilder();
