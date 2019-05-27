@@ -151,15 +151,6 @@ select::-ms-expand {
     background-color: dodgerblue;
 }
 
-.smoke {
-    height: 35px;
-    width: 35px;
-    border-radius: 50%;
-    position: absolute;
-    text-align: center;
-    background-color: darkorange;
-}
-
 .coordinates-box {
     position: absolute;
     width: 100px;
