@@ -34,12 +34,12 @@ public class CodeGenerator {
         this.gamePieceNames = getAllGamePieceNames(gamePieces);
         this.boardPath = boardPath;
 
-        //Get folder paths
+        // Get folder paths
         String classPath = CodeGenerator.class.getProtectionDomain().getCodeSource().getLocation().toString();
         String rootProjectPath = CodeGenerator.class.getProtectionDomain().getCodeSource().getLocation().toString().substring(0, classPath.length() - 15);
-        classPath = classPath.substring(6);
         rootProjectPath = rootProjectPath.substring(6);
 
+        // When retrieving a path with space within it is translated to %20, we replace these with spaces.
         rootProjectPath = rootProjectPath.replaceAll("%20", " ");
 
         templateDirectoryPath = rootProjectPath + "webContent/template/";
@@ -47,46 +47,42 @@ public class CodeGenerator {
     }
 
     public void generateCompleteFolder(){
-
-        //TODO Removed files if there are any already / create folders?
+        // Delete directory to allow creation of fresh files.
         deleteDirectoryStream(new File(outputDirectoryPath).toPath());
 
-
-        //TODO Generate folders:
         File folders = new File(outputDirectoryPath + fileSeparator + "css");
-        boolean sucses = folders.mkdirs();
-        if(!sucses)
-            throw new IllegalStateException(); //Could not create folders
+        boolean success = folders.mkdirs();
+        if(!success)
+            throw new IllegalStateException(); // Could not create folders
 
-        //index.html
+        // Generate the correct lines for the Index.html file
+        // ArrayList<String> buttonLines = generateLinesForIndexButtons(1); Not implemented.
         ArrayList<String> selectorLines = generateLinesForIndexSelector(gamePieceNames);
         ArrayList<String> objectLines = generateLinesForIndexObjects(gamePieces);
-        ArrayList<String> buttonLines = generateLinesForIndexButtons(1);
-        ArrayList<String> outputIndexLines = generateIndexFileStrings(selectorLines, objectLines, buttonLines); //TODO: Bug: Does not replace tags
+        ArrayList<String> outputIndexLines = generateIndexFileStrings(selectorLines, objectLines);
 
-        //stylesheet.cs
+        // Generate the correct lines for the Stylesheet.css file
         ArrayList<String> boardLines = generateStringForStylesheetBoard(boardPath);
         ArrayList<String> gamePiecesLines = generateStringsForStylesheetGamePieces(gamePieces);
         ArrayList<String> outputStylesheetLines = generateStylesheetFileStrings(boardLines, gamePiecesLines);
 
-        //animations.js
+        // Generate the correct lines for the Animations.js file
         ArrayList<String> animationLines =  generateStringForAnimationsAnimationList(gamePieces);
         ArrayList<String> functionLines = generateStringsForAnimationFunctions(gamePieces, actionCalls);
         ArrayList<String> outputAnimations = generateAnimationsFileStrings(animationLines, functionLines);
 
-        //Write/create files
-        writeFile(outputDirectoryPath + fileSeparator + "index.html", outputIndexLines); //Index.html
-        writeFile(outputDirectoryPath + fileSeparator + "css" + fileSeparator + "stylesheet.css", outputStylesheetLines); //Stylesheet.html
-        writeFile(outputDirectoryPath + fileSeparator + "animations.js", outputAnimations); //animations.js
+        // Write and create the files.
+        writeFile(outputDirectoryPath + fileSeparator + "index.html", outputIndexLines); // Index.html
+        writeFile(outputDirectoryPath + fileSeparator + "css" + fileSeparator + "stylesheet.css", outputStylesheetLines); // Stylesheet.css
+        writeFile(outputDirectoryPath + fileSeparator + "animations.js", outputAnimations); // Animations.js
 
-        //Copy the last needed file
+        // Copy the AnimeJS library.
         File animeFileTemplate = new File(templateDirectoryPath + fileSeparator + "css" + fileSeparator + "anime.js");
-        File animeFileCopied = new File(outputDirectoryPath + fileSeparator + "css" + fileSeparator + "anime.js");
-
-        Path copied = Paths.get(outputDirectoryPath + fileSeparator + "css" + fileSeparator + "anime.js");
+        Path animeOutputPath = Paths.get(outputDirectoryPath + fileSeparator + "css" + fileSeparator + "anime.js");
         Path originalPath = animeFileTemplate.toPath();
+
         try {
-            Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(originalPath, animeOutputPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -105,15 +101,20 @@ public class CodeGenerator {
         }
     }
 
+    /**
+     * Writes the given list of lines to a file on the given path.
+     * @param desiredPath The path that the file should be written to.
+     * @param linesToWrite A list of lines that should be written to the file.
+     */
     private void writeFile(String desiredPath, ArrayList<String> linesToWrite){
-
         File file = new File(desiredPath);
+
         try {
             if(!file.createNewFile()){
                 throw new IllegalArgumentException(); //Could not create file
             }
         } catch (IOException e) {
-            e.printStackTrace(); //Could not create file
+            e.printStackTrace(); // Could not create file
         }
 
         try {
@@ -121,14 +122,18 @@ public class CodeGenerator {
             writeLinesToFos(linesToWrite, fos);
             fos.flush();
             fos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
+    /**
+     * Writes the given list of lines to the file output stream.
+     * @param lines List of lines to be added to the output stream.
+     * @param fos File output stream.
+     * @throws IOException If something went wrong an IOException is thrown.
+     */
     private void writeLinesToFos(ArrayList<String> lines, FileOutputStream fos) throws IOException {
         for(String line : lines){
             fos.write(line.getBytes());
@@ -136,20 +141,20 @@ public class CodeGenerator {
         }
     }
 
-    /***/
+    /** This method finds specific TAGS and change them accordingly within the Animation.js file. */
     private ArrayList<String> generateAnimationsFileStrings(ArrayList<String> animationLines, ArrayList<String> functionLines){
 
-        //Get all lines from the stylesheet template
+        // Get all lines from the stylesheet template
         ArrayList<String> animationsTemplateLines = getAllLinesFromFile(templateDirectoryPath + "animations.js");
 
-        //Find the "TAGS" and replace with code.
+        // Find the "TAGS" and replace with code.
         animationsTemplateLines = replaceTag(animationsTemplateLines, animationLines,"ANIMATIONSLISTTAG");
         animationsTemplateLines = replaceTag(animationsTemplateLines, functionLines,"FUNCTIONTAG");
 
         return animationsTemplateLines;
     }
 
-    /***/
+    /** This method finds specific TAGS and change them accordingly within the Stylesheet.css file. */
     private ArrayList<String> generateStylesheetFileStrings(ArrayList<String> boardLines, ArrayList<String> gamePieceLines){
 
         //Get all lines from the stylesheet template
@@ -162,15 +167,15 @@ public class CodeGenerator {
         return stylesheetTemplateLines;
     }
 
-    /***/
-    private ArrayList<String> generateIndexFileStrings(ArrayList<String> selectorLines, ArrayList<String> objectLines, ArrayList<String> buttonLines){
+    /** This method finds specific TAGS and change them accordingly within the Index.html file. */
+    private ArrayList<String> generateIndexFileStrings(ArrayList<String> selectorLines, ArrayList<String> objectLines){
 
         //Get all lines from the index template
         ArrayList<String> indexTemplateLines = getAllLinesFromFile(templateDirectoryPath + "index.html");
 
         //Find the "TAGS" and replace with code.
+        //indexTemplateLines = replaceTag(indexTemplateLines, buttonLines, "BUTTONSTAG"); Not yet implemented.
         indexTemplateLines = replaceTag(indexTemplateLines, selectorLines,"SELECTORTAG");
-        //indexTemplateLines = replaceTag(indexTemplateLines, buttonLines, "BUTTONSTAG");
         indexTemplateLines = replaceTag(indexTemplateLines, objectLines, "OBJECTSTAG");
 
         return indexTemplateLines;
@@ -271,7 +276,6 @@ public class CodeGenerator {
             sb.append("<div class=\"GamePiece ");
             sb.append(gp.getName());
             sb.append(" ").append(gp.getShape());
-            //TODO TAGS //TOOD Has to be generated in the css file
             sb.append("\">");
             sb.append("<p class=\"label\">");
             sb.append(gp.getLabel()); //LABEL
@@ -299,12 +303,12 @@ public class CodeGenerator {
     //stylesheet.css generators ---------------------------------------------------------
 
     /** @return the .board section of stylesheet.css.
-     * @param boardImagePath the path for the background image of the board.
-     * //TODO only one level is supported atm.*/
+     * @param boardImagePath the path for the background image of the board. */
     private ArrayList<String> generateStringForStylesheetBoard(String boardImagePath){
 
         ArrayList<String> generatedLines = new ArrayList<>();
 
+        // Dimensions of the desired board size.
         int width = 1000;
         int height = 700;
 
@@ -339,7 +343,6 @@ public class CodeGenerator {
             sb.append("opacity: ").append(gp.getOpacity()).append(";\n");
             sb.append("width: ").append(gp.getSize() * 20).append("px !important;\n");
             sb.append("height: ").append(gp.getSize() * 20).append("px !important;\n");
-            //TODO more?
             sb.append("}\n");
 
             generatedStrings.add(sb.toString());
@@ -348,7 +351,7 @@ public class CodeGenerator {
         return generatedStrings;
     }
 
-    //animations.js generators ---------------------------------
+
     /** @return a list of strings for the animationsList of the animations.js file.
      * @param gamePieces a list of all GamePieces. */
     private ArrayList<String> generateStringForAnimationsAnimationList(ArrayList<GamePiece> gamePieces){
@@ -374,8 +377,14 @@ public class CodeGenerator {
 
     /** @return a string for the function part of the animations.js file.
      * @param gamePieces a list of all GamePieces. */
-    private ArrayList<String> generateStringsForAnimationFunctions(ArrayList<GamePiece> gamePieces, ArrayList<BuildInFunction> actionCalls){
 
+    /**
+     * This method generates and formats all animation actions for a GamePiece.
+     * They follow a specific format that has been structured within the DOM and therefore is iterated upon several times.
+     * @param gamePieces List of all GamePieces
+     * @param actionCalls List of all actions.
+     */
+    private ArrayList<String> generateStringsForAnimationFunctions(ArrayList<GamePiece> gamePieces, ArrayList<BuildInFunction> actionCalls){
         ArrayList<String> generatedStrings = new ArrayList<>();
 
         for(GamePiece gp : gamePieces){
@@ -383,9 +392,10 @@ public class CodeGenerator {
 
             sb.append("function ").append(gp.getName()).append("() {\n");
             sb.append("return anime({\n");
-            sb.append("targets: ").append("'.").append(gp.getName()).append("',\n"); //TODO Has to be changed?
+            sb.append("targets: ").append("'.").append(gp.getName()).append("',\n");
             sb.append("keyframes: [\n");
 
+            // Iterate through all actions and the ones that are to be added to keyframes are then appended.
             for (BuildInFunction action : actionCalls){
                 if (action instanceof BuildInFunctionMove || action instanceof BuildInFunctionWait || ((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.POSITION){
                     if (action.getGp().getName().compareTo(gp.getName()) == 0){
@@ -397,6 +407,7 @@ public class CodeGenerator {
             sb.append("],\n");
             sb.append("scale: [\n");
 
+            // Iterate through all actions and add the ones that change the scale of a GamePiece.
             for (BuildInFunction action : actionCalls){
                 if (action instanceof BuildInFunctionChange && (((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.SIZE)){
                     if (action.getGp().getName().compareTo(gp.getName()) == 0){
@@ -409,6 +420,7 @@ public class CodeGenerator {
             sb.append("],\n");
             sb.append("backgroundColor: [\n");
 
+            // Iterate through all actions and add the ones that change the color of a GamePiece.
             for (BuildInFunction action : actionCalls){
                 if (action instanceof BuildInFunctionChange && (((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.COLOR)){
                     if (action.getGp().getName().compareTo(gp.getName()) == 0){
@@ -421,6 +433,7 @@ public class CodeGenerator {
             sb.append("],\n");
             sb.append("opacity: [\n");
 
+            // Iterate through all actions and add the ones that change the opacity of a GamePiece.
             for (BuildInFunction action : actionCalls){
                 if (action instanceof BuildInFunctionChange && (((BuildInFunctionChange) action).getSecondArgument() == GamePiece.GamePiecePropertyType.OPACITY)){
                     if (action.getGp().getName().compareTo(gp.getName()) == 0){

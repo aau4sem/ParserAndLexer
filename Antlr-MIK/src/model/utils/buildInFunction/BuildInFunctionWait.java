@@ -34,4 +34,8 @@ public class BuildInFunctionWait implements BuildInFunction {
     public String getIdentifier() {
         return identifier;
     }
+
+    public BuildInFunction clone(){
+        return new BuildInFunctionWait(this.gp, this.time);
+    }
 }

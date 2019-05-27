@@ -41,4 +41,8 @@ public class BuildInFunctionMove implements BuildInFunction {
     public String getIdentifier() {
         return identifier;
     }
+
+    public BuildInFunction clone(){
+        return new BuildInFunctionMove(this.gp, this.vector, this.time);
+    }
 }
