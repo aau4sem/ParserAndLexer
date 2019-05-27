@@ -668,27 +668,27 @@ public class VariableCollectorListener extends TacticBaseListener {
 
     @Override
     public void exitIntDcl(Tactic.IntDclContext ctx) {
-        addVariableToScope(new VariableContainer(ctx.identifier().getText(), null, VariableType.INT));
+        addVariableToScope(new VariableContainer(ctx.identifier().getText(), "0", VariableType.INT));
     }
 
     @Override
     public void exitFloatDcl(Tactic.FloatDclContext ctx) {
-        addVariableToScope(new VariableContainer(ctx.identifier().getText(), null, VariableType.FLOAT));
+        addVariableToScope(new VariableContainer(ctx.identifier().getText(), "0.0", VariableType.FLOAT));
     }
 
     @Override
     public void exitVecDcl(Tactic.VecDclContext ctx) {
-        addVariableToScope(new VariableContainer(ctx.identifier().getText(), null, VariableType.VEC));
+        addVariableToScope(new VariableContainer(ctx.identifier().getText(), "(0,0,0)", VariableType.VEC));
     }
 
     @Override
     public void exitBoolDcl(Tactic.BoolDclContext ctx) {
-        addVariableToScope(new VariableContainer(ctx.identifier().getText(), null, VariableType.BOOL));
+        addVariableToScope(new VariableContainer(ctx.identifier().getText(), "false", VariableType.BOOL));
     }
 
     @Override
     public void exitStringDcl(Tactic.StringDclContext ctx) {
-        addVariableToScope(new VariableContainer(ctx.identifier().getText(), null, VariableType.STRING));
+        addVariableToScope(new VariableContainer(ctx.identifier().getText(), "", VariableType.STRING));
     }
 
     @Override
