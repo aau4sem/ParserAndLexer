@@ -61,4 +61,8 @@ public class BuildInFunctionChange implements BuildInFunction {
     public String getIdentifier() {
         return identifier;
     }
+
+    public BuildInFunction clone(){
+        return new BuildInFunctionChange(this.gp, this.gpProperty, this.thirdArgument, this.time);
+    }
 }

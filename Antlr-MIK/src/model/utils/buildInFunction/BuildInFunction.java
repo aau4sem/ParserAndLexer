@@ -9,5 +9,6 @@ public interface BuildInFunction {
     Integer getTime();
     String toKeyframe();
     void setTime(Integer time); //TODO Remove? Ali?
+    BuildInFunction clone();
     String getIdentifier();
 }
